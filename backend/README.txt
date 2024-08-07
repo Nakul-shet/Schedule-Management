@@ -1,10 +1,19 @@
 Features to implement
 
-1. Dentist Features
+- Dentist Operations
     - Registration ✅
     - Login ✅
     - Add Patient | View Patient / Patients | Update | Delete
-    - Create Appointment | Cancel Appointment
-    - 
+    - Create Appointment with Slot | Cancel Appointment
 
-2. User Features
+- User Features
+
+- Dentist Walkthrough
+    Add Patient to the database with details
+    Create an Appointment with available slots for the Patient - Function for slot availability
+    View all Apointments for that day
+    Calender frontend
+
+- API Endpoints
+    http://localhost:3001/user/register
+    http://localhost:3001/user/login
