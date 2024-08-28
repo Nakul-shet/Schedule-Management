@@ -5,6 +5,8 @@ import Login from "./components/Login";
 import AddNewDoctor from "./components/AddNewDoctor";
 import Messages from "./components/Messages";
 import Doctors from "./components/Doctors";
+import Patients from "./components/Patients";
+import Events from "./components/Events";
 import { Context } from "./main";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
@@ -46,6 +48,8 @@ const App = () => {
         <Route path="/admin/addnew" element={<AddNewAdmin />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/doctors" element={<Doctors />} />
+        <Route path="/patients" element={<Patients />} />
+        <Route path="/events" element={<Events />} />
       </Routes>
       <ToastContainer position="top-center" />
     </Router>

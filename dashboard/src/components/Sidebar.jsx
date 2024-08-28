@@ -2,10 +2,14 @@ import React, { useContext, useState } from "react";
 import { TiHome } from "react-icons/ti";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { AiFillMessage } from "react-icons/ai";
+import { IoLogoWhatsapp } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { MdAddModerator } from "react-icons/md";
 import { IoPersonAddSharp } from "react-icons/io5";
+import { FaTooth } from "react-icons/fa";
+import { BsCalendarEventFill } from "react-icons/bs";
+import { FaLocationDot } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../main";
@@ -36,6 +40,14 @@ const Sidebar = () => {
     navigateTo("/");
     setShow(!show);
   };
+  const gotoPatientsPage = () => {
+    navigateTo("/patients");
+    setShow(!show);
+  };
+  const gotoEventsPage = () => {
+    navigateTo("/events");
+    setShow(!show);
+  };
   const gotoDoctorsPage = () => {
     navigateTo("/doctors");
     setShow(!show);
@@ -61,10 +73,14 @@ const Sidebar = () => {
       >
         <div className="links">
           <TiHome onClick={gotoHomePage} />
+          <FaTooth onClick={gotoPatientsPage} />
+          <BsCalendarEventFill onClick={gotoEventsPage} />
           <FaUserDoctor onClick={gotoDoctorsPage} />
           <MdAddModerator onClick={gotoAddNewAdmin} />
           <IoPersonAddSharp onClick={gotoAddNewDoctor} />
           <AiFillMessage onClick={gotoMessagesPage} />
+          <IoLogoWhatsapp onClick={gotoMessagesPage} />
+          <FaLocationDot onClick={gotoMessagesPage} />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
       </nav>
