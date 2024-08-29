@@ -1,0 +1,57 @@
+/* calendar.css */
+
+/* Customize the calendar header */
+.rbc-header {
+  background-color: #007bff; /* Hospital blue background color */
+  color: white; /* White text color for the header */
+  border: 1px solid #0056b3; /* Darker blue border for the header */
+  font-weight: bold;
+}
+
+/* Customize the event background color */
+.rbc-event {
+  background-color: #66c2ff; /* Light blue background for events */
+  border: 1px solid #3399ff; /* Blue border for events */
+  border-radius: 4px; /* Rounded corners for events */
+  color: #003d66; /* Darker blue text color for events */
+}
+
+/* Customize the calendar day and week view */
+.rbc-month-view .rbc-day-bg {
+  border: 1px solid #e0e0e0; /* Light gray border for days */
+}
+
+.rbc-day-slot {
+  border: 1px solid #f0f0f0; /* Lighter border for day slots */
+}
+
+/* Highlight current date */
+.rbc-today {
+  background-color: #b3d9ff; /* Light blue highlight for today */
+  border: 1px solid #99c2ff; /* Light blue border for today */
+  border-radius: 4px;
+}
+
+/* Adjust the calendar navigation */
+.rbc-btn {
+  background-color: #0056b3; /* Darker blue background for navigation buttons */
+  color: white; /* White text color for navigation buttons */
+  border: 1px solid #004494; /* Even darker blue border for buttons */
+}
+
+.rbc-btn:hover {
+  background-color: #004494; /* Darker blue on hover */
+  border-color: #003366; /* Darkest blue border on hover */
+}
+
+/* Customize the view switcher and other controls */
+.rbc-toolbar button {
+  background-color: #007bff; /* Blue background for toolbar buttons */
+  color: white; /* White text color for toolbar buttons */
+  border: 1px solid #0056b3; /* Blue border for toolbar buttons */
+}
+
+.rbc-toolbar button:hover {
+  background-color: #0056b3; /* Darker blue on hover for toolbar buttons */
+  border-color: #004494; /* Darker blue border on hover */
+}
