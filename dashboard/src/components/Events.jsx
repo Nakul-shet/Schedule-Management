@@ -19,7 +19,7 @@ const Events = () => {
     const fetchEvents = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/api/v1/user/events",
+          "http://localhost:4000/api/v1/user/appointments",
           { withCredentials: true }
         );
         // Assuming the events data is an array of objects with start and end dates
@@ -45,7 +45,7 @@ const Events = () => {
 
   return (
     <section className="page events">
-      <h1>Events</h1>
+      <h1>Appointments</h1>
       <div style={{ height: "80vh" }}>
         <Calendar
           localizer={localizer}
