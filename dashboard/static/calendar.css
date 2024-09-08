@@ -35,7 +35,7 @@
 /* Adjust the calendar navigation */
 .rbc-btn {
   background-color: #0056b3; /* Darker blue background for navigation buttons */
-  color: white; /* White text color for navigation buttons */
+  color: rgb(0, 8, 12); /* White text color for navigation buttons */
   border: 1px solid #004494; /* Even darker blue border for buttons */
 }
 
@@ -53,5 +53,6 @@
 
 .rbc-toolbar button:hover {
   background-color: #0056b3; /* Darker blue on hover for toolbar buttons */
+  color: rgb(95, 192, 241);
   border-color: #004494; /* Darker blue border on hover */
 }

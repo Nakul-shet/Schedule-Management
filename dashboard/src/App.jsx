@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
+import AddNewPatient from "./components/AddPatient";
 import "./App.css";
 
 const App = () => {
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/patients" element={<Patients />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/patient/addnew" element={<AddNewPatient />} />
       </Routes>
       <ToastContainer position="top-center" />
     </Router>
