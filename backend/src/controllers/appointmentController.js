@@ -1,62 +1,102 @@
-const Appointment = require('../models/Appointment');
-const Slot = require('../models/Slot');
+const {Appointment} = require('../models/Appointment');
 
-exports.createAppointment = async (req, res) => {
-  try {
-    const { dentistId, date, startTime, endTime, slotId } = req.body;
-
-    // Check if the slot is available
-    const slot = await Slot.findOne({ _id: slotId, isAvailable: true });
-    if (!slot) {
-      return res.status(400).json({ error: 'Selected slot is not available' });
-    }
-
-    // Create the appointment
-    const appointment = new Appointment({
-      patientId: req.user.userId,
-      dentistId,
-      date,
-      startTime,
-      endTime,
-      status: 'scheduled'
-    });
-    await appointment.save();
-
-    // Mark the slot as unavailable
-    slot.isAvailable = false;
-    await slot.save();
-
-    res.status(201).json(appointment);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+const doTimesOverlap = (start1, end1, start2, end2) => {
+  return (start1 < end2 && end1 > start2);
 };
 
-exports.getAppointments = async (req, res) => {
+exports.createAppointment = async (req , res) => {
+
+  const { patientId , clinicName , date , startTime , endTime , treatmentType } = req.body;
+
+  try{
+
+    const appointmentDate = new Date(date);
+
+    const overlappingAppointments = await Appointment.find({
+      // dentistId: dentistId,
+      date: date
+    });
+
+    const patientAppointmentOnSameDay = await Appointment.findOne({
+      patientId: patientId,
+      date: date
+    });
+
+    const isOverlapping = overlappingAppointments.some(appointment => 
+      doTimesOverlap(startTime, endTime, appointment.startTime, appointment.endTime)
+    );
+
+    if (isOverlapping) {
+      return res.status(409).json({ 
+        error: `There is an overlapping appointment. Please choose another time slot.`
+      });
+    }
+
+    if (patientAppointmentOnSameDay) {
+      return res.status(409).json({ 
+        error: `The patient already has an appointment scheduled on ${date}. Please choose another date.`
+      });
+    }
+
+    const appointment = new Appointment({
+      patientId,
+      clinicName,
+      date: appointmentDate,
+      startTime : `${date}T${startTime}:00.000Z`,
+      endTime: `${date}T${endTime}:00.000Z`,
+      status: 'scheduled',
+      treatmentType
+    });
+
+    await appointment.save();
+    res.status(201).json(appointment);
+
+  }catch(error){
+
+    console.error('Error creating appointment:', error);
+    res.status(500).json({ error: 'An error occurred while creating the appointment' });
+  
+  }
+}
+
+exports.getTodayAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find({ patientId: req.user.userId });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const appointments = await Appointment.find({
+      date: today ,
+      status: 'scheduled'
+    })
+
     res.json(appointments);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-exports.getAppointment = async (req, res) => {
+exports.getAllAppointments = async (req, res) => {
   try {
-    const appointment = await Appointment.findOne({ _id: req.params.id, patientId: req.user.userId });
-    if (!appointment) {
-      return res.status(404).json({ error: 'Appointment not found' });
-    }
-    res.json(appointment);
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const appointments = await Appointment.find({
+      date: { $gte: today }, 
+      status: 'scheduled'   
+    }).sort({ date: 1, startTime: 1 }); 
+
+    res.json(appointments);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 exports.updateAppointment = async (req, res) => {
+  const {appointmentId} = req.params;
   try {
     const appointment = await Appointment.findOneAndUpdate(
-      { _id: req.params.id, patientId: req.user.userId },
+      { _id: req.params.appointmentId},
       req.body,
       { new: true, runValidators: true }
     );
@@ -86,15 +126,6 @@ exports.cancelAppointment = async (req, res) => {
     await appointment.save();
 
     res.json({ message: 'Appointment cancelled successfully' });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-exports.getDentistAppointments = async (req, res) => {
-  try {
-    const appointments = await Appointment.find({ dentistId: req.params.dentistId });
-    res.json(appointments);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

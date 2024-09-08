@@ -5,17 +5,22 @@ const {database_connection} = require("./config/database");
 
 const userRouter = require("./routes/userRoutes");
 const appointmentRouter = require("./routes/appointmentRoutes");
+const patientRouter = require("./routes/patientRoutes");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Allow only this origin
+    credentials: true // Allow credentials (cookies, headers, etc.)
+}));
 
 database_connection();
 
 app.use("/user" , userRouter)
 app.use("/appointment" , appointmentRouter)
+app.use("/patient" , patientRouter)
 
 const PORT = 3001;
 app.listen(PORT , () => {

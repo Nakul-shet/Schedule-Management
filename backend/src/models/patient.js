@@ -1,29 +1,42 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-const patientRecordSchema = new Schema({
-    patientId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    medicalHistory: String,
-    allergies: [String],
-    treatments: [{
-      date: {
-        type: Date,
-        required: true
-      },
-      description: {
-        type: String,
-        required: true
-      },
-      dentistNotes: String
-    }]
-  }, {
-    timestamps: true
-});
+const patientSchema = new mongoose.Schema({
+  patientId: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  patientName: {
+    type: String,
+    required: true
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other'],
+    required: true
+  },
+  country: String,
+  city: String,
+  contact: String,
+  mobile: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  dob: Date,
+  notes: String,
+  clinicName: String,
+  alertPreference: {
+    type: String,
+    enum: ['Email', 'SMS', 'Both', 'None'],
+    default: 'None'
+  }
+}, { timestamps: true });
 
-const Patient = mongoose.model("Patient" , patientRecordSchema);
+const Patient = mongoose.model("Patient" , patientSchema)
 
-module.exports = {Patient , patientRecordSchema}
+module.exports = {Patient , patientSchema}
