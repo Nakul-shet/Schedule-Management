@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../main";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ const AddNewAppointment = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
   const [patientSearch, setPatientSearch] = useState("");
-  const [patients, setPatients] = useState({});
+  const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -25,7 +25,7 @@ const AddNewAppointment = () => {
       const { data } = await axios.get(
         `http://localhost:3001/patient/getPatientByName/${patientSearch}`
       );
-      setPatients(data);
+      setPatients([data]);
     } catch (error) {
       toast.error("Error fetching patients");
     }
@@ -47,8 +47,8 @@ const AddNewAppointment = () => {
       await axios.post(
         "http://localhost:3001/appointment/createAppointment",
         {
-          patientId: patients.patientId,
-          clinicName,
+          patientId: selectedPatient.patientId, // Use selectedPatient data
+          clinicName: selectedPatient.patientName,
           date: appointmentDate,
           startTime,
           endTime,
@@ -97,51 +97,43 @@ const AddNewAppointment = () => {
             <button onClick={handlePatientSearch}>Search</button>
           </div>
 
-          {
-              Object.keys(patients).length > 0 ? 
-              <div>
-                <div>
-                  <h1>{patients.patientName}</h1>
-                  <h3>{patients.patientId}</h3>
-                </div>
-              </div>
-              : ""
-          }
-
-          {/* List of patients */}
-          {/* {patients.length > 0 && (
-            <ul className="patient-list">
+          {/* Show search results */}
+          {patients.length > 0 && (
+            <div>
               {patients.map((patient) => (
                 <li
-                  key={patient._id}
+                  key={patient.patientId}
                   onClick={() => handleSelectPatient(patient)}
                 >
-                  {patient.name} (ID: {patient._id})
+                  {patient.patientName} (ID: {patient.patientId})
                 </li>
               ))}
-            </ul>
-          )} */}
+            </div>
+          )}
 
-          {/* Selected patient details */}
+          {/* Selected patient details (read-only) */}
           {selectedPatient && (
             <div>
-              <p>
-                <strong>Selected Patient:</strong> {selectedPatient.name} (ID:{" "}
-                {selectedPatient._id})
-              </p>
+              <div>
+                <input
+                  type="text"
+                  value={selectedPatient.patientName}
+                  readOnly
+                  placeholder="Patient Name"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  value={selectedPatient.patientId}
+                  readOnly
+                  placeholder="Patient ID"
+                />
+              </div>
             </div>
           )}
 
           {/* Appointment details */}
-          <div>
-            <input
-              type="text"
-              placeholder="Clinic Name"
-              value={clinicName}
-              onChange={(e) => setClinicName(e.target.value)}
-              required
-            />
-          </div>
           <div>
             <input
               type="date"
@@ -183,7 +175,7 @@ const AddNewAppointment = () => {
             </select>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button onClick={handleAddNewAppointment} type="submit">Add Appointment</button>
+            <button type="submit">Add Appointment</button>
           </div>
         </form>
       </section>

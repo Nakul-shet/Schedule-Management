@@ -20,14 +20,11 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        await axios.get(
-          "http://localhost:3001/appointment",
-          { withCredentials: true }
-        )
-        .then((res) => {
-          console.log(res.data)
-          setEvents(res.data);
-        })
+        await axios
+          .get("http://localhost:3001/appointment", { withCredentials: true })
+          .then((res) => {
+            setEvents(res.data);
+          });
         // Assuming the events data is an array of objects with start and end dates
       } catch (error) {
         toast.error(error.response?.data?.message || "Error fetching events");
@@ -50,7 +47,6 @@ const Events = () => {
     title: event.treatmentType, // Using treatmentType as the event title (you can change this)
     start: new Date(event.startTime), // Convert startTime to Date object
     end: new Date(event.endTime), // Convert endTime to Date object
-    // Optionally, you can add other properties like description, location, etc.
   }));
 
   return (
@@ -80,6 +76,6 @@ const Events = () => {
       </div>
     </section>
   );
-}  
+};
 
 export default Events;

@@ -19,7 +19,7 @@ body {
 }
 .page {
   margin-left: 120px;
-  background: #e5e5e5;
+  background: #ffffff;
   padding: 40px;
   height: 100vh;
   border-top-left-radius: 50px;
@@ -50,7 +50,7 @@ body {
   padding-top: 20px;
   padding-bottom: 60px;
   min-height: 100vh;
-  background: #e5e5e5;
+  background: #ffffff;
 
   display: flex;
   justify-content: center;
@@ -201,8 +201,8 @@ body {
   color: #fff;
 }
 .dashboard .banner:first-child .thirdBox {
-  color: #ff008d;
-  background: #fff;
+  color: #d1feff;
+  background: #6a00ff;
 }
 .dashboard .banner:first-child .secondBox,
 .dashboard .banner:first-child .thirdBox {
@@ -229,12 +229,14 @@ body {
   height: 65vh;
   background: #fff;
   border-radius: 20px;
-  padding: 40px;
+  padding: 10px;
+  overflow: hidden; /* Disable scroll */
 }
+
 .dashboard .banner:last-child h5 {
   font-size: 24px;
   letter-spacing: 2px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   color: #111;
 }
 .dashboard .banner table {
