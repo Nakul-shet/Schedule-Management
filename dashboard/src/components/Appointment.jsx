@@ -5,6 +5,7 @@ import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+// import moment from 'moment-timezone';
 import { IoPersonAddSharp } from "react-icons/io5";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../../static/calendar.css";
@@ -13,18 +14,21 @@ import "../../static/calendar.css";
 const localizer = momentLocalizer(moment);
 
 const Events = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([{}]);
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/user/appointments",
+        await axios.get(
+          "http://localhost:3001/appointment",
           { withCredentials: true }
-        );
+        )
+        .then((res) => {
+          console.log(res.data)
+          setEvents(res.data);
+        })
         // Assuming the events data is an array of objects with start and end dates
-        setEvents(data.events);
       } catch (error) {
         toast.error(error.response?.data?.message || "Error fetching events");
       }
@@ -34,7 +38,7 @@ const Events = () => {
 
   const gotoAddPatientsAppointment = () => {
     navigate("/appointment/addnew");
-    setShow(!show); // Navigate to the add patient page
+    // setShow(!show); // Navigate to the add patient page
   };
 
   if (!isAuthenticated) {
@@ -43,9 +47,9 @@ const Events = () => {
 
   // Convert events to the format required by react-big-calendar
   const calendarEvents = events.map((event) => ({
-    title: event.title,
-    start: new Date(event.startDate), // Assuming startDate is in ISO format
-    end: new Date(event.endDate), // Assuming endDate is in ISO format
+    title: event.treatmentType, // Using treatmentType as the event title (you can change this)
+    start: new Date(event.startTime), // Convert startTime to Date object
+    end: new Date(event.endTime), // Convert endTime to Date object
     // Optionally, you can add other properties like description, location, etc.
   }));
 
@@ -76,6 +80,6 @@ const Events = () => {
       </div>
     </section>
   );
-};
+}  
 
 export default Events;

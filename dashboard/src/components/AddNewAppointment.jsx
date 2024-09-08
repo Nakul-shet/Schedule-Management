@@ -8,7 +8,7 @@ const AddNewAppointment = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
   const [patientSearch, setPatientSearch] = useState("");
-  const [patients, setPatients] = useState([]);
+  const [patients, setPatients] = useState({});
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -23,9 +23,9 @@ const AddNewAppointment = () => {
     e.preventDefault();
     try {
       const { data } = await axios.get(
-        `http://localhost:4000/api/v1/patients/search?query=${patientSearch}`
+        `http://localhost:3001/patient/getPatientByName/${patientSearch}`
       );
-      setPatients(data.patients);
+      setPatients(data);
     } catch (error) {
       toast.error("Error fetching patients");
     }
@@ -45,9 +45,9 @@ const AddNewAppointment = () => {
     }
     try {
       await axios.post(
-        "http://localhost:4000/api/v1/user/admin/addPatientAppointment",
+        "http://localhost:3001/appointment/createAppointment",
         {
-          patientId: selectedPatient._id,
+          patientId: patients.patientId,
           clinicName,
           date: appointmentDate,
           startTime,
@@ -97,8 +97,19 @@ const AddNewAppointment = () => {
             <button onClick={handlePatientSearch}>Search</button>
           </div>
 
+          {
+              Object.keys(patients).length > 0 ? 
+              <div>
+                <div>
+                  <h1>{patients.patientName}</h1>
+                  <h3>{patients.patientId}</h3>
+                </div>
+              </div>
+              : ""
+          }
+
           {/* List of patients */}
-          {patients.length > 0 && (
+          {/* {patients.length > 0 && (
             <ul className="patient-list">
               {patients.map((patient) => (
                 <li
@@ -109,7 +120,7 @@ const AddNewAppointment = () => {
                 </li>
               ))}
             </ul>
-          )}
+          )} */}
 
           {/* Selected patient details */}
           {selectedPatient && (
@@ -172,7 +183,7 @@ const AddNewAppointment = () => {
             </select>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button type="submit">Add Appointment</button>
+            <button onClick={handleAddNewAppointment} type="submit">Add Appointment</button>
           </div>
         </form>
       </section>

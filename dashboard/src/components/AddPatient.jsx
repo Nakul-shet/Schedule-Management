@@ -29,7 +29,7 @@ const AddNewPatient = () => {
     try {
       await axios
         .post(
-          "http://localhost:4000/api/v1/user/admin/addpatient",
+          "http://localhost:3001/patient/addPatient",
           {
             patientName,
             gender,
@@ -39,7 +39,7 @@ const AddNewPatient = () => {
             mobile,
             email,
             dob,
-            note,
+            notes : note,
             clinicName,
             notificationMethod,
           },
@@ -64,14 +64,23 @@ const AddNewPatient = () => {
           setClinicName("");
           setNotificationMethod({ email: false, sms: false });
         });
-    } catch (error) {
-      toast.error(error.response.data.message);
+    } catch (res) {
+      toast.error(res.data.error);
+
     }
   };
 
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
   }
+
+  // const handlePatientSubmit = async () => {
+
+  //   await axios.post("http://localhost:3001/patient/addPatient")
+  //   .then((res) => {
+
+  //   })
+  // }
 
   return (
     <section className="page">
@@ -175,7 +184,7 @@ const AddNewPatient = () => {
             </label>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button type="submit">ADD NEW PATIENT</button>
+            <button onClick={handleAddNewPatient()}>ADD NEW PATIENT</button>
           </div>
         </form>
       </section>

@@ -3,18 +3,16 @@ const Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema({
     patientId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true
     },
-    dentistId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+    clinicName : {
+      type : String,
+      required : true
     },
     date: {
       type: Date,
-      required: true
+      required: true,
     },
     startTime: {
       type: String,
@@ -29,7 +27,10 @@ const appointmentSchema = new Schema({
       enum: ['scheduled', 'completed', 'cancelled'],
       default: 'scheduled'
     },
-    notes: String
+    treatmentType : {
+      type : String,
+      required : true
+    }
   }, {
     timestamps: true
 });
