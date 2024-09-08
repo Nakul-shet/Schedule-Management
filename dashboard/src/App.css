@@ -47,7 +47,7 @@ body {
   margin-bottom: 30px;
 }
 .form-component {
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 60px;
   min-height: 100vh;
   background: #e5e5e5;
@@ -83,7 +83,7 @@ body {
   width: 100%;
 }
 .form-component p:first-child {
-  font-size: 28px;
+  font-size: 12px;
   font-weight: 700;
   color: #370080a3;
   margin-top: 30px;
@@ -96,7 +96,7 @@ body {
 .form-component form select,
 .form-component form textarea {
   flex: 1;
-  font-size: 24px;
+  font-size: 18px;
   padding: 10px 10px 10px 40px;
   border-radius: 7px;
   border: 1px solid gray;

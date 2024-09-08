@@ -76,7 +76,6 @@ const AddNewPatient = () => {
   return (
     <section className="page">
       <section className="container form-component add-admin-form">
-        <img src="/danta.jpg" alt="logo" className="logo" />
         <h1 className="form-title">ADD NEW PATIENT</h1>
         <form onSubmit={handleAddNewPatient}>
           <div>

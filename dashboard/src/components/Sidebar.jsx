@@ -45,7 +45,7 @@ const Sidebar = () => {
     setShow(!show);
   };
   const gotoEventsPage = () => {
-    navigateTo("/events");
+    navigateTo("/appointment");
     setShow(!show);
   };
   const gotoDoctorsPage = () => {
