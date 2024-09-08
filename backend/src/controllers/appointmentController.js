@@ -42,8 +42,8 @@ exports.createAppointment = async (req , res) => {
       patientId,
       clinicName,
       date: appointmentDate,
-      startTime : `${date}T${startTime}:00.000Z`,
-      endTime: `${date}T${endTime}:00.000Z`,
+      startTime : `${date}T${startTime}:00.000`,
+      endTime: `${date}T${endTime}:00.000`,
       status: 'scheduled',
       treatmentType
     });
