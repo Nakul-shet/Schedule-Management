@@ -10,10 +10,30 @@
 
 /* Customize the event background color */
 .rbc-event {
-  background-color: #66c2ff; /* Light blue background for events */
+  background-color: #3cb1ff; /* Light blue background for events */
   border: 1px solid #3399ff; /* Blue border for events */
   border-radius: 4px; /* Rounded corners for events */
-  color: #003d66; /* Darker blue text color for events */
+  color: #f6e0ff; /* Darker blue text color for events */
+}
+
+.rbc-event-label {
+  background-color: #00098ca2; /* Light blue background for events */
+  border: 1px solid #0080ff; /* Blue border for events */
+  border-radius: 4px; /* Rounded corners for events */
+  color: #ffffff;
+}
+
+.rbc-event-content {
+  background-color: #5569ff96; /* Light blue background for events */
+  border: 1px solid #83bffcd5; /* Blue border for events */
+  border-radius: 4px; /* Rounded corners for events */
+  color: #eefffa;
+}
+
+.rbc-selected {
+  background-color: #b648ff;
+  border: 1px solid #deb9ff;
+  border-radius: 4px;
 }
 
 /* Customize the calendar day and week view */
@@ -27,15 +47,15 @@
 
 /* Highlight current date */
 .rbc-today {
-  background-color: #b3d9ff; /* Light blue highlight for today */
+  background-color: #0080ff83; /* Light blue highlight for today */
   border: 1px solid #99c2ff; /* Light blue border for today */
   border-radius: 4px;
 }
 
 /* Adjust the calendar navigation */
 .rbc-btn {
-  background-color: #0056b3; /* Darker blue background for navigation buttons */
-  color: rgb(0, 8, 12); /* White text color for navigation buttons */
+  background-color: #2890ff; /* Darker blue background for navigation buttons */
+  color: rgb(255, 255, 255); /* White text color for navigation buttons */
   border: 1px solid #004494; /* Even darker blue border for buttons */
 }
 
