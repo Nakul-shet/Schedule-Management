@@ -4,12 +4,10 @@ import { RiLogoutBoxFill } from "react-icons/ri";
 import { AiFillMessage } from "react-icons/ai";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaUserDoctor, FaTooth, FaLocationDot } from "react-icons/fa6";
 import { MdAddModerator } from "react-icons/md";
 import { IoPersonAddSharp } from "react-icons/io5";
-import { FaTooth } from "react-icons/fa";
 import { BsCalendarEventFill } from "react-icons/bs";
-import { FaLocationDot } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../main";
@@ -17,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [show, setShow] = useState(false);
+  const [activeIcon, setActiveIcon] = useState("home");
 
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const navigateTo = useNavigate();
 
   const handleLogout = async () => {
     await axios
@@ -34,34 +34,9 @@ const Sidebar = () => {
       });
   };
 
-  const navigateTo = useNavigate();
-
-  const gotoHomePage = () => {
-    navigateTo("/");
-    setShow(!show);
-  };
-  const gotoPatientsPage = () => {
-    navigateTo("/patients");
-    setShow(!show);
-  };
-  const gotoEventsPage = () => {
-    navigateTo("/appointment");
-    setShow(!show);
-  };
-  const gotoDoctorsPage = () => {
-    navigateTo("/doctors");
-    setShow(!show);
-  };
-  const gotoMessagesPage = () => {
-    navigateTo("/messages");
-    setShow(!show);
-  };
-  const gotoAddNewDoctor = () => {
-    navigateTo("/doctor/addnew");
-    setShow(!show);
-  };
-  const gotoAddNewAdmin = () => {
-    navigateTo("/admin/addnew");
+  const handleIconClick = (icon, navigatePath) => {
+    setActiveIcon(icon);
+    navigateTo(navigatePath);
     setShow(!show);
   };
 
@@ -72,15 +47,42 @@ const Sidebar = () => {
         className={show ? "show sidebar" : "sidebar"}
       >
         <div className="links">
-          <TiHome onClick={gotoHomePage} />
-          <FaTooth onClick={gotoPatientsPage} />
-          <BsCalendarEventFill onClick={gotoEventsPage} />
-          <FaUserDoctor onClick={gotoDoctorsPage} />
-          <MdAddModerator onClick={gotoAddNewAdmin} />
-          <IoPersonAddSharp onClick={gotoAddNewDoctor} />
-          <AiFillMessage onClick={gotoMessagesPage} />
-          <IoLogoWhatsapp onClick={gotoMessagesPage} />
-          <FaLocationDot onClick={gotoMessagesPage} />
+          <TiHome
+            className={activeIcon === "home" ? "active-icon" : ""}
+            onClick={() => handleIconClick("home", "/")}
+          />
+          <FaTooth
+            className={activeIcon === "patients" ? "active-icon" : ""}
+            onClick={() => handleIconClick("patients", "/patients")}
+          />
+          <BsCalendarEventFill
+            className={activeIcon === "events" ? "active-icon" : ""}
+            onClick={() => handleIconClick("events", "/appointment")}
+          />
+          <FaUserDoctor
+            className={activeIcon === "doctors" ? "active-icon" : ""}
+            onClick={() => handleIconClick("doctors", "/doctors")}
+          />
+          <MdAddModerator
+            className={activeIcon === "addAdmin" ? "active-icon" : ""}
+            onClick={() => handleIconClick("addAdmin", "/admin/addnew")}
+          />
+          <IoPersonAddSharp
+            className={activeIcon === "addDoctor" ? "active-icon" : ""}
+            onClick={() => handleIconClick("addDoctor", "/doctor/addnew")}
+          />
+          <AiFillMessage
+            className={activeIcon === "messages" ? "active-icon" : ""}
+            onClick={() => handleIconClick("messages", "/messages")}
+          />
+          <IoLogoWhatsapp
+            className={activeIcon === "whatsapp" ? "active-icon" : ""}
+            onClick={() => handleIconClick("whatsapp", "/messages")}
+          />
+          <FaLocationDot
+            className={activeIcon === "location" ? "active-icon" : ""}
+            onClick={() => handleIconClick("location", "/messages")}
+          />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
       </nav>
