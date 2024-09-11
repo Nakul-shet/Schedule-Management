@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 
 export const dbConnection = () => {
+
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+
   mongoose
-    .connect(process.env.MONGO_URI, {
-      dbName: "Databases",
-    })
+    .connect(process.env.MONGO_URI , options)
     .then(() => {
       console.log("Connected to database!");
     })

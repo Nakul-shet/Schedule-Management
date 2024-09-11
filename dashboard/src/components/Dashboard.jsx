@@ -14,20 +14,20 @@ const localizer = momentLocalizer(moment);
 const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/appointment/getall",
-          { withCredentials: true }
-        );
-        setAppointments(data.appointments);
-      } catch (error) {
-        setAppointments([]);
-      }
-    };
-    fetchAppointments();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAppointments = async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         "http://localhost:4000/api/v1/appointment/getall",
+  //         { withCredentials: true }
+  //       );
+  //       setAppointments(data.appointments);
+  //     } catch (error) {
+  //       setAppointments([]);
+  //     }
+  //   };
+  //   fetchAppointments();
+  // }, []);
 
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
@@ -50,16 +50,16 @@ const Dashboard = () => {
   };
 
   // Filter appointments for only today's date
-  const todayAppointments = appointments.filter((appointment) =>
-    moment(appointment.appointment_date).isSame(moment(), "day")
-  );
+  // const todayAppointments = appointments.filter((appointment) =>
+  //   moment(appointment.appointment_date).isSame(moment(), "day")
+  // );
 
-  const calendarEvents = todayAppointments.map((appointment) => ({
-    title: `${appointment.firstName} ${appointment.lastName} with Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
-    start: new Date(appointment.appointment_date),
-    end: new Date(moment(appointment.appointment_date).add(30, "minutes")), // assuming 30-minute appointments
-    allDay: false,
-  }));
+  // const calendarEvents = todayAppointments.map((appointment) => ({
+  //   title: `${appointment.firstName} ${appointment.lastName} with Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`,
+  //   start: new Date(appointment.appointment_date),
+  //   end: new Date(moment(appointment.appointment_date).add(30, "minutes")), // assuming 30-minute appointments
+  //   allDay: false,
+  // }));
 
   const { isAuthenticated, admin } = useContext(Context);
   if (!isAuthenticated) {
@@ -75,7 +75,7 @@ const Dashboard = () => {
             <div className="content">
               <div>
                 <p>Hello ,</p>
-                <h5>Dr.{admin && `${admin.firstName} ${admin.lastName}`} </h5>
+                <h5>Dr. {admin && `${admin.firstName} ${admin.lastName}`} </h5>
               </div>
               <p>
                 Welcome to your dashboard at [Clinic Name], where you can
@@ -86,7 +86,7 @@ const Dashboard = () => {
           </div>
           <div className="secondBox">
             <p>Appointments Today</p>
-            <h3>{todayAppointments.length}</h3>
+            {/* <h3>{todayAppointments.length}</h3> */}
           </div>
           <div className="thirdBox">
             <p>Users Now</p>
@@ -99,7 +99,7 @@ const Dashboard = () => {
             <h5>Today's Appointments</h5>
             <Calendar
               localizer={localizer}
-              events={calendarEvents}
+              // events={calendarEvents}
               startAccessor="start"
               endAccessor="end"
               style={{ height: 500 }}

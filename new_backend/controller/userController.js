@@ -1,5 +1,5 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
-import { User } from "../models/userSchema.js";
+import { AuthUser } from "../models/userSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "cloudinary";
@@ -20,12 +20,12 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
-  const isRegistered = await User.findOne({ email });
+  const isRegistered = await AuthUser.findOne({ email });
   if (isRegistered) {
-    return next(new ErrorHandler("User already Registered!", 400));
+    return next(new ErrorHandler("AuthUser already Registered!", 400));
   }
 
-  const user = await User.create({
+  const user = await AuthUser.create({
     firstName,
     lastName,
     email,
@@ -36,7 +36,7 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
     password,
     role: "Patient",
   });
-  generateToken(user, "User Registered!", 200, res);
+  generateToken(user, "AuthUser Registered!", 200, res);
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
@@ -49,7 +49,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Password & Confirm Password Do Not Match!", 400)
     );
   }
-  const user = await User.findOne({ email }).select("+password");
+  const user = await AuthUser.findOne({ email }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid Email Or Password!", 400));
   }
@@ -59,9 +59,17 @@ export const login = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Invalid Email Or Password!", 400));
   }
   if (role !== user.role) {
-    return next(new ErrorHandler(`User Not Found With This Role!`, 400));
+    return next(new ErrorHandler(`AuthUser Not Found With This Role!`, 400));
   }
   generateToken(user, "Login Successfully!", 201, res);
+});
+
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const user = req.user;
+  res.status(200).json({
+    success: true,
+    user,
+  });
 });
 
 export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
@@ -80,12 +88,12 @@ export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
-  const isRegistered = await User.findOne({ email });
+  const isRegistered = await AuthUser.findOne({ email });
   if (isRegistered) {
     return next(new ErrorHandler("Admin With This Email Already Exists!", 400));
   }
 
-  const admin = await User.create({
+  const admin = await AuthUser.create({
     firstName,
     lastName,
     email,
@@ -137,7 +145,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
-  const isRegistered = await User.findOne({ email });
+  const isRegistered = await AuthUser.findOne({ email });
   if (isRegistered) {
     return next(
       new ErrorHandler("Doctor With This Email Already Exists!", 400)
@@ -155,7 +163,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Failed To Upload Doctor Avatar To Cloudinary", 500)
     );
   }
-  const doctor = await User.create({
+  const doctor = await AuthUser.create({
     firstName,
     lastName,
     email,
@@ -179,14 +187,14 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
-  const doctors = await User.find({ role: "Doctor" });
+  const doctors = await AuthUser.find({ role: "Doctor" });
   res.status(200).json({
     success: true,
     doctors,
   });
 });
 
-export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+export const getAuthUserDetails = catchAsyncErrors(async (req, res, next) => {
   const user = req.user;
   res.status(200).json({
     success: true,

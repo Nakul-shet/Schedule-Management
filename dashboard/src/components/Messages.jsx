@@ -7,20 +7,20 @@ import { Navigate } from "react-router-dom";
 const Messages = () => {
   const [messages, setMessages] = useState([]);
   const { isAuthenticated } = useContext(Context);
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/message/getall",
-          { withCredentials: true }
-        );
-        setMessages(data.messages);
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    };
-    fetchMessages();
-  }, []);
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         "http://localhost:4000/api/v1/message/getall",
+  //         { withCredentials: true }
+  //       );
+  //       setMessages(data.messages);
+  //     } catch (error) {
+  //       console.log(error.response.data.message);
+  //     }
+  //   };
+  //   fetchMessages();
+  // }, []);
 
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
