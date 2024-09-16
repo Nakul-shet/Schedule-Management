@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { Context } from "../main";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../static/clinics.css";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
@@ -18,7 +18,7 @@ const Clinics = () => {
     },
     {
       _id: "2",
-      name: "Bright Smiles Dental",
+      name: "Clinic 2",
       address: "456 Smile Ave, Bright Town, BT 67890",
       phone: "+1 (555) 987-6543",
       email: "info@brightsmilesdental.com",
@@ -26,7 +26,7 @@ const Clinics = () => {
     },
     {
       _id: "3",
-      name: "Wellness Spa & Clinic",
+      name: "Wellness Spa & Clinic 3",
       address: "789 Relax Rd, Spa City, SC 23456",
       phone: "+1 (555) 246-8101",
       email: "appointments@wellnessspa.com",
@@ -36,10 +36,16 @@ const Clinics = () => {
 
   const { globalVariable, setGlobalVariable } = useContext(GlobalContext);
   const { isAuthenticated } = useContext(Context);
+  const navigate = useNavigate();
 
   if (!isAuthenticated) {
-    return <Navigate to={"/login"} />;
+    navigate("/login");
   }
+
+  // Navigate to the Add New Patient page
+  const gotoAddClinicPage = () => {
+    navigate("/clinics/addnew");
+  };
 
   const handleCardClick = (clinicName) => {
     // Create custom confirmation toast
@@ -74,7 +80,9 @@ const Clinics = () => {
     <section className="page">
       <div className="header">
         <h1>Clinics</h1>
-        <button className="add-patient-btn">Add Clinics</button>
+        <button className="add-patient-btn" onClick={gotoAddClinicPage}>
+          Add Clinics
+        </button>
       </div>
       <div className="clinics">
         {clinics && clinics.length > 0 ? (

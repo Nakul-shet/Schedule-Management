@@ -17,6 +17,36 @@ body {
     padding: 0 20px;
   }
 }
+.one-dentist {
+  font-size: 66px; /* Slightly larger for more emphasis */
+  font-weight: 700; /* Bolder font weight */
+  letter-spacing: 2px; /* Adds more spacing between letters for a sleek look */
+
+  /* Updated vibrant gradient with 108 degrees */
+  background: linear-gradient(
+    108deg,
+    #ff0202,
+    /* Vibrant Red */ #ff8400,
+    /* Vibrant Yellow */ #ccff00,
+    /* Light Blue */ #000dff /* Dark Blue */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  color: rgb(154, 6, 1);
+  /* Stronger 3D shadow effect */
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.4), 6px 6px 8px rgba(0, 0, 0, 0.3),
+    9px 9px 12px rgba(0, 0, 0, 0.2);
+
+  position: relative;
+}
+
+.one-dentist svg {
+  margin-right: 12px; /* Slightly more space between the icon and text */
+  vertical-align: middle; /* Align the icon with the text */
+  font-size: 1.2em; /* Resize the icon for better balance with text */
+}
+
 .page {
   margin-left: 120px;
   background: #ffffff;
@@ -556,9 +586,9 @@ body {
 .add-doctor-form form input,
 .add-doctor-form form select,
 .add-doctor-form form textarea {
-  flex: 1;
-  font-size: 24px;
-  padding: 10px 10px 10px 40px;
+  flex: 2;
+  font-size: 18px;
+  padding: 10px 10px 10px 10px;
   border-radius: 7px;
   border: 1px solid gray;
 }
@@ -822,4 +852,20 @@ button.no {
 
 button.no:hover {
   background-color: #c82333; /* Darker red on hover */
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  gap: 10px; /* Add some space between the elements */
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  gap: 10px; /* Add some space between the elements */
 }

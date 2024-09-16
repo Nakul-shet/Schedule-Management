@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
 import AddNewPatient from "./components/AddPatient";
+import AddNewClinic from "./components/AddClinic";
 import Clinics from "./components/Clinics";
 import "./App.css";
 
@@ -57,6 +58,7 @@ const App = () => {
           <Route path="/appointment" element={<Appointment />} />
           <Route path="/appointment/addnew" element={<AddNewAppointment />} />
           <Route path="/patient/addnew" element={<AddNewPatient />} />
+          <Route path="/clinics/addnew" element={<AddNewClinic />} />
           <Route path="/clinics" element={<Clinics />} />
         </Routes>
         <ToastContainer position="top-center" />

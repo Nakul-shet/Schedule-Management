@@ -5,6 +5,7 @@ import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { GlobalContext } from "./GlobalVarOfLocation";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]); // To store the fetched patients
@@ -13,6 +14,7 @@ const Patients = () => {
   const [currentPage, setCurrentPage] = useState(1); // To track the current page for pagination
   const [patientsPerPage, setPatientsPerPage] = useState(5); // Number of patients per page
   const { isAuthenticated } = useContext(Context); // Authentication context
+  const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate(); // Navigation function
 
   // Fetch patients from API when the component mounts
@@ -21,7 +23,7 @@ const Patients = () => {
       try {
         // Fetching data from the API
         const { data } = await axios.get(
-          "http://localhost:3001/patient/getAllPatient/Clinic 1",
+          `http://localhost:3001/patient/getAllPatient/${globalVariable}`,
           { withCredentials: true }
         );
 
@@ -137,7 +139,7 @@ const Patients = () => {
           <tbody>
             {currentPatients.map((patient) => (
               <tr key={patient.id}>
-                <td>{patient.name}</td>
+                <td>{patient.patientName}</td>
                 <td>{patient.gender}</td>
                 <td>{patient.city}</td>
                 <td>{patient.mobile}</td>
