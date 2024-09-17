@@ -63,10 +63,10 @@ const Sidebar = () => {
             className={activeIcon === "doctors" ? "active-icon" : ""}
             onClick={() => handleIconClick("doctors", "/doctors")}
           />
-          <MdAddModerator
+          {/* <MdAddModerator
             className={activeIcon === "addAdmin" ? "active-icon" : ""}
             onClick={() => handleIconClick("addAdmin", "/admin/addnew")}
-          />
+          /> */}
           <IoPersonAddSharp
             className={activeIcon === "addDoctor" ? "active-icon" : ""}
             onClick={() => handleIconClick("addDoctor", "/doctor/addnew")}
@@ -81,7 +81,7 @@ const Sidebar = () => {
           />
           <FaLocationDot
             className={activeIcon === "location" ? "active-icon" : ""}
-            onClick={() => handleIconClick("location", "/messages")}
+            onClick={() => handleIconClick("location", "/clinics")}
           />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>

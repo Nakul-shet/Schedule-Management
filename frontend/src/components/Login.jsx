@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { FaTooth } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { Context } from "../main";
 import axios from "axios";
@@ -44,33 +45,41 @@ const Login = () => {
 
   return (
     <>
-      <section className="container form-component">
-        <img src="/Shourya.png" alt="logo" className="logo" />
-        <h1 className="form-title">WELCOME TO ZEECARE</h1>
-        <p>Only Admins Are Allowed To Access These Resources!</p>
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button type="submit">Login</button>
-          </div>
-        </form>
+      <section className="form-component flex-row">
+        <div className="flex-column">
+          <h1 className="one-dentist">
+            <FaTooth className="one-dentist" />
+            One Dentist
+          </h1>
+          <img src="/Shourya.png" alt="logo" className="logo" />
+          <p>Only Admins Are Allowed To Access These Resources!</p>
+        </div>
+        <div className="form-component">
+          <h1>LOGIN</h1>
+          <form onSubmit={handleLogin}>
+            <input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <div style={{ justifyContent: "center", alignItems: "center" }}>
+              <button type="submit">Login</button>
+            </div>
+          </form>
+        </div>
       </section>
     </>
   );

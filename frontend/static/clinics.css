@@ -1,0 +1,52 @@
+/* clinics.css */
+
+.clinics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background: linear-gradient(
+    to bottom right,
+    rgba(31, 48, 78, 0.463),
+    rgba(46, 25, 54, 0.685)
+  );
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.436); /* Subtle shadow */
+  padding: 20px;
+  transition: transform 0.3s ease;
+  color: white;
+}
+
+.now-card {
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 94, 255, 0.609),
+    rgba(186, 77, 226, 0.9)
+  );
+}
+
+.card:hover {
+  transform: scale(1.02);
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 14, 39, 0.609),
+    rgba(127, 0, 206, 0.9)
+  );
+}
+
+.details {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.details p {
+  margin: 10px 0;
+}
+
+.details span {
+  font-weight: bold;
+}
