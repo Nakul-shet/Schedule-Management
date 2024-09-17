@@ -62,11 +62,17 @@ exports.createAppointment = async (req , res) => {
 exports.getTodayAppointments = async (req, res) => {
   try {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); // Set to start of the day
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Get the next day
 
+    // Query to find appointments with today's date
     const appointments = await Appointment.find({
-      date: today ,
-      status: 'scheduled'
+        date: {
+            $gte: today,
+            $lt: tomorrow
+        }
     })
 
     res.json(appointments);
@@ -93,39 +99,30 @@ exports.getAllAppointments = async (req, res) => {
 };
 
 exports.updateAppointment = async (req, res) => {
-  const {appointmentId} = req.params;
+  const {patientId} = req.params;
   try {
     const appointment = await Appointment.findOneAndUpdate(
-      { _id: req.params.appointmentId},
+      { patientId: patientId},
       req.body,
       { new: true, runValidators: true }
     );
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
-    res.json(appointment);
+    res.json({message : "Appointment updated successfully" , appointment});
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 exports.cancelAppointment = async (req, res) => {
+  const {patientId} = req.params;
   try {
-    const appointment = await Appointment.findOne({ _id: req.params.id, patientId: req.user.userId });
+    const appointment = await Appointment.findOneAndDelete({ patientId: patientId });
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
-
-    // Find the associated slot and mark it as available
-    await Slot.findOneAndUpdate(
-      { dentistId: appointment.dentistId, date: appointment.date, startTime: appointment.startTime },
-      { isAvailable: true }
-    );
-
-    appointment.status = 'cancelled';
-    await appointment.save();
-
-    res.json({ message: 'Appointment cancelled successfully' });
+    res.json({ message: 'Appointment cancelled successfully' , appointment });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
