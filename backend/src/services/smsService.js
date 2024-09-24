@@ -5,7 +5,7 @@ const authToken = '7dc888c6ea6278d9da2585a5eb848287';
 
 const client = twilio(accountSid, authToken);
 
-exports.sendSms = (patientPhoneNumber , message , ) => {
+exports.sendSms = (patientPhoneNumber , message) => {
     client.messages.create({
         body: message,
         from: '+19189924102',

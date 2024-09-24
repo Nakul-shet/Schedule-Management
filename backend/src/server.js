@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const {database_connection} = require("./config/database");
+const {sendSms} = require("../src/services/smsService");
 
 const userRouter = require("./routes/userRoutes");
 const appointmentRouter = require("./routes/appointmentRoutes");
@@ -26,7 +27,7 @@ app.use("/clinic" , clinicRouter)
 
 app.get("/sendSMS" , (req , res) => {
 
-    sendSms("+918050558156")
+    sendSms("+918078254741" , "Your appointment is scheduled at 4 30 with Dr. Prasanna")
 })
 
 const PORT = 3001;
