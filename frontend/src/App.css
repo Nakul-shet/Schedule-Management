@@ -27,7 +27,7 @@ body {
     108deg,
     #ff0202,
     /* Vibrant Red */ #ff8400,
-    /* Vibrant Yellow */ #ccff00,
+    /* Vibrant Yellow */ #ffb700,
     /* Light Blue */ #000dff /* Dark Blue */
   );
   -webkit-background-clip: text;
@@ -388,7 +388,8 @@ body {
 .sidebar svg {
   width: 50px;
   height: 50px;
-  font-size: 34px;
+  font-size: 18px;
+  padding: 0 10px 0 10px;
 }
 
 /* Add a transition to the default state */

@@ -1,14 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { Context } from "../main";
-import { Navigate, useNavigate } from "react-router-dom";
 import { GlobalContext } from "./GlobalVarOfLocation";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const AddNewPatient = () => {
+const EditPatient = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const { globalVariable } = useContext(GlobalContext); // Used globalVariable from GlobalContext
 
-  const { globalVariable } = useContext(GlobalContext); // Changed to globalVariable from GlobalContext
   const [patientName, setPatientName] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
@@ -23,14 +23,42 @@ const AddNewPatient = () => {
     sms: false,
   });
 
-  const navigateTo = useNavigate();
+  const navigate = useNavigate();
+  const { id } = useParams(); // Get the patient ID from the URL
 
-  const handleAddNewPatient = async (e) => {
+  // Fetch the patient details when the component mounts
+  useEffect(() => {
+    const fetchPatientDetails = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3001/patient/${id}`, {
+          withCredentials: true,
+        });
+        const patient = res.data;
+        setPatientName(patient.patientName);
+        setGender(patient.gender);
+        setCountry(patient.country);
+        setCity(patient.city);
+        setContact(patient.contact);
+        setMobile(patient.mobile);
+        setEmail(patient.email);
+        setDob(patient.dob);
+        setNote(patient.notes);
+        setNotificationMethod(
+          patient.notificationMethod || { email: false, sms: false }
+        );
+      } catch (error) {
+        toast.error("Failed to fetch patient details.");
+      }
+    };
+    fetchPatientDetails();
+  }, [id]);
+
+  const handleUpdatePatient = async (e) => {
     e.preventDefault();
     try {
       await axios
-        .post(
-          "http://localhost:3001/patient/addPatient",
+        .put(
+          `http://localhost:3001/patient/updatePatient/${id}`, // Use the correct update API
           {
             patientName,
             gender,
@@ -41,7 +69,7 @@ const AddNewPatient = () => {
             email,
             dob,
             notes: note,
-            clinicName: globalVariable, // Changed clinicName to globalVariable
+            clinicName: globalVariable, // Send the clinicName as globalVariable
             notificationMethod,
           },
           {
@@ -51,33 +79,22 @@ const AddNewPatient = () => {
         )
         .then((res) => {
           toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/");
-          setPatientName("");
-          setGender("");
-          setCountry("");
-          setCity("");
-          setContact("");
-          setMobile("");
-          setEmail("");
-          setDob("");
-          setNote("");
-          setNotificationMethod({ email: false, sms: false });
+          navigate("/"); // Redirect to home or patient list after update
         });
-    } catch (res) {
-      toast.error(res.data.error);
+    } catch (error) {
+      toast.error("Failed to update patient.");
     }
   };
 
   if (!isAuthenticated) {
-    return <Navigate to={"/login"} />;
+    return <Navigate to="/login" />;
   }
 
   return (
     <section className="page">
       <section className="container form-component add-admin-form">
-        <h1 className="form-title">ADD NEW PATIENT</h1>
-        <form onSubmit={handleAddNewPatient}>
+        <h1 className="form-title">EDIT PATIENT DETAILS</h1>
+        <form onSubmit={handleUpdatePatient}>
           <div>
             <input
               type="text"
@@ -127,7 +144,7 @@ const AddNewPatient = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
-              type={"date"}
+              type="date"
               placeholder="Date of Birth"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
@@ -142,8 +159,8 @@ const AddNewPatient = () => {
             <input
               type="text"
               placeholder="Clinic Name"
-              value={globalVariable} // Changed value to globalVariable
-              readOnly // Made the field non-editable
+              value={globalVariable} // clinicName is fixed as globalVariable
+              readOnly // Non-editable field
             />
           </div>
           <div>
@@ -175,7 +192,7 @@ const AddNewPatient = () => {
             </label>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button onClick={handleAddNewPatient()}>ADD NEW PATIENT</button>
+            <button type="submit">UPDATE PATIENT</button>
           </div>
         </form>
       </section>
@@ -183,4 +200,4 @@ const AddNewPatient = () => {
   );
 };
 
-export default AddNewPatient;
+export default EditPatient;

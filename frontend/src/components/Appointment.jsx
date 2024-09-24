@@ -12,14 +12,13 @@ import "../../static/calendar.css";
 const localizer = momentLocalizer(moment);
 
 const Events = () => {
-  const [events, setEvents] = useState([{}]);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Track the selected date
-  const [view, setView] = useState(Views.MONTH); // Track the calendar view (month/week/day)
+  const [events, setEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [view, setView] = useState(Views.MONTH);
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to login page if not authenticated
     if (!isAuthenticated) {
       navigate("/login");
     }
@@ -44,14 +43,69 @@ const Events = () => {
   };
 
   const calendarEvents = events.map((event) => ({
-    title: event.treatmentType,
+    title: `${event.patientId} | ${event.clinicName} | ${event.treatmentType}`,
     start: new Date(event.startTime),
     end: new Date(event.endTime),
+    id: event.id, // Assuming each event has a unique id
   }));
 
   const handleSelectEvent = (event) => {
-    setSelectedDate(event.start); // Set the selected date to the event's start date
-    setView(Views.DAY); // Change the calendar view to "day"
+    const confirmToast = () => (
+      <div>
+        <p>Choose an action for {event.title}:</p>
+        <button onClick={() => updateAppointment(event.id)}>Update</button>
+        <button onClick={() => cancelAppointment(event.id)}>Cancel</button>
+      </div>
+    );
+
+    toast.info(confirmToast, {
+      autoClose: false,
+      closeOnClick: false,
+    });
+  };
+
+  const updateAppointment = async (id) => {
+    const updatedData = {
+      /* Add updated appointment data here */
+    };
+    try {
+      await axios.put(
+        `http://localhost:3001/appointment/updateAppointment/${id}`,
+        updatedData,
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("Appointment updated successfully.");
+      fetchEvents(); // Refresh events after update
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Error updating appointment."
+      );
+    }
+  };
+
+  const cancelAppointment = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to cancel this appointment?"
+    );
+
+    if (confirmDelete) {
+      try {
+        await axios.delete(
+          `http://localhost:3001/appointment/deleteAppointment/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setEvents(events.filter((event) => event.id !== id)); // Update state after deletion
+        toast.success("Appointment canceled successfully.");
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Error canceling appointment."
+        );
+      }
+    }
   };
 
   return (
@@ -77,8 +131,8 @@ const Events = () => {
           defaultView={Views.MONTH}
           views={["month", "week", "day"]}
           date={selectedDate}
-          view={view} // Set the current view (either 'month', 'week', or 'day')
-          onView={setView} // Handle view changes
+          view={view}
+          onView={setView}
         />
       </div>
     </section>

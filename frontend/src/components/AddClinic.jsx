@@ -19,7 +19,7 @@ const AddNewClinic = () => {
     try {
       await axios
         .post(
-          "http://localhost:3001/clinic/addClinic",
+          "http://localhost:3001/clinic/createClinic",
           {
             clinicName,
             address,
