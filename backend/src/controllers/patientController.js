@@ -97,10 +97,10 @@ exports.searchPatientByName = async (req, res) => {
 };
 
 exports.updatePatientRecord = async (req, res) => {
-const PatientId = req.params.patientId;
+const {patientId} = req.params;
   try {
-    const patientRecord = await PatientRecord.findOneAndUpdate(
-      { patientId: PatientId },
+    const patientRecord = await Patient.findOneAndUpdate(
+      { patientId: patientId },
       req.body,
       { new: true, runValidators: true }
     );
@@ -112,3 +112,23 @@ const PatientId = req.params.patientId;
     res.status(400).json({ message: 'Error updating patient record', error: error.message });
   }
 };
+
+exports.deletePatientRecord = async (req , res) => {
+  const {patientId} = req.params;
+  try{
+    const isPatientExist = await Patient.find({patientId : patientId})
+
+    if(isPatientExist.length > 0){
+      const patientRecord = await Patient.findOneAndDelete({patientId : patientId})
+
+      res.status(200).json({message : "Patient deleted successfully" , patientRecord})
+      return
+    }
+
+    res.json({message : "Patient does not exist"})
+
+  }catch(error){
+
+    res.status(400).json({ message: 'Error deleting patient record', error: error.message });
+  }
+}
