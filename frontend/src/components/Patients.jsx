@@ -26,7 +26,6 @@ const Patients = () => {
           `http://localhost:3001/patient/getAllPatient/${globalVariable}`,
           { withCredentials: true }
         );
-
         // Set the data directly into the state if it's an array
         setPatients(data || []); // Fallback to empty array if data is undefined
         setFilteredPatients(data || []); // Initialize filteredPatients with the fetched data
@@ -45,10 +44,15 @@ const Patients = () => {
   const handleSearch = (event) => {
     const { value } = event.target;
     setSearchTerm(value);
+
     if (value !== "") {
-      // Filter patients based on the search term
-      const filtered = patients.filter((patient) =>
-        patient.name.toLowerCase().includes(value.toLowerCase())
+      // Filter patients based on name, mobile, or ID
+      const filtered = patients.filter(
+        (patient) =>
+          (patient.patientName &&
+            patient.patientName.toLowerCase().includes(value.toLowerCase())) || // Search by name
+          (patient.mobile && patient.mobile.includes(value)) || // Search by mobile
+          (patient.id && patient.id.toString().includes(value)) // Search by ID (converted to string for partial matching)
       );
       setFilteredPatients(filtered);
     } else {
@@ -80,21 +84,38 @@ const Patients = () => {
     navigate(`/patient/edit/${id}`);
   };
 
-  // Delete patient handler to remove a patient from the list
   const deletePatient = async (id) => {
-    try {
-      // API call to delete the patient
-      await axios.delete(`http://localhost:3001/patient/delete/${id}`, {
-        withCredentials: true,
-      });
-      // Update the state after deletion
-      setPatients(patients.filter((patient) => patient.id !== id));
-      setFilteredPatients(
-        filteredPatients.filter((patient) => patient.id !== id)
-      );
-      toast.success("Patient deleted successfully.");
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Error deleting patient.");
+    // Show confirmation dialog
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this patient?"
+    );
+
+    // If the user confirms, proceed with deletion
+    if (confirmDelete) {
+      try {
+        // API call to delete the patient
+        await axios.delete(
+          `http://localhost:3001/patient/deletePatient/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        // Update the state after deletion
+        setPatients(patients.filter((patient) => patient.id !== id));
+        setFilteredPatients(
+          filteredPatients.filter((patient) => patient.id !== id)
+        );
+
+        toast.success("Patient deleted successfully.");
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message || "Error deleting patient."
+        );
+      }
+    } else {
+      // If the user cancels, show a message or handle cancellation
+      toast.info("Patient deletion cancelled.");
     }
   };
 
@@ -111,7 +132,6 @@ const Patients = () => {
           <IoPersonAddSharp /> Add Patient
         </button>
       </div>
-
       <div className="search-box">
         <input
           type="text"
@@ -120,7 +140,6 @@ const Patients = () => {
           onChange={handleSearch}
         />
       </div>
-
       {currentPatients.length === 0 ? (
         <h2>No Patients Found!</h2>
       ) : (
@@ -137,21 +156,22 @@ const Patients = () => {
             </tr>
           </thead>
           <tbody>
-            {currentPatients.map((patient) => (
-              <tr key={patient.id}>
+            {currentPatients.map((patient, index) => (
+              <tr key={patient.id || index}>
+                {" "}
+                {/* Use patient.id if it exists, fallback to index */}
                 <td>{patient.patientName}</td>
                 <td>{patient.gender}</td>
                 <td>{patient.city}</td>
                 <td>{patient.mobile}</td>
                 <td>{patient.email}</td>
                 <td className="notification-cell">
-                  {/* Combined Email and SMS notifications in one cell */}
                   <div className="checkbox-group">
                     <label>
                       <input
                         type="checkbox"
                         checked={patient.emailNotification}
-                        readOnly
+                        disabled
                       />
                       Email
                     </label>
@@ -159,7 +179,7 @@ const Patients = () => {
                       <input
                         type="checkbox"
                         checked={patient.smsNotification}
-                        readOnly
+                        disabled
                       />
                       SMS
                     </label>

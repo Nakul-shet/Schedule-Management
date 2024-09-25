@@ -67,10 +67,10 @@ const Sidebar = () => {
             className={activeIcon === "addAdmin" ? "active-icon" : ""}
             onClick={() => handleIconClick("addAdmin", "/admin/addnew")}
           /> */}
-          <IoPersonAddSharp
+          {/* <IoPersonAddSharp
             className={activeIcon === "addDoctor" ? "active-icon" : ""}
             onClick={() => handleIconClick("addDoctor", "/doctor/addnew")}
-          />
+          /> */}
           <AiFillMessage
             className={activeIcon === "messages" ? "active-icon" : ""}
             onClick={() => handleIconClick("messages", "/messages")}

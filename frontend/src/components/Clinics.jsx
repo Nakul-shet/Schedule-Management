@@ -1,54 +1,49 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
 import "../../static/clinics.css";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
 const Clinics = () => {
-  const [clinics, setClinics] = useState([
-    {
-      _id: "1",
-      name: "Clinic 1",
-      address: "123 Wellness St, Health City, HC 12345",
-      phone: "+1 (555) 123-4567",
-      email: "contact@healthcareclinic.com",
-      description:
-        "Providing top-notch healthcare services with compassion and care.",
-    },
-    {
-      _id: "2",
-      name: "Clinic 2",
-      address: "456 Smile Ave, Bright Town, BT 67890",
-      phone: "+1 (555) 987-6543",
-      email: "info@brightsmilesdental.com",
-      description: "Expert dental care for a brighter, healthier smile.",
-    },
-    {
-      _id: "3",
-      name: "Wellness Spa & Clinic 3",
-      address: "789 Relax Rd, Spa City, SC 23456",
-      phone: "+1 (555) 246-8101",
-      email: "appointments@wellnessspa.com",
-      description: "A tranquil retreat for health, relaxation, and wellness.",
-    },
-  ]);
-
+  const [clinics, setClinics] = useState([]);
   const { globalVariable, setGlobalVariable } = useContext(GlobalContext);
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
 
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     navigate("/login");
   }
 
-  // Navigate to the Add New Patient page
+  // Fetch clinics from API
+  useEffect(() => {
+    const fetchClinics = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/clinic/getAllClinic",
+          {
+            withCredentials: true,
+          }
+        );
+        setClinics(response.data || []);
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.message || "Error fetching clinics."
+        );
+      }
+    };
+
+    fetchClinics();
+  }, []);
+
+  // Navigate to the Add New Clinic page
   const gotoAddClinicPage = () => {
     navigate("/clinics/addnew");
   };
 
   const handleCardClick = (clinicName) => {
-    // Create custom confirmation toast
     const confirmToast = () => (
       <div>
         <p>Do you want to change to {clinicName}?</p>
@@ -57,9 +52,9 @@ const Clinics = () => {
           onClick={() => {
             setGlobalVariable(clinicName);
             toast.success(`Clinic changed to ${clinicName}`, {
-              position: "top-right", // Success toast position
+              position: "top-right",
             });
-            toast.dismiss(); // Dismiss the confirmation toast
+            toast.dismiss();
           }}
         >
           Yes
@@ -76,6 +71,41 @@ const Clinics = () => {
     });
   };
 
+  const updateClinic = async (id, updatedData) => {
+    try {
+      await axios.put(
+        `http://localhost:3001/clinic/updateClinic/${id}`,
+        updatedData,
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("Clinic updated successfully.");
+      // Refresh the clinic list after update
+      fetchClinics();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error updating clinic.");
+    }
+  };
+
+  const deleteClinic = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this clinic?"
+    );
+
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/clinic/deleteClinic/${id}`, {
+          withCredentials: true,
+        });
+        setClinics(clinics.filter((clinic) => clinic._id !== id)); // Update state after deletion
+        toast.success("Clinic deleted successfully.");
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Error deleting clinic.");
+      }
+    }
+  };
+
   return (
     <section className="page">
       <div className="header">
@@ -85,14 +115,14 @@ const Clinics = () => {
         </button>
       </div>
       <div className="clinics">
-        {clinics && clinics.length > 0 ? (
+        {clinics.length > 0 ? (
           clinics.map((clinic) => (
             <div
               className={`card ${
                 clinic.name === globalVariable ? "now-card" : ""
               }`}
               key={clinic._id}
-              onClick={() => handleCardClick(clinic.name)} // Handle card click
+              onClick={() => handleCardClick(clinic.name)}
             >
               <div className="details">
                 <p>
@@ -107,6 +137,18 @@ const Clinics = () => {
                 <p>
                   <span>{clinic.description}</span>
                 </p>
+              </div>
+              <div className="actions">
+                <button
+                  onClick={() =>
+                    updateClinic(clinic._id, {
+                      /* updated data here */
+                    })
+                  }
+                >
+                  Update
+                </button>
+                <button onClick={() => deleteClinic(clinic._id)}>Delete</button>
               </div>
             </div>
           ))
