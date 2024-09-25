@@ -24,7 +24,8 @@ const EditPatient = () => {
   });
 
   const navigate = useNavigate();
-  const { id } = useParams(); // Get the patient ID from the URL
+  const { id } = useParams();
+  // Get the patient ID from the URL
 
   // Fetch the patient details when the component mounts
   useEffect(() => {
@@ -57,7 +58,7 @@ const EditPatient = () => {
     e.preventDefault();
     try {
       await axios
-        .put(
+        .patch(
           `http://localhost:3001/patient/updatePatient/${id}`, // Use the correct update API
           {
             patientName,

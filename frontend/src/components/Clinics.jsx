@@ -27,7 +27,7 @@ const Clinics = () => {
             withCredentials: true,
           }
         );
-        setClinics(response.data || []);
+        setClinics(response.data || [{}]);
       } catch (error) {
         toast.error(
           error?.response?.data?.message || "Error fetching clinics."
@@ -122,17 +122,17 @@ const Clinics = () => {
                 clinic.name === globalVariable ? "now-card" : ""
               }`}
               key={clinic._id}
-              onClick={() => handleCardClick(clinic.name)}
+              onClick={() => handleCardClick(clinic.clinicName)}
             >
               <div className="details">
                 <p>
-                  <span>{clinic.name}</span>
+                  <span>{clinic.clinicName}</span>
                 </p>
                 <p>
-                  Address: <span>{clinic.address}</span>
+                  Address: <span>{clinic.clinicAddress}</span>
                 </p>
                 <p>
-                  Phone: <span>{clinic.phone}</span>
+                  Phone: <span>{clinic.contact}</span>
                 </p>
                 <p>
                   <span>{clinic.description}</span>

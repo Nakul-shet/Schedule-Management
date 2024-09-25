@@ -188,13 +188,13 @@ const Patients = () => {
                 <td className="actions-cell">
                   <button
                     className="edit-btn"
-                    onClick={() => editPatient(patient.id)}
+                    onClick={() => editPatient(patient.patientId)}
                   >
                     <AiFillEdit />
                   </button>
                   <button
                     className="delete-btn"
-                    onClick={() => deletePatient(patient.id)}
+                    onClick={() => deletePatient(patient.patientId)}
                   >
                     <AiFillDelete />
                   </button>

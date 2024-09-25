@@ -12,7 +12,7 @@ import "../../static/calendar.css";
 const localizer = momentLocalizer(moment);
 
 const Events = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([{}]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [view, setView] = useState(Views.MONTH);
   const { isAuthenticated } = useContext(Context);
@@ -46,15 +46,15 @@ const Events = () => {
     title: `${event.patientId} | ${event.clinicName} | ${event.treatmentType}`,
     start: new Date(event.startTime),
     end: new Date(event.endTime),
-    id: event.id, // Assuming each event has a unique id
+    id: event._id, // Assuming each event has a unique id
   }));
 
   const handleSelectEvent = (event) => {
     const confirmToast = () => (
       <div>
         <p>Choose an action for {event.title}:</p>
-        <button onClick={() => updateAppointment(event.id)}>Update</button>
-        <button onClick={() => cancelAppointment(event.id)}>Cancel</button>
+        <button onClick={() => updateAppointment(event.patientId)}>Update</button>
+        <button onClick={() => cancelAppointment(event.patientId)}>Cancel</button>
       </div>
     );
 
@@ -66,7 +66,7 @@ const Events = () => {
 
   const updateAppointment = async (id) => {
     const updatedData = {
-      /* Add updated appointment data here */
+      status : "completed"
     };
     try {
       await axios.put(

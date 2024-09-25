@@ -22,8 +22,8 @@ const AddNewClinic = () => {
           "http://localhost:3001/clinic/createClinic",
           {
             clinicName,
-            address,
-            phone,
+            clinicAddress : address,
+            contact : phone,
             description,
           },
           {
