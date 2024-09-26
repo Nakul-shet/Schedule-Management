@@ -112,86 +112,103 @@ export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return next(new ErrorHandler("Doctor Avatar Required!", 400));
-  }
-  const { docAvatar } = req.files;
-  const allowedFormats = ["image/png", "image/jpeg", "image/webp"];
-  if (!allowedFormats.includes(docAvatar.mimetype)) {
-    return next(new ErrorHandler("File Format Not Supported!", 400));
-  }
+
   const {
     firstName,
     lastName,
     email,
-    phone,
-    nic,
-    dob,
     gender,
     password,
-    doctorDepartment,
   } = req.body;
+
   if (
     !firstName ||
     !lastName ||
     !email ||
-    !phone ||
-    !nic ||
-    !dob ||
     !gender ||
-    !password ||
-    !doctorDepartment ||
-    !docAvatar
+    !password
   ) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
+
   const isRegistered = await AuthUser.findOne({ email });
   if (isRegistered) {
     return next(
       new ErrorHandler("Doctor With This Email Already Exists!", 400)
     );
   }
-  const cloudinaryResponse = await cloudinary.uploader.upload(
-    docAvatar.tempFilePath
-  );
-  if (!cloudinaryResponse || cloudinaryResponse.error) {
-    console.error(
-      "Cloudinary Error:",
-      cloudinaryResponse.error || "Unknown Cloudinary error"
-    );
-    return next(
-      new ErrorHandler("Failed To Upload Doctor Avatar To Cloudinary", 500)
-    );
-  }
+
   const doctor = await AuthUser.create({
     firstName,
     lastName,
     email,
-    phone,
-    nic,
-    dob,
-    gender,
     password,
-    role: "Doctor",
-    doctorDepartment,
-    docAvatar: {
-      public_id: cloudinaryResponse.public_id,
-      url: cloudinaryResponse.secure_url,
-    },
+    gender,
+    role: "Doctor"
   });
+
   res.status(200).json({
     success: true,
     message: "New Doctor Registered",
     doctor,
   });
+
 });
 
 export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
   const doctors = await AuthUser.find({ role: "Doctor" });
+  res.status(200).json(
+    doctors,
+  );
+});
+
+export const updateDoctor = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+  const { firstName, lastName, email} = req.body;
+
+  const doctor = await AuthUser.findById({_id : id});
+
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  if (doctor.role !== "Doctor") {
+    return next(new ErrorHandler("This user is not a doctor", 400));
+  }
+
+  doctor.firstName = firstName || doctor.firstName;
+  doctor.lastName = lastName || doctor.lastName;
+  doctor.email = email || doctor.email;
+
+  await doctor.save();
+
   res.status(200).json({
     success: true,
-    doctors,
+    message: "Doctor information updated successfully",
+    doctor,
   });
+});
+
+export const deleteDoctor = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  const doctor = await AuthUser.findOne({_id : id});
+
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  if (doctor.role !== "Doctor") {
+    return next(new ErrorHandler("This user is not a doctor", 400));
+  }
+
+  await AuthUser.findByIdAndDelete(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Doctor deleted successfully",
+  });
+
 });
 
 export const getAuthUserDetails = catchAsyncErrors(async (req, res, next) => {
