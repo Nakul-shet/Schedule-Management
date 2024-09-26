@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 async function database_connection(){
 
     const options = {
-        useNewUrlParser: true,
         useUnifiedTopology: true,
     }
 

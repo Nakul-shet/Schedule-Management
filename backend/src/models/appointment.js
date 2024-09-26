@@ -6,7 +6,7 @@ const appointmentSchema = new Schema({
       type: String,
       required: true
     },
-    clinicName : {
+    patientName : {
       type : String,
       required : true
     },

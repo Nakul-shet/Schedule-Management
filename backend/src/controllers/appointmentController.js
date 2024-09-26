@@ -1,4 +1,4 @@
-const {Appointment} = require('../models/Appointment');
+const {Appointment} = require('../models/appointment');
 
 const doTimesOverlap = (start1, end1, start2, end2) => {
   return (start1 < end2 && end1 > start2);
@@ -6,7 +6,7 @@ const doTimesOverlap = (start1, end1, start2, end2) => {
 
 exports.createAppointment = async (req , res) => {
 
-  const { patientId , clinicName , date , startTime , endTime , treatmentType } = req.body;
+  const { patientId , patientName , date , startTime , endTime , treatmentType } = req.body;
 
   try{
 
@@ -40,7 +40,7 @@ exports.createAppointment = async (req , res) => {
 
     const appointment = new Appointment({
       patientId,
-      clinicName,
+      patientName,
       date: appointmentDate,
       startTime : `${date}T${startTime}:00.000`,
       endTime: `${date}T${endTime}:00.000`,
