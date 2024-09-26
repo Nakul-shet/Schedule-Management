@@ -80,7 +80,7 @@ const EditPatient = () => {
         )
         .then((res) => {
           toast.success(res.data.message);
-          navigate("/"); // Redirect to home or patient list after update
+          navigate("/patients"); // Redirect to home or patient list after update
         });
     } catch (error) {
       toast.error("Failed to update patient.");

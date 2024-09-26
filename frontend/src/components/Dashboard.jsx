@@ -12,7 +12,11 @@ const localizer = momentLocalizer(moment);
 
 const Dashboard = () => {
   const [appointments, setAppointments] = useState([]); // State to hold fetched appointments
-  const [todayAppointments, setTodayAppointments] = useState([]); // State to hold today's appointments
+  const [todayScheduledAppointments, setTodayScheduledAppointments] = useState(
+    []
+  ); // State to hold today's scheduled appointments
+  const [nextAppointment, setNextAppointment] = useState(null); // State for next appointment
+  const [timeLeft, setTimeLeft] = useState(""); // State to hold countdown timer
 
   const { globalVariable } = useContext(GlobalContext); // Access globalVariable
   const { isAuthenticated, admin } = useContext(Context); // Access authentication and admin details
@@ -41,9 +45,28 @@ const Dashboard = () => {
             appointment.start.toDateString() === today.toDateString()
         );
 
-        // Set the state for appointments and today's appointments
+        // Filter only scheduled appointments
+        const filteredTodayScheduledAppointments =
+          filteredTodayAppointments.filter(
+            (appointment) => appointment.status === "scheduled"
+          );
+
+        // Set the state for appointments and today's scheduled appointments
         setAppointments(mappedAppointments);
-        setTodayAppointments(filteredTodayAppointments);
+        setTodayScheduledAppointments(filteredTodayScheduledAppointments);
+
+        // Find the next upcoming appointment
+        const now = new Date();
+        const upcomingAppointments = filteredTodayScheduledAppointments.filter(
+          (appointment) => appointment.start > now
+        );
+
+        if (upcomingAppointments.length > 0) {
+          const nextApp = upcomingAppointments.sort(
+            (a, b) => a.start - b.start
+          )[0]; // Get the closest next appointment
+          setNextAppointment(nextApp);
+        }
       } catch (error) {
         toast.error(
           error.response?.data?.message || "Error fetching appointments."
@@ -53,6 +76,31 @@ const Dashboard = () => {
 
     fetchAppointments();
   }, []);
+
+  // Function to calculate and format time left for the next appointment
+  useEffect(() => {
+    if (nextAppointment) {
+      const intervalId = setInterval(() => {
+        const now = new Date();
+        const timeDifference = nextAppointment.start - now;
+
+        if (timeDifference <= 0) {
+          clearInterval(intervalId);
+          setTimeLeft("Starting now");
+        } else {
+          const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+          const minutes = Math.floor(
+            (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+          setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+        }
+      }, 1000);
+
+      return () => clearInterval(intervalId); // Cleanup timer on unmount
+    }
+  }, [nextAppointment]);
 
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
@@ -80,6 +128,22 @@ const Dashboard = () => {
     return <Navigate to={"/login"} />;
   }
 
+  // Calculate total counts for each status
+  const totalScheduledCount = appointments.filter(
+    (appointment) => appointment.status === "scheduled"
+  ).length;
+
+  const totalCompletedCount = appointments.filter(
+    (appointment) => appointment.status === "completed"
+  ).length;
+
+  const totalCancelledCount = appointments.filter(
+    (appointment) => appointment.status === "cancelled"
+  ).length;
+
+  // Calculate total scheduled + completed count
+  const totalScheduledAndCompleted = totalScheduledCount + totalCompletedCount;
+
   return (
     <>
       <section className="dashboard page">
@@ -92,36 +156,51 @@ const Dashboard = () => {
                 <h5>Dr. {admin && `${admin.firstName} ${admin.lastName}`}</h5>
               </div>
               <p>
-                Welcome to your dashboard at {globalVariable}, where you can
-                seamlessly manage your appointments, patient records, and
+                Welcome to your dashboard at <b>{globalVariable}</b>, where you
+                can seamlessly manage your appointments, patient records, and
                 provide the best care with just a few clicks.
               </p>
             </div>
           </div>
           <div className="secondBox">
-            <p>Appointments Today</p>
-            <h3>{todayAppointments.length}</h3>{" "}
-            {/* Display count of today's appointments */}
+            <p>Total Scheduled Appointments</p>
+            <h3>{`${totalScheduledCount} / ${totalScheduledAndCompleted}`}</h3>
+            {/* Display total scheduled count */}
           </div>
           <div className="thirdBox">
-            <p>Users Now</p>
-            <h3>1</h3>
+            <p>Next Appointment</p>
+            {nextAppointment ? (
+              <>
+                <h5>{nextAppointment.title}</h5>
+                <p>
+                  Starts at:{" "}
+                  {nextAppointment.start.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+                <p>Time Left: {timeLeft}</p>
+              </>
+            ) : (
+              <p>No upcoming appointments</p>
+            )}
           </div>
         </div>
 
         <div className="banner">
           <div className="last-child">
-            <h5>Today's Appointments</h5>
+            <h5>Today's Scheduled Appointments</h5>
             <Calendar
               localizer={localizer}
-              events={todayAppointments} // Use today's appointments for the calendar
+              events={todayScheduledAppointments} // Use only scheduled appointments for the calendar
               startAccessor="start"
               endAccessor="end"
-              style={{ height: 500 }}
+              style={{ height: 300 }}
               defaultView="day"
               views={{ day: true }}
               toolbar={false}
               date={new Date()}
+              scrollToTime={new Date()} // Automatically scroll to current time
               onNavigate={() => {}}
             />
           </div>

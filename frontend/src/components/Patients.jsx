@@ -17,28 +17,24 @@ const Patients = () => {
   const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate(); // Navigation function
 
-  // Fetch patients from API when the component mounts
-  useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        // Fetching data from the API
-        const { data } = await axios.get(
-          `http://localhost:3001/patient/getAllPatient/${globalVariable}`,
-          { withCredentials: true }
-        );
-        // Set the data directly into the state if it's an array
-        setPatients(data || []); // Fallback to empty array if data is undefined
-        setFilteredPatients(data || []); // Initialize filteredPatients with the fetched data
-      } catch (error) {
-        // Show error message if the API call fails
-        toast.error(
-          error?.response?.data?.message || "Error fetching patients."
-        );
-      }
-    };
+  // Fetch patients function (can be used in both useEffect and after delete)
+  const fetchPatients = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3001/patient/getAllPatient/${globalVariable}`,
+        { withCredentials: true }
+      );
+      setPatients(data || []); // Fallback to empty array if data is undefined
+      setFilteredPatients(data || []); // Initialize filteredPatients with the fetched data
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error fetching patients.");
+    }
+  };
 
+  // Call fetchPatients once when the component mounts
+  useEffect(() => {
     fetchPatients();
-  }, []); // Empty dependency array to ensure this runs once when the component mounts
+  }, []);
 
   // Handle search functionality to filter patients based on search term
   const handleSearch = (event) => {
@@ -46,17 +42,15 @@ const Patients = () => {
     setSearchTerm(value);
 
     if (value !== "") {
-      // Filter patients based on name, mobile, or ID
       const filtered = patients.filter(
         (patient) =>
           (patient.patientName &&
-            patient.patientName.toLowerCase().includes(value.toLowerCase())) || // Search by name
-          (patient.mobile && patient.mobile.includes(value)) || // Search by mobile
-          (patient.id && patient.id.toString().includes(value)) // Search by ID (converted to string for partial matching)
+            patient.patientName.toLowerCase().includes(value.toLowerCase())) ||
+          (patient.mobile && patient.mobile.includes(value)) ||
+          (patient.id && patient.id.toString().includes(value))
       );
       setFilteredPatients(filtered);
     } else {
-      // If search term is empty, show all patients
       setFilteredPatients(patients);
     }
   };
@@ -71,7 +65,6 @@ const Patients = () => {
       ? filteredPatients.slice(indexOfFirstPatient, indexOfLastPatient)
       : [];
 
-  // Pagination click handler to change the current page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Navigate to the Add New Patient page
@@ -84,16 +77,15 @@ const Patients = () => {
     navigate(`/patient/edit/${id}`);
   };
 
+  // Delete patient function
   const deletePatient = async (id) => {
-    // Show confirmation dialog
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this patient?"
     );
 
-    // If the user confirms, proceed with deletion
     if (confirmDelete) {
       try {
-        // API call to delete the patient
+        // Delete the patient
         await axios.delete(
           `http://localhost:3001/patient/deletePatient/${id}`,
           {
@@ -101,20 +93,16 @@ const Patients = () => {
           }
         );
 
-        // Update the state after deletion
-        setPatients(patients.filter((patient) => patient.id !== id));
-        setFilteredPatients(
-          filteredPatients.filter((patient) => patient.id !== id)
-        );
-
         toast.success("Patient deleted successfully.");
+
+        // Re-fetch the updated patient list after deletion
+        fetchPatients();
       } catch (error) {
         toast.error(
           error?.response?.data?.message || "Error deleting patient."
         );
       }
     } else {
-      // If the user cancels, show a message or handle cancellation
       toast.info("Patient deletion cancelled.");
     }
   };
@@ -151,15 +139,13 @@ const Patients = () => {
               <th>City</th>
               <th>Mobile</th>
               <th>Email</th>
-              <th>Notifications</th> {/* Updated header */}
+              <th>Notifications</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentPatients.map((patient, index) => (
               <tr key={patient.id || index}>
-                {" "}
-                {/* Use patient.id if it exists, fallback to index */}
                 <td>{patient.patientName}</td>
                 <td>{patient.gender}</td>
                 <td>{patient.city}</td>
