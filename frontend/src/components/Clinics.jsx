@@ -119,7 +119,7 @@ const Clinics = () => {
           clinics.map((clinic) => (
             <div
               className={`card ${
-                clinic.name === globalVariable ? "now-card" : ""
+                clinic.clinicName === globalVariable ? "now-card" : ""
               }`}
               key={clinic._id}
               onClick={() => handleCardClick(clinic.clinicName)}
