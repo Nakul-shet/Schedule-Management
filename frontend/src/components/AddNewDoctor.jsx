@@ -1,82 +1,107 @@
-import React, { useContext, useState } from "react";
-import { Context } from "../main";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Context } from "../main";
 import axios from "axios";
-import { GlobalContext } from "./GlobalVarOfLocation";
 
-const AddNewDoctor = () => {
-  const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const { globalVariable } = useContext(GlobalContext); // Global variable to get the clinic name
-  const navigateTo = useNavigate();
+const AddOrEditDoctor = () => {
+  const { id } = useParams(); // Get doctor ID from URL
+  const navigate = useNavigate();
+  const { isAuthenticated } = useContext(Context);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Doctor"); // Default to "Doctor"
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [gender, setGender] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // Automatically set clinic name from global variable
-  const clinicName = globalVariable || "Default Clinic";
+  useEffect(() => {
+    if (id) {
+      // Fetch doctor details if we are in edit mode
+      const fetchDoctor = async () => {
+        try {
+          const { data } = await axios.get(
+            `http://localhost:4000/api/v1/user/doctors/${id}`,
+            { withCredentials: true }
+          );
+          setFirstName(data.firstName);
+          setLastName(data.lastName);
+          setEmail(data.email);
+          setGender(data.gender);
+        } catch (error) {
+          toast.error("Error fetching doctor details.");
+        }
+      };
 
-  const handleAddNewDoctor = async (e) => {
+      fetchDoctor();
+    }
+  }, [id]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const doctorData = { firstName, lastName, email, password, gender };
+
     try {
-      await axios
-        .post(
-          "http://localhost:3001/user/addDoctor",
-          {
-            email,
-            password,
-            role,
-            firstName,
-            lastName,
-            phoneNumber,
-            clinicName,
-          },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/doctors"); // Redirect to doctors page
-          // Clear form
-          setEmail("");
-          setPassword("");
-          setRole("Doctor");
-          setFirstName("");
-          setLastName("");
-          setPhoneNumber("");
-        });
+      if (id) {
+        // Edit existing doctor
+        await axios.patch(
+          `http://localhost:4000/api/v1/user/doctors/${id}`,
+          doctorData,
+          { withCredentials: true }
+        );
+        toast.success("Doctor updated successfully.");
+      } else {
+        // Add new doctor
+        await axios.post(
+          `http://localhost:4000/api/v1/user/doctor/addnew`,
+          doctorData,
+          { withCredentials: true }
+        );
+        toast.success("Doctor added successfully.");
+      }
+
+      navigate("/doctors"); // Navigate to doctors list
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error adding doctor.");
+      toast.error(error?.response?.data?.message || "Error saving doctor.");
     }
   };
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    navigate("/login");
   }
 
   return (
     <section className="page">
-      <section className="container form-component add-doctor-form">
-        <div className="flex-column">
-          <h1 className="form-title">ADD NEW DOCTOR</h1>
-          <img src="/Shourya.png" alt="logo" className="logo" />
-        </div>
-        <form onSubmit={handleAddNewDoctor}>
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+      <section className="container form-component add-edit-doctor-form">
+        <h1>{id ? "Edit Doctor" : "Add New Doctor"}</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          {!id && (
             <input
               type="password"
               placeholder="Password"
@@ -84,45 +109,12 @@ const AddNewDoctor = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="Phone Number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              placeholder="Clinic Name"
-              value={clinicName}
-              disabled
-            />
-          </div>
-          <div>
-            <button type="submit">ADD NEW USER</button>
-          </div>
+          )}
+          <button type="submit">{id ? "Update Doctor" : "Add Doctor"}</button>
         </form>
       </section>
     </section>
   );
 };
 
-export default AddNewDoctor;
+export default AddOrEditDoctor;

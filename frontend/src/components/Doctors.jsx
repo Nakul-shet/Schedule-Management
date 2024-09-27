@@ -8,69 +8,62 @@ import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
 const Doctors = () => {
-  const [doctors, setDoctors] = useState([]); // To store the fetched doctors
-  const [filteredDoctors, setFilteredDoctors] = useState([]); // To store the filtered doctors based on search
-  const [searchTerm, setSearchTerm] = useState(""); // To track the search input
-  const [currentPage, setCurrentPage] = useState(1); // To track the current page for pagination
-  const [doctorsPerPage, setDoctorsPerPage] = useState(5); // Number of doctors per page
+  const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [doctorsPerPage, setDoctorsPerPage] = useState(5);
+  const { isAuthenticated } = useContext(Context);
   const { globalVariable } = useContext(GlobalContext);
-  const { isAuthenticated } = useContext(Context); // Authentication context
-  const navigate = useNavigate(); // Navigation function
+  const navigate = useNavigate();
 
-  // Fetch doctors from API when the component mounts
+  // Fetch doctors function
+  const fetchDoctors = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:4000/api/v1/user/doctors`,
+        { withCredentials: true }
+      );
+      setDoctors(data || []);
+      setFilteredDoctors(data || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error fetching doctors.");
+    }
+  };
+
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        // Fetching data from the API
-        const { data } = await axios.get(
-          "http://localhost:3001/user/getAllUsers",
-          { withCredentials: true }
-        );
-
-        // Filter doctors by role
-        const doctorList = data.filter((user) => user.role === "Doctor");
-        setDoctors(doctorList);
-        setFilteredDoctors(doctorList); // Initialize filteredDoctors with the fetched doctors
-      } catch (error) {
-        // Show error message if the API call fails
-        toast.error(
-          error?.response?.data?.message || "Error fetching doctors."
-        );
-      }
-    };
-
     fetchDoctors();
-  }, []); // Empty dependency array to ensure this runs once when the component mounts
+  }, []);
 
-  // Handle search functionality to filter doctors based on search term
+  // Handle search functionality
   const handleSearch = (event) => {
     const { value } = event.target;
     setSearchTerm(value);
+
     if (value !== "") {
-      // Filter doctors based on the search term
       const filtered = doctors.filter(
         (doctor) =>
-          doctor.firstName.toLowerCase().includes(value.toLowerCase()) ||
-          doctor.lastName.toLowerCase().includes(value.toLowerCase())
+          (doctor.firstName &&
+            doctor.firstName.toLowerCase().includes(value.toLowerCase())) ||
+          (doctor.lastName &&
+            doctor.lastName.toLowerCase().includes(value.toLowerCase())) ||
+          (doctor.email &&
+            doctor.email.toLowerCase().includes(value.toLowerCase()))
       );
       setFilteredDoctors(filtered);
     } else {
-      // If search term is empty, show all doctors
       setFilteredDoctors(doctors);
     }
   };
 
-  // Pagination logic: Determine the doctors to display on the current page
+  // Pagination logic
   const indexOfLastDoctor = currentPage * doctorsPerPage;
   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
-
-  // Safeguard: Ensure that filteredDoctors is defined and is an array
   const currentDoctors =
-    filteredDoctors && filteredDoctors.length > 0
+    filteredDoctors.length > 0
       ? filteredDoctors.slice(indexOfFirstDoctor, indexOfLastDoctor)
       : [];
 
-  // Pagination click handler to change the current page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Navigate to the Add New Doctor page
@@ -78,50 +71,52 @@ const Doctors = () => {
     navigate("/doctor/addnew");
   };
 
-  // Edit doctor handler to navigate to the edit page for a specific doctor
+  // Edit doctor handler
   const editDoctor = (id) => {
     navigate(`/doctor/edit/${id}`);
   };
 
-  // Delete doctor handler to remove a doctor from the list
+  // Delete doctor function
   const deleteDoctor = async (id) => {
-    try {
-      // API call to delete the doctor
-      await axios.delete(`http://localhost:3001/user/delete/${id}`, {
-        withCredentials: true,
-      });
-      // Update the state after deletion
-      setDoctors(doctors.filter((doctor) => doctor.id !== id));
-      setFilteredDoctors(filteredDoctors.filter((doctor) => doctor.id !== id));
-      toast.success("Doctor deleted successfully.");
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Error deleting doctor.");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this doctor?"
+    );
+
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:4000/api/v1/user/doctors/${id}`, {
+          withCredentials: true,
+        });
+        toast.success("Doctor deleted successfully.");
+        fetchDoctors(); // Re-fetch updated doctor list after deletion
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Error deleting doctor.");
+      }
+    } else {
+      toast.info("Doctor deletion cancelled.");
     }
   };
 
-  // Redirect to the login page if the user is not authenticated
   if (!isAuthenticated) {
     navigate("/login");
   }
 
   return (
-    <section className="page patients">
+    <section className="page doctors">
       <div className="header">
         <h1>Doctors</h1>
         <button className="add-patient-btn" onClick={gotoAddDoctorsPage}>
           <IoPersonAddSharp /> Add Doctor
         </button>
       </div>
-
       <div className="search-box">
         <input
           type="text"
-          placeholder="Search Doctor by Name"
+          placeholder="Search Doctor by Name or Email"
           value={searchTerm}
           onChange={handleSearch}
         />
       </div>
-
       {currentDoctors.length === 0 ? (
         <h2>No Doctors Found!</h2>
       ) : (
@@ -131,29 +126,25 @@ const Doctors = () => {
               <th>First Name</th>
               <th>Last Name</th>
               <th>Email</th>
-              <th>Phone Number</th>
-              <th>Role</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {currentDoctors.map((doctor) => (
-              <tr key={doctor.id}>
+            {currentDoctors.map((doctor, index) => (
+              <tr key={doctor._id || index}>
                 <td>{doctor.firstName}</td>
                 <td>{doctor.lastName}</td>
                 <td>{doctor.email}</td>
-                <td>{doctor.phoneNumber}</td>
-                <td>{doctor.role}</td>
                 <td className="actions-cell">
                   <button
                     className="edit-btn"
-                    onClick={() => editDoctor(doctor.id)}
+                    onClick={() => editDoctor(doctor._id)}
                   >
                     <AiFillEdit />
                   </button>
                   <button
                     className="delete-btn"
-                    onClick={() => deleteDoctor(doctor.id)}
+                    onClick={() => deleteDoctor(doctor._id)}
                   >
                     <AiFillDelete />
                   </button>

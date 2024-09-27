@@ -43,7 +43,7 @@ const Events = () => {
   };
 
   const calendarEvents = events.map((event) => ({
-    title: `${event.patientId} | ${event.clinicName} | ${event.treatmentType}`,
+    title: `${event.patientId} | ${event.patientName} | ${event.treatmentType}`,
     start: new Date(event.startTime),
     end: new Date(event.endTime),
     id: event._id, // Assuming each event has a unique id
@@ -53,8 +53,12 @@ const Events = () => {
     const confirmToast = () => (
       <div>
         <p>Choose an action for {event.title}:</p>
-        <button onClick={() => updateAppointment(event.patientId)}>Update</button>
-        <button onClick={() => cancelAppointment(event.patientId)}>Cancel</button>
+        <button onClick={() => updateAppointment(event.patientId)}>
+          Update
+        </button>
+        <button onClick={() => cancelAppointment(event.patientId)}>
+          Cancel
+        </button>
       </div>
     );
 
@@ -66,7 +70,7 @@ const Events = () => {
 
   const updateAppointment = async (id) => {
     const updatedData = {
-      status : "completed"
+      status: "completed",
     };
     try {
       await axios.put(
