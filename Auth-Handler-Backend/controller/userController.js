@@ -41,6 +41,7 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
 
 export const login = catchAsyncErrors(async (req, res, next) => {
   const { email, password, confirmPassword, role } = req.body;
+
   if (!email || !password || !confirmPassword || !role) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
@@ -73,18 +74,8 @@ export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
-  const { firstName, lastName, email, phone, nic, dob, gender, password } =
-    req.body;
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !phone ||
-    !nic ||
-    !dob ||
-    !gender ||
-    !password
-  ) {
+  const { firstName, lastName, email, phone, gender, password } = req.body;
+  if (!firstName || !lastName || !email || !phone || !gender || !password) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
@@ -112,22 +103,9 @@ export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
+  const { firstName, lastName, email, gender, password } = req.body;
 
-  const {
-    firstName,
-    lastName,
-    email,
-    gender,
-    password,
-  } = req.body;
-
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !gender ||
-    !password
-  ) {
+  if (!firstName || !lastName || !email || !gender || !password) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
@@ -144,7 +122,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     email,
     password,
     gender,
-    role: "Doctor"
+    role: "Doctor",
   });
 
   res.status(200).json({
@@ -152,21 +130,33 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     message: "New Doctor Registered",
     doctor,
   });
-
 });
 
 export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
   const doctors = await AuthUser.find({ role: "Doctor" });
-  res.status(200).json(
-    doctors,
-  );
+  res.status(200).json(doctors);
+});
+
+export const getDoctor = catchAsyncErrors(async (req, res, next) => {
+  const { id } = req.params;
+
+  const doctor = await AuthUser.findById({ _id: id });
+
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  if (doctor.role !== "Doctor") {
+    return next(new ErrorHandler("This user is not a doctor", 400));
+  }
+  res.status(200).json(doctor);
 });
 
 export const updateDoctor = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
-  const { firstName, lastName, email} = req.body;
+  const { firstName, lastName, email } = req.body;
 
-  const doctor = await AuthUser.findById({_id : id});
+  const doctor = await AuthUser.findById({ _id: id });
 
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
@@ -192,7 +182,7 @@ export const updateDoctor = catchAsyncErrors(async (req, res, next) => {
 export const deleteDoctor = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
 
-  const doctor = await AuthUser.findOne({_id : id});
+  const doctor = await AuthUser.findOne({ _id: id });
 
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
@@ -208,7 +198,6 @@ export const deleteDoctor = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Doctor deleted successfully",
   });
-
 });
 
 export const getAuthUserDetails = catchAsyncErrors(async (req, res, next) => {

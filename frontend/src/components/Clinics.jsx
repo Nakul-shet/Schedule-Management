@@ -11,6 +11,7 @@ const Clinics = () => {
   const { globalVariable, setGlobalVariable } = useContext(GlobalContext);
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
+  const [dropdownVisible, setDropdownVisible] = useState({});
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
@@ -18,23 +19,21 @@ const Clinics = () => {
   }
 
   // Fetch clinics from API
-  useEffect(() => {
-    const fetchClinics = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3001/clinic/getAllClinic",
-          {
-            withCredentials: true,
-          }
-        );
-        setClinics(response.data || [{}]);
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message || "Error fetching clinics."
-        );
-      }
-    };
+  const fetchClinics = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/clinic/getAllClinic",
+        {
+          withCredentials: true,
+        }
+      );
+      setClinics(response.data || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error fetching clinics.");
+    }
+  };
 
+  useEffect(() => {
     fetchClinics();
   }, []);
 
@@ -43,6 +42,12 @@ const Clinics = () => {
     navigate("/clinics/addnew");
   };
 
+  // Navigate to the Update Clinic page with clinic data
+  const gotoUpdateClinicPage = (clinic) => {
+    navigate(`/clinics/update/${clinic._id}`, { state: { clinic } });
+  };
+
+  // Handle clinic card click to select a clinic
   const handleCardClick = (clinicName) => {
     const confirmToast = () => (
       <div>
@@ -71,23 +76,7 @@ const Clinics = () => {
     });
   };
 
-  const updateClinic = async (id, updatedData) => {
-    try {
-      await axios.put(
-        `http://localhost:3001/clinic/updateClinic/${id}`,
-        updatedData,
-        {
-          withCredentials: true,
-        }
-      );
-      toast.success("Clinic updated successfully.");
-      // Refresh the clinic list after update
-      fetchClinics();
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Error updating clinic.");
-    }
-  };
-
+  // Handle clinic deletion
   const deleteClinic = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this clinic?"
@@ -104,6 +93,14 @@ const Clinics = () => {
         toast.error(error?.response?.data?.message || "Error deleting clinic.");
       }
     }
+  };
+
+  // Toggle dropdown visibility
+  const toggleDropdown = (id) => {
+    setDropdownVisible((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
   };
 
   return (
@@ -124,31 +121,54 @@ const Clinics = () => {
               key={clinic._id}
               onClick={() => handleCardClick(clinic.clinicName)}
             >
-              <div className="details">
-                <p>
-                  <span>{clinic.clinicName}</span>
-                </p>
-                <p>
-                  Address: <span>{clinic.clinicAddress}</span>
-                </p>
-                <p>
-                  Phone: <span>{clinic.contact}</span>
-                </p>
-                <p>
-                  <span>{clinic.description}</span>
-                </p>
-              </div>
-              <div className="actions">
-                <button
-                  onClick={() =>
-                    updateClinic(clinic._id, {
-                      /* updated data here */
-                    })
-                  }
+              <div className="card-header">
+                <div className="details">
+                  <p>
+                    <span>{clinic.clinicName}</span>
+                  </p>
+                  <p>
+                    Address: <span>{clinic.clinicAddress}</span>
+                  </p>
+                  <p>
+                    Phone: <span>{clinic.contact}</span>
+                  </p>
+                  <p>
+                    <span>{clinic.description}</span>
+                  </p>
+                </div>
+
+                {/* 3-dots icon */}
+                <div
+                  className="dots-menu"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent card click
+                    toggleDropdown(clinic._id);
+                  }}
                 >
-                  Update
-                </button>
-                <button onClick={() => deleteClinic(clinic._id)}>Delete</button>
+                  &#x22EE; {/* Vertical Ellipsis icon */}
+                </div>
+
+                {/* Dropdown menu */}
+                {dropdownVisible[clinic._id] && (
+                  <div className="dropdown-menu">
+                    <button
+                      onClick={() => {
+                        setDropdownVisible({});
+                        gotoUpdateClinicPage(clinic);
+                      }}
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => {
+                        setDropdownVisible({});
+                        deleteClinic(clinic._id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))

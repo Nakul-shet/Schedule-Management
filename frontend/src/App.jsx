@@ -15,10 +15,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
+import AddOrEditDoctor from "./components/AddNewDoctor";
 import AddNewPatient from "./components/AddPatient";
 import EditPatient from "./components/EditPatient";
 import AddNewClinic from "./components/AddClinic";
 import Clinics from "./components/Clinics";
+import UpdateClinics from "./components/UpdateClinic";
 import "./App.css";
 
 const App = () => {
@@ -55,6 +57,7 @@ const App = () => {
           <Route path="/admin/addnew" element={<AddNewAdmin />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/doctors" element={<Doctors />} />
+          <Route path="/doctor/edit/:id" element={<AddOrEditDoctor />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/appointment" element={<Appointment />} />
           <Route path="/appointment/addnew" element={<AddNewAppointment />} />
@@ -62,6 +65,7 @@ const App = () => {
           <Route path="/patient/edit/:id" element={<EditPatient />} />
           <Route path="/clinics/addnew" element={<AddNewClinic />} />
           <Route path="/clinics" element={<Clinics />} />
+          <Route path="/clinics/update/:id" element={<UpdateClinics />} />
         </Routes>
         <ToastContainer position="top-center" />
       </Router>
