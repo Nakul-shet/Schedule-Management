@@ -1,11 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../main";
+import {GlobalContext} from "./GlobalVarOfLocation";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 const AddNewAppointment = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const { globalVariable } = useContext(GlobalContext);
 
   const [patientSearch, setPatientSearch] = useState("");
   const [patients, setPatients] = useState([]);
@@ -13,7 +15,6 @@ const AddNewAppointment = () => {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [clinicName, setClinicName] = useState("");
   const [treatmentType, setTreatmentType] = useState("");
 
   const navigateTo = useNavigate();
@@ -48,11 +49,12 @@ const AddNewAppointment = () => {
         "http://localhost:3001/appointment/createAppointment",
         {
           patientId: selectedPatient.patientId, // Use selectedPatient data
-          clinicName: selectedPatient.patientName,
+          patientName: selectedPatient.patientName,
           date: appointmentDate,
           startTime,
           endTime,
           treatmentType,
+          clinicName : globalVariable
         },
         {
           withCredentials: true,

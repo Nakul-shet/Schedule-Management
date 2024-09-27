@@ -13,7 +13,7 @@ export const isAdminAuthenticated = catchAsyncErrors(async (req, res, next) => {
   }
   const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
   req.user = await AuthUser.findById(decoded.id);
-  if (req.user.role !== "Doctor") {
+  if (req.user.role !== "Admin") {
     return next(
       new ErrorHandler(
         `${req.user.role} not authorized for this resource!`,

@@ -69,6 +69,7 @@ const Events = () => {
   };
 
   const updateAppointment = async (id) => {
+    console.log(id)
     const updatedData = {
       status: "completed",
     };

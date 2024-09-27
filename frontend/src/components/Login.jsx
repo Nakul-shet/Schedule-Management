@@ -54,7 +54,7 @@ const Login = () => {
       await axios
         .post(
           "http://localhost:4000/api/v1/user/login",
-          { email, password, confirmPassword, role: "Doctor" },
+          { email, password, confirmPassword, role: "Admin" },
           {
             withCredentials: true,
             headers: { "Content-Type": "application/json" },
@@ -81,10 +81,10 @@ const Login = () => {
     <>
       <section className="form-component flex-row">
         <div className="flex-column">
-          <h1 className="one-dentist">
+          {/* <h1 className="one-dentist">
             <FaTooth className="one-dentist" />
             One Dentist
-          </h1>
+          </h1> */}
           <img src="/Shourya.png" alt="logo" className="logo" />
           <p>Only Admins Are Allowed To Access These Resources!</p>
         </div>

@@ -6,7 +6,7 @@ const doTimesOverlap = (start1, end1, start2, end2) => {
 
 exports.createAppointment = async (req , res) => {
 
-  const { patientId , patientName , date , startTime , endTime , treatmentType } = req.body;
+  const { patientId , patientName , date , startTime , endTime , treatmentType , clinicName} = req.body;
 
   try{
 
@@ -45,6 +45,7 @@ exports.createAppointment = async (req , res) => {
       startTime : `${date}T${startTime}:00.000`,
       endTime: `${date}T${endTime}:00.000`,
       status: 'scheduled',
+      clinicName,
       treatmentType
     });
 
