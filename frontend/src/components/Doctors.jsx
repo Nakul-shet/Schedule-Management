@@ -21,7 +21,7 @@ const Doctors = () => {
   const fetchDoctors = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:4000/api/v1/user/doctors`,
+        `https://schedule-management-authentication.onrender.com/api/v1/user/doctors`,
         { withCredentials: true }
       );
       setDoctors(data || []);
@@ -84,7 +84,7 @@ const Doctors = () => {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:4000/api/v1/user/doctors/${id}`, {
+        await axios.delete(`https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`, {
           withCredentials: true,
         });
         toast.success("Doctor deleted successfully.");

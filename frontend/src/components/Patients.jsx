@@ -21,7 +21,7 @@ const Patients = () => {
   const fetchPatients = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/patient/getAllPatient/${globalVariable}`,
+        `https://schedule-management-api.onrender.com/patient/getAllPatient/${globalVariable}`,
         { withCredentials: true }
       );
       setPatients(data || []); // Fallback to empty array if data is undefined
@@ -87,7 +87,7 @@ const Patients = () => {
       try {
         // Delete the patient
         await axios.delete(
-          `http://localhost:3001/patient/deletePatient/${id}`,
+          `https://schedule-management-api.onrender.com/patient/deletePatient/${id}`,
           {
             withCredentials: true,
           }

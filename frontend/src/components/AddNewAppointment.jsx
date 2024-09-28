@@ -24,7 +24,7 @@ const AddNewAppointment = () => {
     e.preventDefault();
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/patient/getPatientByName/${patientSearch}`
+        `https://schedule-management-api.onrender.com/patient/getPatientByName/${patientSearch}`
       );
       setPatients([data]);
     } catch (error) {
@@ -46,7 +46,7 @@ const AddNewAppointment = () => {
     }
     try {
       await axios.post(
-        "http://localhost:3001/appointment/createAppointment",
+        "https://schedule-management-api.onrender.com/appointment/createAppointment",
         {
           patientId: selectedPatient.patientId, // Use selectedPatient data
           patientName: selectedPatient.patientName,

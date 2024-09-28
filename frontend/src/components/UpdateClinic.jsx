@@ -22,7 +22,7 @@ const EditNewClinic = () => {
       if (clinicData) {
         // Update existing clinic
         await axios.put(
-          `http://localhost:3001/clinic/updateClinic/${clinicData._id}`,
+          `https://schedule-management-api.onrender.com/clinic/updateClinic/${clinicData._id}`,
           {
             clinicName,
             clinicAddress: address,

@@ -25,7 +25,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3001/appointment", {
+        const { data } = await axios.get("https://schedule-management-api.onrender.com/appointment", {
           withCredentials: true,
         });
 
@@ -105,7 +105,7 @@ const Dashboard = () => {
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:3001/appointment/update/${appointmentId}`,
+        `https://schedule-management-api.onrender.com/appointment/update/${appointmentId}`,
         { status },
         { withCredentials: true }
       );
@@ -153,7 +153,8 @@ const Dashboard = () => {
             <div className="content">
               <div>
                 <p>Hello,</p>
-                <h5>Dr. {admin && `${admin.firstName} ${admin.lastName}`}</h5>
+                {/* <h5>Dr. {admin && `${admin.firstName} ${admin.lastName}`}</h5> */}
+                <h5>Dr. Shourya Hegde</h5>
               </div>
               <p>
                 Welcome to your dashboard at <b>{globalVariable}</b>, where you

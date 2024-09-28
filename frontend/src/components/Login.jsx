@@ -23,7 +23,7 @@ const Login = () => {
     const fetchClinics = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/clinic/getAllClinic",
+          "https://schedule-management-api.onrender.com/clinic/getAllClinic",
           {
             withCredentials: true,
           }
@@ -53,7 +53,7 @@ const Login = () => {
     try {
       await axios
         .post(
-          "http://localhost:4000/api/v1/user/login",
+          "https://schedule-management-authentication.onrender.com/api/v1/user/login",
           { email, password, confirmPassword, role: "Admin" },
           {
             withCredentials: true,

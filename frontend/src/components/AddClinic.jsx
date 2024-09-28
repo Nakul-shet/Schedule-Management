@@ -19,7 +19,7 @@ const AddNewClinic = () => {
     try {
       await axios
         .post(
-          "http://localhost:3001/clinic/createClinic",
+          "https://schedule-management-api.onrender.com/clinic/createClinic",
           {
             clinicName,
             clinicAddress : address,

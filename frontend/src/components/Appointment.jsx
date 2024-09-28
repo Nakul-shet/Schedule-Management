@@ -27,7 +27,7 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/appointment", {
+        const res = await axios.get("https://schedule-management-api.onrender.com/appointment", {
           withCredentials: true,
         });
         setEvents(res.data);
@@ -75,7 +75,7 @@ const Events = () => {
     };
     try {
       await axios.put(
-        `http://localhost:3001/appointment/updateAppointment/${id}`,
+        `https://schedule-management-api.onrender.com/appointment/updateAppointment/${id}`,
         updatedData,
         {
           withCredentials: true,
@@ -98,7 +98,7 @@ const Events = () => {
     if (confirmDelete) {
       try {
         await axios.delete(
-          `http://localhost:3001/appointment/deleteAppointment/${id}`,
+          `https://schedule-management-api.onrender.com/appointment/deleteAppointment/${id}`,
           {
             withCredentials: true,
           }

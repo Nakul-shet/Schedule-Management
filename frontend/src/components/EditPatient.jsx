@@ -31,7 +31,7 @@ const EditPatient = () => {
   useEffect(() => {
     const fetchPatientDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/patient/${id}`, {
+        const res = await axios.get(`https://schedule-management-api.onrender.com/patient/${id}`, {
           withCredentials: true,
         });
         const patient = res.data;
@@ -59,7 +59,7 @@ const EditPatient = () => {
     try {
       await axios
         .patch(
-          `http://localhost:3001/patient/updatePatient/${id}`, // Use the correct update API
+          `https://schedule-management-api.onrender.com/patient/updatePatient/${id}`, // Use the correct update API
           {
             patientName,
             gender,

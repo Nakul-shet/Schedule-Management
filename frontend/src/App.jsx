@@ -27,24 +27,24 @@ const App = () => {
   const { isAuthenticated, setIsAuthenticated, admin, setAdmin } =
     useContext(Context);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/v1/user/admin/me",
-          {
-            withCredentials: true,
-          }
-        );
-        setIsAuthenticated(true);
-        setAdmin(response.data.user);
-      } catch (error) {
-        setIsAuthenticated(false);
-        setAdmin({});
-      }
-    };
-    fetchUser();
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "https://schedule-management-authentication.onrender.com/api/v1/user/admin/me",
+  //         {
+  //           withCredentials: true,
+  //         }
+  //       );
+  //       setIsAuthenticated(true);
+  //       setAdmin(response.data.user);
+  //     } catch (error) {
+  //       setIsAuthenticated(false);
+  //       setAdmin({});
+  //     }
+  //   };
+  //   fetchUser();
+  // }, [isAuthenticated]);
 
   return (
     <GlobalProvider>

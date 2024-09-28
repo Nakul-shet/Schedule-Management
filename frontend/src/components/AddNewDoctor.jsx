@@ -21,7 +21,7 @@ const AddOrEditDoctor = () => {
       const fetchDoctor = async () => {
         try {
           const { data } = await axios.get(
-            `http://localhost:4000/api/v1/user/doctors/${id}`,
+            `https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`,
             { withCredentials: true }
           );
           setFirstName(data.firstName);
@@ -45,7 +45,7 @@ const AddOrEditDoctor = () => {
       if (id) {
         // Edit existing doctor
         await axios.patch(
-          `http://localhost:4000/api/v1/user/doctors/${id}`,
+          `https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`,
           doctorData,
           { withCredentials: true }
         );
@@ -53,7 +53,7 @@ const AddOrEditDoctor = () => {
       } else {
         // Add new doctor
         await axios.post(
-          `http://localhost:4000/api/v1/user/doctor/addnew`,
+          `https://schedule-management-authentication.onrender.com/api/v1/user/doctor/addnew`,
           doctorData,
           { withCredentials: true }
         );

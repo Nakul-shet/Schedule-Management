@@ -22,7 +22,7 @@ const Clinics = () => {
   const fetchClinics = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/clinic/getAllClinic",
+        "https://schedule-management-api.onrender.com/clinic/getAllClinic",
         {
           withCredentials: true,
         }
@@ -84,7 +84,7 @@ const Clinics = () => {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:3001/clinic/deleteClinic/${id}`, {
+        await axios.delete(`https://schedule-management-api.onrender.com/clinic/deleteClinic/${id}`, {
           withCredentials: true,
         });
         setClinics(clinics.filter((clinic) => clinic._id !== id)); // Update state after deletion

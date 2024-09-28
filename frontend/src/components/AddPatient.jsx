@@ -30,7 +30,7 @@ const AddNewPatient = () => {
     try {
       await axios
         .post(
-          "http://localhost:3001/patient/addPatient",
+          "https://schedule-management-api.onrender.com/patient/addPatient",
           {
             patientName,
             gender,
