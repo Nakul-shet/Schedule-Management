@@ -8,13 +8,14 @@ const userRouter = require("./routes/userRoutes");
 const appointmentRouter = require("./routes/appointmentRoutes");
 const patientRouter = require("./routes/patientRoutes");
 const clinicRouter = require("./routes/clinicRoutes");
+const paymentRouter = require("./routes/paymentRoutes");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
 app.use(cors({
-    origin: 'http://localhost:5173', // Allow only this origin
+    origin: '*', // Allow only this origin
     credentials: true // Allow credentials (cookies, headers, etc.)
 }));
 
@@ -24,6 +25,7 @@ app.use("/user" , userRouter)
 app.use("/appointment" , appointmentRouter)
 app.use("/patient" , patientRouter)
 app.use("/clinic" , clinicRouter)
+app.use("/payment" , paymentRouter)
 
 app.get("/sendSMS" , (req , res) => {
 

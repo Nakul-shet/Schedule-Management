@@ -1,4 +1,5 @@
 const {Patient} = require('../models/patient');
+const {Payment} = require("../models/payment")
 
 function generatePatientId() {
   const prefix = "P00";
@@ -7,17 +8,19 @@ function generatePatientId() {
 }
 
 exports.createPatientRecord = async (req, res) => {
+  let patId;
   try {
-    const {patientName , gender , country , city , contact , mobile , email , dob , notes , clinicName , alertPreference} = req.body;
+    const {patientName , gender , country , city , contact , mobile , email , dob , notes , clinicName , alertPreference , treatmentAmount , paymentMade} = req.body;
 
     const isPatientExists = await Patient.findOne({patientName : patientName}).exec();
+    patId = generatePatientId();
 
       if(isPatientExists){
         res.json({"message" : "patient Already exist"})
         return
       }else{
         const newPatient = new Patient({
-          patientId : generatePatientId(),
+          patientId : patId,
           patientName,
           gender, 
           country,
@@ -33,7 +36,15 @@ exports.createPatientRecord = async (req, res) => {
 
       await newPatient.save();
 
-      res.status(201).json({ message: 'Patient record created successfully', newPatient });
+      const newPayment = new Payment({
+        patientId : patId,
+        treatmentAmount,
+        paymentMade
+      })
+
+      await newPayment.save();
+
+      res.status(201).json({ message: 'Patient record created successfully', newPatient , newPayment });
     }
 
     
