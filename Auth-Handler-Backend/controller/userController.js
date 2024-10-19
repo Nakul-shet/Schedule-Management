@@ -2,7 +2,6 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { AuthUser } from "../models/userSchema.js";
 import ErrorHandler from "../middlewares/error.js";
 import { generateToken } from "../utils/jwtToken.js";
-import cloudinary from "cloudinary";
 
 export const patientRegister = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, phone, nic, dob, gender, password } =
@@ -39,40 +38,7 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
   generateToken(user, "AuthUser Registered!", 200, res);
 });
 
-export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password, confirmPassword, role } = req.body;
-
-  if (!email || !password || !confirmPassword || !role) {
-    return next(new ErrorHandler("Please Fill Full Form!", 400));
-  }
-  if (password !== confirmPassword) {
-    return next(
-      new ErrorHandler("Password & Confirm Password Do Not Match!", 400)
-    );
-  }
-  const user = await AuthUser.findOne({ email }).select("+password");
-  if (!user) {
-    return next(new ErrorHandler("Invalid Email Or Password!", 400));
-  }
-
-  const isPasswordMatch = await user.comparePassword(password);
-  if (!isPasswordMatch) {
-    return next(new ErrorHandler("Invalid Email Or Password!", 400));
-  }
-  if (role !== user.role) {
-    return next(new ErrorHandler(`AuthUser Not Found With This Role!`, 400));
-  }
-  generateToken(user, "Login Successfully!", 201, res);
-});
-
-export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
-  const user = req.user;
-  res.status(200).json({
-    success: true,
-    user,
-  });
-});
-
+// Add New Admin
 export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, phone, gender, password } = req.body;
   if (!firstName || !lastName || !email || !phone || !gender || !password) {
@@ -100,6 +66,7 @@ export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Add New Doctor
 export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, gender, password } = req.body;
 
@@ -129,6 +96,73 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
     doctor,
   });
 });
+
+export const addNewUser = catchAsyncErrors(async (req, res, next) => {
+  const { firstName, lastName, email, gender, password } = req.body;
+
+  if (!firstName || !lastName || !email || !gender || !password) {
+    return next(new ErrorHandler("Please Fill Full Form!", 400));
+  }
+
+  const isRegistered = await AuthUser.findOne({ email });
+  if (isRegistered) {
+    return next(
+      new ErrorHandler("User With This Email Already Exists!", 400)
+    );
+  }
+
+  const user = await AuthUser.create({
+    firstName,
+    lastName,
+    email,
+    password,
+    gender,
+    role: "User",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "New user Registered",
+    user,
+  });
+});
+
+export const login = catchAsyncErrors(async (req, res, next) => {
+  const { email, password, confirmPassword, role } = req.body;
+
+  if (!email || !password || !confirmPassword || !role) {
+    return next(new ErrorHandler("Please Fill Full Form!", 400));
+  }
+  if (password !== confirmPassword) {
+    return next(
+      new ErrorHandler("Password & Confirm Password Do Not Match!", 400)
+    );
+  }
+  const user = await AuthUser.findOne({ email }).select("+password");
+  if (!user) {
+    return next(new ErrorHandler("Invalid Email Or Password!", 400));
+  }
+
+  const isPasswordMatch = await user.comparePassword(password);
+  if (!isPasswordMatch) {
+    return next(new ErrorHandler("Invalid Email Or Password!", 400));
+  }
+
+  if (role !== user.role) {
+    return next(new ErrorHandler(`${user.firstName} - Account is not of the type ${role}`, 400));
+  }
+  
+  generateToken(user, "Login Successfully!", 201, res);
+});
+
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const user = req.user;
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
 
 export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
   const doctors = await AuthUser.find({ role: "Doctor" });
