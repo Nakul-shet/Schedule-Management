@@ -6,6 +6,8 @@ import { GlobalContext } from "./GlobalVarOfLocation";
 import { Context } from "../main";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ const Login = () => {
     const fetchClinics = async () => {
       try {
         const response = await axios.get(
-          "https://schedule-management-api.onrender.com/clinic/getAllClinic",
+          `${CONFIG.runEndpoint.backendUrl}/clinic/getAllClinic`,
           {
             withCredentials: true,
           }
@@ -53,7 +55,7 @@ const Login = () => {
     try {
       await axios
         .post(
-          "https://schedule-management-authentication.onrender.com/api/v1/user/login",
+          `${CONFIG.runEndpoint.authUrl}/api/v1/user/login`,
           { email, password, confirmPassword, role: "Admin" },
           {
             withCredentials: true,

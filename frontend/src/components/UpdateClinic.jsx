@@ -4,6 +4,8 @@ import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const EditNewClinic = () => {
   const { isAuthenticated } = useContext(Context);
   const navigateTo = useNavigate();
@@ -22,7 +24,7 @@ const EditNewClinic = () => {
       if (clinicData) {
         // Update existing clinic
         await axios.put(
-          `https://schedule-management-api.onrender.com/clinic/updateClinic/${clinicData._id}`,
+          `${CONFIG.runEndpoint.backendUrl}/clinic/updateClinic/${clinicData._id}`,
           {
             clinicName,
             clinicAddress: address,

@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { Context } from "../main";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const AddOrEditDoctor = () => {
   const { id } = useParams(); // Get doctor ID from URL
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ const AddOrEditDoctor = () => {
       const fetchDoctor = async () => {
         try {
           const { data } = await axios.get(
-            `https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`,
+            `${CONFIG.runEndpoint.authUrl}/api/v1/user/doctors/${id}`,
             { withCredentials: true }
           );
           setFirstName(data.firstName);
@@ -45,7 +47,7 @@ const AddOrEditDoctor = () => {
       if (id) {
         // Edit existing doctor
         await axios.patch(
-          `https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`,
+          `${CONFIG.runEndpoint.authUrl}/api/v1/user/doctors/${id}`,
           doctorData,
           { withCredentials: true }
         );
@@ -53,7 +55,7 @@ const AddOrEditDoctor = () => {
       } else {
         // Add new doctor
         await axios.post(
-          `https://schedule-management-authentication.onrender.com/api/v1/user/doctor/addnew`,
+          `${CONFIG.runEndpoint.authUrl}/api/v1/user/doctor/addnew`,
           doctorData,
           { withCredentials: true }
         );

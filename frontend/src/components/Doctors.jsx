@@ -7,6 +7,8 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
+import { CONFIG } from "../config";
+
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
@@ -21,7 +23,7 @@ const Doctors = () => {
   const fetchDoctors = async () => {
     try {
       const { data } = await axios.get(
-        `https://schedule-management-authentication.onrender.com/api/v1/user/doctors`,
+        `${CONFIG.runEndpoint.authUrl}/api/v1/user/doctors`,
         { withCredentials: true }
       );
       setDoctors(data || []);
@@ -84,7 +86,7 @@ const Doctors = () => {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`https://schedule-management-authentication.onrender.com/api/v1/user/doctors/${id}`, {
+        await axios.delete(`${CONFIG.runEndpoint.authUrl}/api/v1/user/doctors/${id}`, {
           withCredentials: true,
         });
         toast.success("Doctor deleted successfully.");

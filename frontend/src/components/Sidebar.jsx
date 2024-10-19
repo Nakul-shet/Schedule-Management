@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
 
+import { CONFIG } from "../config";
+
 const Sidebar = () => {
   const [show, setShow] = useState(false);
   const [activeIcon, setActiveIcon] = useState("home");
@@ -22,7 +24,7 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     await axios
-      .get("https://schedule-management-authentication.onrender.com/api/v1/user/admin/logout", {
+      .get(`${CONFIG.runEndpoint.authUrl}/api/v1/user/admin/logout`, {
         withCredentials: true,
       })
       .then((res) => {

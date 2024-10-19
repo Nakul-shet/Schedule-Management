@@ -9,6 +9,8 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../../static/calendar.css";
 
+import { CONFIG } from "../config";
+
 const localizer = momentLocalizer(moment);
 
 const Events = () => {
@@ -27,7 +29,7 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("https://schedule-management-api.onrender.com/appointment", {
+        const res = await axios.get(`${CONFIG.runEndpoint.backendUrl}/appointment`, {
           withCredentials: true,
         });
         setEvents(res.data);
@@ -75,7 +77,7 @@ const Events = () => {
     };
     try {
       await axios.put(
-        `https://schedule-management-api.onrender.com/appointment/updateAppointment/${id}`,
+        `${CONFIG.runEndpoint.backendUrl}/appointment/updateAppointment/${id}`,
         updatedData,
         {
           withCredentials: true,
@@ -98,7 +100,7 @@ const Events = () => {
     if (confirmDelete) {
       try {
         await axios.delete(
-          `https://schedule-management-api.onrender.com/appointment/deleteAppointment/${id}`,
+          `${CONFIG.runEndpoint.backendUrl}/appointment/deleteAppointment/${id}`,
           {
             withCredentials: true,
           }

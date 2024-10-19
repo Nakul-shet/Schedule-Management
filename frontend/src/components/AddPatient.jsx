@@ -5,6 +5,8 @@ import { GlobalContext } from "./GlobalVarOfLocation";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const AddNewPatient = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
@@ -30,7 +32,7 @@ const AddNewPatient = () => {
     try {
       await axios
         .post(
-          "https://schedule-management-api.onrender.com/patient/addPatient",
+          `${CONFIG.runEndpoint.backendUrl}/patient/addPatient`,
           {
             patientName,
             gender,

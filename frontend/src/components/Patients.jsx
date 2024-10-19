@@ -7,6 +7,8 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
+import { CONFIG } from "../config";
+
 const Patients = () => {
   const [patients, setPatients] = useState([]); // To store the fetched patients
   const [filteredPatients, setFilteredPatients] = useState([]); // To store the filtered patients based on search
@@ -21,7 +23,7 @@ const Patients = () => {
   const fetchPatients = async () => {
     try {
       const { data } = await axios.get(
-        `https://schedule-management-api.onrender.com/patient/getAllPatient/${globalVariable}`,
+        `${CONFIG.runEndpoint.backendUrl}/patient/getAllPatient/${globalVariable}`,
         { withCredentials: true }
       );
       setPatients(data || []); // Fallback to empty array if data is undefined
@@ -87,7 +89,7 @@ const Patients = () => {
       try {
         // Delete the patient
         await axios.delete(
-          `https://schedule-management-api.onrender.com/patient/deletePatient/${id}`,
+          `${CONFIG.runEndpoint.backendUrl}/patient/deletePatient/${id}`,
           {
             withCredentials: true,
           }

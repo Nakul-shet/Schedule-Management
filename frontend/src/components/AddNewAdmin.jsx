@@ -4,6 +4,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const AddNewAdmin = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
 
@@ -23,7 +25,7 @@ const AddNewAdmin = () => {
     try {
       await axios
         .post(
-          "https://schedule-management-authentication.onrender.com/api/v1/user/admin/addnew",
+          `${CONFIG.runEndpoint.authUrl}/api/v1/user/admin/addnew`,
           { firstName, lastName, email, phone, nic, dob, gender, password },
           {
             withCredentials: true,

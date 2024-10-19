@@ -4,6 +4,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const AddNewClinic = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
   const navigateTo = useNavigate();
@@ -19,7 +21,7 @@ const AddNewClinic = () => {
     try {
       await axios
         .post(
-          "https://schedule-management-api.onrender.com/clinic/createClinic",
+          `${CONFIG.runEndpoint.backendUrl}/clinic/createClinic`,
           {
             clinicName,
             clinicAddress : address,

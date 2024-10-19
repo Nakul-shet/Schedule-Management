@@ -8,6 +8,8 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+import { CONFIG } from "../config";
+
 const localizer = momentLocalizer(moment);
 
 const Dashboard = () => {
@@ -25,7 +27,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const { data } = await axios.get("https://schedule-management-api.onrender.com/appointment", {
+        const { data } = await axios.get(`${CONFIG.runEndpoint.backendUrl}/appointment`, {
           withCredentials: true,
         });
 
@@ -105,7 +107,7 @@ const Dashboard = () => {
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
       const { data } = await axios.put(
-        `https://schedule-management-api.onrender.com/appointment/update/${appointmentId}`,
+        `${CONFIG.runEndpoint.backendUrl}/appointment/update/${appointmentId}`,
         { status },
         { withCredentials: true }
       );

@@ -5,6 +5,8 @@ import { GlobalContext } from "./GlobalVarOfLocation";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { CONFIG } from "../config";
+
 const EditPatient = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
   const { globalVariable } = useContext(GlobalContext); // Used globalVariable from GlobalContext
@@ -31,7 +33,7 @@ const EditPatient = () => {
   useEffect(() => {
     const fetchPatientDetails = async () => {
       try {
-        const res = await axios.get(`https://schedule-management-api.onrender.com/patient/${id}`, {
+        const res = await axios.get(`${CONFIG.runEndpoint.backendUrl}/patient/${id}`, {
           withCredentials: true,
         });
         const patient = res.data;
@@ -59,7 +61,7 @@ const EditPatient = () => {
     try {
       await axios
         .patch(
-          `https://schedule-management-api.onrender.com/patient/updatePatient/${id}`, // Use the correct update API
+          `${CONFIG.runEndpoint.backendUrl}/patient/updatePatient/${id}`, // Use the correct update API
           {
             patientName,
             gender,

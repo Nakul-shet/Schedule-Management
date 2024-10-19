@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import "../../static/clinics.css";
 import { GlobalContext } from "./GlobalVarOfLocation";
 
+import { CONFIG } from "../config";
+
 const Clinics = () => {
   const [clinics, setClinics] = useState([]);
   const { globalVariable, setGlobalVariable } = useContext(GlobalContext);
@@ -22,7 +24,7 @@ const Clinics = () => {
   const fetchClinics = async () => {
     try {
       const response = await axios.get(
-        "https://schedule-management-api.onrender.com/clinic/getAllClinic",
+        `${CONFIG.runEndpoint.backendUrl}/clinic/getAllClinic`,
         {
           withCredentials: true,
         }
@@ -84,7 +86,7 @@ const Clinics = () => {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`https://schedule-management-api.onrender.com/clinic/deleteClinic/${id}`, {
+        await axios.delete(`${CONFIG.runEndpoint.backendUrl}/clinic/deleteClinic/${id}`, {
           withCredentials: true,
         });
         setClinics(clinics.filter((clinic) => clinic._id !== id)); // Update state after deletion
