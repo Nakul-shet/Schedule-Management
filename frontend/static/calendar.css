@@ -76,3 +76,12 @@
   color: rgb(95, 192, 241);
   border-color: #004494; /* Darker blue border on hover */
 }
+
+.react-datepicker {
+  position: absolute; /* Allows free positioning */
+  top: 5vh; /* Adjust the top position to your preference */
+  right: 20vw; /* Adjust the right position to your preference */
+  z-index: 10; /* High z-index to ensure it's on top */
+  background-color: white; /* Ensure it's visible with a proper background */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for better visibility */
+}
