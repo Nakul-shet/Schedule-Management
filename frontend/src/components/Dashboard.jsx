@@ -27,9 +27,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const { data } = await axios.get(`${CONFIG.runEndpoint.backendUrl}/appointment`, {
-          withCredentials: true,
-        });
+        const { data } = await axios.get(
+          `${CONFIG.runEndpoint.backendUrl}/appointment`,
+          {
+            withCredentials: true,
+          }
+        );
 
         // Map appointments to the format required by the Calendar component
         const mappedAppointments = data.map((appointment) => ({
@@ -155,8 +158,9 @@ const Dashboard = () => {
             <div className="content">
               <div>
                 <p>Hello,</p>
-                {/* <h5>Dr. {admin && `${admin.firstName} ${admin.lastName}`}</h5> */}
-                <h5>Dr. Shourya Hegde</h5>
+                <h5>
+                  {admin.firstName && `${admin.firstName} ${admin.lastName}`}{" "}
+                </h5>
               </div>
               <p>
                 Welcome to your dashboard at <b>{globalVariable}</b>, where you
