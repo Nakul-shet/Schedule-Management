@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
+import { BsCurrencyRupee } from "react-icons/bs";
 
 import { CONFIG } from "../config";
 
@@ -153,26 +154,18 @@ const Patients = () => {
                 <td>{patient.city}</td>
                 <td>{patient.mobile}</td>
                 <td>{patient.email}</td>
-                <td className="notification-cell">
-                  <div className="checkbox-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={patient.emailNotification}
-                        disabled
-                      />
-                      Email
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={patient.smsNotification}
-                        disabled
-                      />
-                      SMS
-                    </label>
-                  </div>
+                <td>
+                  <button
+                    className="Payment-btn"
+                    title={patient.patientId}
+                    onClick={() =>
+                      navigate(`/patient/payment/${patient.patientId}`)
+                    }
+                  >
+                    <BsCurrencyRupee />
+                  </button>
                 </td>
+
                 <td className="actions-cell">
                   <button
                     className="edit-btn"

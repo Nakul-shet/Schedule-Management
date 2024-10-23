@@ -18,6 +18,7 @@ import AddNewAdmin from "./components/AddNewAdmin";
 import AddOrEditDoctor from "./components/AddNewDoctor";
 import AddNewPatient from "./components/AddPatient";
 import EditPatient from "./components/EditPatient";
+import PaymentUpdate from "./components/PaymentUpdate";
 import AddNewClinic from "./components/AddClinic";
 import Clinics from "./components/Clinics";
 import UpdateClinics from "./components/UpdateClinic";
@@ -63,6 +64,10 @@ const App = () => {
           <Route path="/appointment/addnew" element={<AddNewAppointment />} />
           <Route path="/patient/addnew" element={<AddNewPatient />} />
           <Route path="/patient/edit/:id" element={<EditPatient />} />
+          <Route
+            path="/patient/payment/:patientId"
+            element={<PaymentUpdate />}
+          />
           <Route path="/clinics/addnew" element={<AddNewClinic />} />
           <Route path="/clinics" element={<Clinics />} />
           <Route path="/clinics/update/:id" element={<UpdateClinics />} />

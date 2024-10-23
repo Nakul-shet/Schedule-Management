@@ -119,7 +119,7 @@ const Events = () => {
     }
   };
 
-  const CustomToolbar = ({ date, label }) => (
+  const CustomToolbar = ({ label, onNavigate }) => (
     <div className="rbc-toolbar">
       <button className="rbc-btn" onClick={() => setView(Views.MONTH)}>
         Month
@@ -138,6 +138,16 @@ const Events = () => {
         {label}
       </span>
 
+      <button className="rbc-btn" onClick={() => onNavigate("PREV")}>
+        Back
+      </button>
+      <button className="rbc-btn" onClick={() => onNavigate("TODAY")}>
+        Today
+      </button>
+      <button className="rbc-btn" onClick={() => onNavigate("NEXT")}>
+        Next
+      </button>
+
       {showDatePicker && (
         <DatePicker
           className="react-datepicker"
@@ -150,13 +160,6 @@ const Events = () => {
           inline
         />
       )}
-
-      <button className="rbc-btn" onClick={() => navigate("back")}>
-        Back
-      </button>
-      <button className="rbc-btn" onClick={() => navigate("next")}>
-        Next
-      </button>
     </div>
   );
 
