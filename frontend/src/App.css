@@ -73,7 +73,7 @@ body {
 }
 .form-title {
   font-size: 1.75rem;
-  color: #111;
+  color: #3e3e3e;
   margin-bottom: 30px;
 }
 .form-component {
@@ -183,6 +183,9 @@ body {
   .add-admin-form {
     padding: 30px 0;
   }
+}
+.floating-label {
+  padding-top: 10px;
 }
 
 .dashboard {
@@ -777,6 +780,12 @@ input[type="time"]:before {
   ); /* Darker greenish background on hover */
 }
 
+.Payment-btn {
+  background-color: transparent;
+  font-size: larger;
+  border: none;
+}
+
 .delete-btn {
   background-color: rgba(252, 0, 0, 0.416);
   backdrop-filter: blur(5px);
@@ -869,4 +878,87 @@ button.no:hover {
   align-items: center; /* Center items horizontally */
   justify-content: center; /* Center items vertically */
   gap: 10px; /* Add some space between the elements */
+}
+
+/* Payment form styling */
+.payment-history {
+  max-height: 60vh; /* Set a fixed height for scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-history h2 {
+  padding-top: 20px;
+  padding-bottom: 0;
+  text-align: center;
+  margin-bottom: 0;
+  color: gray;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.history-table thead {
+  position: sticky;
+  top: 0; /* Stick to the top of the container */
+  z-index: 1; /* Ensures the header is on top of the table rows */
+}
+
+.history-table th,
+.history-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+.history-table th {
+  background: linear-gradient(45deg, #ffd700, #ffcc33);
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #bfa300, 2px 2px 0 #ffd700;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-table th::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0) 60%
+  );
+  animation: shine 2s infinite linear;
+  transform: rotate(-30deg);
+}
+
+@keyframes shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.history-table tr {
+  background-color: #fff;
+}
+
+.history-table tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+
+.history-table tr:hover {
+  background-color: #fffae6;
 }

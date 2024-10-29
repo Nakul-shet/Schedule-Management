@@ -9,38 +9,119 @@ import moment from "moment";
 const PaymentUpdate = () => {
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
-  const { patientId } = useParams(); // Fetch the patientId from the URL
+  const { patientId } = useParams();
 
   const [paymentDetails, setPaymentDetails] = useState({
     treatmentAmount: "",
     paymentMade: "",
     paymentPending: "",
-    paymentDate: moment().format("YYYY-MM-DD"), // Default to today's date
+    paymentDate: moment().format("YYYY-MM-DD"),
   });
 
-  // Fetch existing payment details when the component mounts
-  useEffect(() => {
-    const fetchPaymentDetails = async () => {
-      try {
-        const { data } = await axios.get(
-          `${CONFIG.runEndpoint.backendUrl}/patient/paymentDetails/${patientId}`,
-          { withCredentials: true }
-        );
-        setPaymentDetails({
-          treatmentAmount: data.treatmentAmount || "",
-          paymentMade: data.paymentMade || "",
-          paymentPending: data.paymentPending || "",
-          paymentDate: data.paymentDate
-            ? moment(data.paymentDate).format("YYYY-MM-DD")
-            : moment().format("YYYY-MM-DD"),
-        });
-      } catch (error) {
-        toast.error("Error fetching payment details.");
-      }
-    };
+  const [initialPendingAmount, setInitialPendingAmount] = useState(0);
 
-    fetchPaymentDetails();
-  }, [patientId]);
+  const [paymentHistory, setPaymentHistory] = useState([
+    {
+      paymentDate: "2023-09-01",
+      treatmentAmount: 13000,
+      paymentMade: 5000,
+      paymentPending: 5000,
+    },
+    {
+      paymentDate: "2023-10-05",
+      treatmentAmount: 12000,
+      paymentMade: 2000,
+      paymentPending: 3000,
+    },
+    {
+      paymentDate: "2023-11-05",
+      treatmentAmount: 11000,
+      paymentMade: 1200,
+      paymentPending: 1800,
+    },
+    {
+      paymentDate: "2023-09-01",
+      treatmentAmount: 13000,
+      paymentMade: 5000,
+      paymentPending: 5000,
+    },
+    {
+      paymentDate: "2023-10-05",
+      treatmentAmount: 12000,
+      paymentMade: 2000,
+      paymentPending: 3000,
+    },
+    {
+      paymentDate: "2023-11-05",
+      treatmentAmount: 11000,
+      paymentMade: 1200,
+      paymentPending: 1800,
+    },
+    {
+      paymentDate: "2023-09-01",
+      treatmentAmount: 13000,
+      paymentMade: 5000,
+      paymentPending: 5000,
+    },
+    {
+      paymentDate: "2023-10-05",
+      treatmentAmount: 12000,
+      paymentMade: 2000,
+      paymentPending: 3000,
+    },
+    {
+      paymentDate: "2023-11-05",
+      treatmentAmount: 11000,
+      paymentMade: 1200,
+      paymentPending: 1800,
+    },
+    {
+      paymentDate: "2023-09-01",
+      treatmentAmount: 13000,
+      paymentMade: 5000,
+      paymentPending: 5000,
+    },
+    {
+      paymentDate: "2023-10-05",
+      treatmentAmount: 12000,
+      paymentMade: 2000,
+      paymentPending: 3000,
+    },
+    {
+      paymentDate: "2023-11-05",
+      treatmentAmount: 11000,
+      paymentMade: 1200,
+      paymentPending: 1800,
+    },
+  ]);
+
+  // Set initial values from the latest payment history
+  useEffect(() => {
+    const latestPayment = [...paymentHistory].sort(
+      (a, b) => new Date(b.paymentDate) - new Date(a.paymentDate)
+    )[0];
+
+    if (latestPayment) {
+      setPaymentDetails({
+        treatmentAmount: latestPayment.treatmentAmount,
+        paymentMade: "",
+        paymentPending: latestPayment.paymentPending,
+        paymentDate: moment(latestPayment.paymentDate).format("YYYY-MM-DD"),
+      });
+      setInitialPendingAmount(latestPayment.paymentPending);
+    }
+  }, [patientId, paymentHistory]);
+
+  // Update `paymentPending` whenever `paymentMade` changes
+  useEffect(() => {
+    setPaymentDetails((prevDetails) => ({
+      ...prevDetails,
+    }));
+  }, [
+    paymentDetails.paymentMade,
+    paymentDetails.treatmentAmount,
+    initialPendingAmount,
+  ]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +143,7 @@ const PaymentUpdate = () => {
         { withCredentials: true }
       );
       toast.success("Payment updated successfully.");
-      navigate("/patients"); // Redirect back to the patients list after update
+      navigate("/patients");
     } catch (error) {
       toast.error("Error updating payment.");
     }
@@ -72,52 +153,44 @@ const PaymentUpdate = () => {
     return <Navigate to="/login" />;
   }
 
+  // Sort payment history by date in ascending order
+  const sortedPaymentHistory = [...paymentHistory].sort((a, b) => {
+    return new Date(b.paymentDate) - new Date(a.paymentDate);
+  });
+
   return (
     <section className="page">
-      <section className="container form-component add-admin-form">
-        <h1 className="form-title">Update Payment for Patient: {patientId}</h1>
+      <section
+        className="container form-component add-admin-form"
+        style={{ minHeight: 0, paddingBottom: 0 }}
+      >
+        <h1
+          className="form-title"
+          style={{ display: "flex", alignItems: "center", gap: "5px" }}
+        >
+          Update Payment of <h5 style={{ margin: 0 }}>{patientId}</h5> |
+          Pending:
+          <h5 style={{ margin: 0 }}>{paymentDetails.paymentPending}</h5>
+        </h1>
 
         <form onSubmit={handlePaymentUpdate}>
-          {/* Payment Details */}
           <div className="form-group">
-            <input
-              type="number"
-              name="treatmentAmount"
-              placeholder="Treatment Amount"
-              value={paymentDetails.treatmentAmount}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
+            <div className="input-wrapper">
+              <label className="floating-label">Treatment Amount</label>
+              <input
+                type="number"
+                name="treatmentAmount"
+                placeholder="Treatment Amount"
+                value={paymentDetails.treatmentAmount}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
             <input
               type="number"
               name="paymentMade"
               placeholder="Payment Made"
               value={paymentDetails.paymentMade}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="number"
-              name="paymentPending"
-              placeholder="Payment Pending"
-              value={paymentDetails.paymentPending}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="date"
-              name="paymentDate"
-              placeholder="Payment Date"
-              value={paymentDetails.paymentDate}
               onChange={handleInputChange}
               required
             />
@@ -129,6 +202,34 @@ const PaymentUpdate = () => {
             </button>
           </div>
         </form>
+      </section>
+      {/* Display Payment History */}
+      <section className="payment-history">
+        <h2>Payment History</h2>
+        {sortedPaymentHistory.length > 0 ? (
+          <table className="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Treatment Amount</th>
+                <th>Payment Made</th>
+                <th>Payment Pending</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedPaymentHistory.map((entry, index) => (
+                <tr key={index}>
+                  <td>{moment(entry.paymentDate).format("DD-MM-YYYY")}</td>
+                  <td>{entry.treatmentAmount}</td>
+                  <td>{entry.paymentMade}</td>
+                  <td>{entry.paymentPending}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No payment history available.</p>
+        )}
       </section>
     </section>
   );
