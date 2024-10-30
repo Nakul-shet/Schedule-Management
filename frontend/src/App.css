@@ -962,3 +962,105 @@ button.no:hover {
 .history-table tr:hover {
   background-color: #fffae6;
 }
+
+/* Message list table css*/
+
+.message-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.message-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #25d366; /* WhatsApp green */
+  color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.message-table th,
+.message-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.message-table th {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.message-table tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+
+.message-table tbody tr:hover {
+  background-color: #e9f5f1;
+}
+
+.message-table .date {
+  margin-left: 4px; /* Adjust the gap size as needed */
+  font-size: 0.9em; /* Optional: adjust font size for better visibility */
+}
+
+.pagination-controls-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns items to the right */
+  margin-top: 1rem; /* Space above the controls */
+}
+
+.pagination-controls {
+  display: flex;
+  margin-right: 1rem; /* Space between pagination and dropdown */
+  overflow: hidden;
+}
+
+.pagination-controls button {
+  background-color: #007bff; /* Button color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 0.5rem 1rem; /* Padding for button size */
+  margin-left: 0.5rem; /* Space between buttons */
+  cursor: pointer; /* Cursor change on hover */
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; /* Smooth transition */
+}
+
+.pagination-controls button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: scale(1.05); /* Slightly increase size on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.messages-per-page {
+  display: flex;
+  align-items: center; /* Centers label and dropdown vertically */
+}
+
+.messages-per-page label {
+  margin-right: 0.5rem; /* Space between label and dropdown */
+  color: #333; /* Label color */
+  font-weight: bold; /* Make label bold */
+}
+
+.messages-per-page select {
+  padding: 0.5rem; /* Padding for dropdown */
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ccc; /* Border color */
+  background-color: white; /* Background color */
+  transition: border-color 0.2s, box-shadow 0.2s; /* Transition for effects */
+}
+
+.messages-per-page select:hover {
+  border-color: #007bff; /* Border color on hover */
+  box-shadow: 0 0 1px rgba(0, 123, 255, 0.5); /* Shadow on hover */
+}
+
+.messages-per-page select:focus {
+  outline: none; /* Remove default outline */
+  border-color: #0056b3; /* Border color on focus */
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Shadow on focus */
+}

@@ -18,7 +18,7 @@ const Patients = () => {
       patientName: "John Doe",
       gender: "Male",
       city: "New York",
-      treatmentAmount: 999999,
+      treatmentAmount: 25000,
       mobile: "1234567890",
       email: "john@example.com",
       notificationMethod: { email: true, sms: false },

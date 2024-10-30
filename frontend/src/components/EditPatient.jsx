@@ -4,12 +4,11 @@ import { Context } from "../main";
 import { GlobalContext } from "./GlobalVarOfLocation";
 import { toast } from "react-toastify";
 import axios from "axios";
-
 import { CONFIG } from "../config";
 
 const EditPatient = () => {
-  const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const { globalVariable } = useContext(GlobalContext); // Used globalVariable from GlobalContext
+  const { isAuthenticated } = useContext(Context);
+  const { globalVariable } = useContext(GlobalContext);
 
   const [patientName, setPatientName] = useState("");
   const [gender, setGender] = useState("");
@@ -20,6 +19,7 @@ const EditPatient = () => {
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [note, setNote] = useState("");
+  const [treatmentAmount, setTreatmentAmount] = useState(""); // New Treatment Amount field
   const [notificationMethod, setNotificationMethod] = useState({
     email: false,
     sms: false,
@@ -27,15 +27,16 @@ const EditPatient = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  // Get the patient ID from the URL
 
-  // Fetch the patient details when the component mounts
   useEffect(() => {
     const fetchPatientDetails = async () => {
       try {
-        const res = await axios.get(`${CONFIG.runEndpoint.backendUrl}/patient/${id}`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${CONFIG.runEndpoint.backendUrl}/patient/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
         const patient = res.data;
         setPatientName(patient.patientName);
         setGender(patient.gender);
@@ -46,6 +47,7 @@ const EditPatient = () => {
         setEmail(patient.email);
         setDob(patient.dob);
         setNote(patient.notes);
+        setTreatmentAmount(patient.treatmentAmount || ""); // Prepopulate treatment amount if available
         setNotificationMethod(
           patient.notificationMethod || { email: false, sms: false }
         );
@@ -58,32 +60,37 @@ const EditPatient = () => {
 
   const handleUpdatePatient = async (e) => {
     e.preventDefault();
+
+    // Validate Treatment Amount as a positive number
+    if (!treatmentAmount || isNaN(treatmentAmount) || treatmentAmount <= 0) {
+      toast.error("Please enter a valid treatment amount.");
+      return;
+    }
+
     try {
-      await axios
-        .patch(
-          `${CONFIG.runEndpoint.backendUrl}/patient/updatePatient/${id}`, // Use the correct update API
-          {
-            patientName,
-            gender,
-            country,
-            city,
-            contact,
-            mobile,
-            email,
-            dob,
-            notes: note,
-            clinicName: globalVariable, // Send the clinicName as globalVariable
-            notificationMethod,
-          },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          navigate("/patients"); // Redirect to home or patient list after update
-        });
+      await axios.patch(
+        `${CONFIG.runEndpoint.backendUrl}/patient/updatePatient/${id}`,
+        {
+          patientName,
+          gender,
+          country,
+          city,
+          contact,
+          mobile,
+          email,
+          dob,
+          notes: note,
+          treatmentAmount, // Pass treatmentAmount to the API
+          clinicName: globalVariable,
+          notificationMethod,
+        },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      toast.success("Patient updated successfully.");
+      navigate("/patients");
     } catch (error) {
       toast.error("Failed to update patient.");
     }
@@ -154,18 +161,20 @@ const EditPatient = () => {
             />
           </div>
           <div>
-            <textarea
-              placeholder="Note"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            ></textarea>
+            <input
+              type="number"
+              placeholder="Treatment Amount"
+              value={treatmentAmount}
+              onChange={(e) => setTreatmentAmount(e.target.value)}
+            />
             <input
               type="text"
               placeholder="Clinic Name"
-              value={globalVariable} // clinicName is fixed as globalVariable
-              readOnly // Non-editable field
+              value={globalVariable}
+              readOnly
             />
           </div>
+
           <div>
             <label>
               <input
@@ -178,7 +187,7 @@ const EditPatient = () => {
                   }))
                 }
               />
-              Email Notification
+              Whatsapp Notification
             </label>
             <label>
               <input
@@ -193,6 +202,11 @@ const EditPatient = () => {
               />
               SMS Notification
             </label>
+            <textarea
+              placeholder="Note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            ></textarea>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
             <button type="submit">UPDATE PATIENT</button>

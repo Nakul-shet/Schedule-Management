@@ -22,8 +22,8 @@ const AddNewPatient = () => {
   const [note, setNote] = useState("");
   const [treatmentAmount, setTreatmentAmount] = useState(""); // New state for treatment amount
   const [notificationMethod, setNotificationMethod] = useState({
-    email: false,
-    sms: false,
+    email: true,
+    sms: true,
   });
 
   const navigateTo = useNavigate();
@@ -171,7 +171,7 @@ const AddNewPatient = () => {
                   }))
                 }
               />
-              Email Notification
+              Whatsapp Notification
             </label>
             <label>
               <input
