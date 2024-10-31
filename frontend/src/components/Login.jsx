@@ -5,13 +5,11 @@ import { toast } from "react-toastify";
 import { GlobalContext } from "./GlobalVarOfLocation";
 import { Context } from "../main";
 import axios from "axios";
-
 import { CONFIG } from "../config";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [clinics, setClinics] = useState([]); // Store clinics from API
   const [selectedClinic, setSelectedClinic] = useState(""); // Default selected clinic
 
@@ -31,7 +29,6 @@ const Login = () => {
           }
         );
         setClinics(response.data || []); // Assuming response.data is the list of clinics
-        // Set the first clinic as default if available
         if (response.data.length > 0) {
           setSelectedClinic(response.data[0].clinicName);
         }
@@ -46,7 +43,7 @@ const Login = () => {
   // Set selected clinic in global variable when it changes
   useEffect(() => {
     if (selectedClinic) {
-      setGlobalVariable(selectedClinic); // Only set global variable when a valid clinic is selected
+      setGlobalVariable(selectedClinic);
     }
   }, [selectedClinic, setGlobalVariable]);
 
@@ -56,7 +53,12 @@ const Login = () => {
       await axios
         .post(
           `${CONFIG.runEndpoint.authUrl}/api/v1/user/login`,
-          { email, password, confirmPassword, role: "Admin" },
+          {
+            email,
+            password,
+            confirmPassword: password, // Automatically set confirmPassword to password
+            role: "Admin",
+          },
           {
             withCredentials: true,
             headers: { "Content-Type": "application/json" },
@@ -68,7 +70,6 @@ const Login = () => {
           navigateTo("/");
           setEmail("");
           setPassword("");
-          setConfirmPassword("");
         });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -83,10 +84,6 @@ const Login = () => {
     <>
       <section className="form-component flex-row">
         <div className="flex-column">
-          {/* <h1 className="one-dentist">
-            <FaTooth className="one-dentist" />
-            One Dentist
-          </h1> */}
           <img src="/Shourya.png" alt="logo" className="logo" />
           <p>Only Admins Are Allowed To Access These Resources!</p>
         </div>
@@ -104,12 +101,6 @@ const Login = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
             {/* Clinic Dropdown */}

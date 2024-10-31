@@ -76,8 +76,8 @@ const Events = () => {
       setView(Views.DAY);
     } else if (view === Views.DAY) {
       // If the current view is Day, navigate to the Add Appointment page on time click
-      const date = moment(start).format("DD-MM-YYYY"); // Format date as DD-MM-YYYY
-      const time = moment(start).format("hh:mmA"); // Format time as hh:mmAM/PM
+      const date = moment(start).format("YYYY-MM-DD"); // Format date as YYYY-MM-DD
+      const time = moment(start).format("HH:mm"); // Format time as HH:mm in 24-hour format
       navigate(`/appointment/addnew?date=${date}&time=${time}`);
     }
   };
@@ -119,7 +119,7 @@ const Events = () => {
     }
   };
 
-  const CustomToolbar = ({ date, label }) => (
+  const CustomToolbar = ({ label, onNavigate }) => (
     <div className="rbc-toolbar">
       <button className="rbc-btn" onClick={() => setView(Views.MONTH)}>
         Month
@@ -138,6 +138,16 @@ const Events = () => {
         {label}
       </span>
 
+      <button className="rbc-btn" onClick={() => onNavigate("PREV")}>
+        Back
+      </button>
+      <button className="rbc-btn" onClick={() => onNavigate("TODAY")}>
+        Today
+      </button>
+      <button className="rbc-btn" onClick={() => onNavigate("NEXT")}>
+        Next
+      </button>
+
       {showDatePicker && (
         <DatePicker
           className="react-datepicker"
@@ -150,13 +160,6 @@ const Events = () => {
           inline
         />
       )}
-
-      <button className="rbc-btn" onClick={() => navigate("back")}>
-        Back
-      </button>
-      <button className="rbc-btn" onClick={() => navigate("next")}>
-        Next
-      </button>
     </div>
   );
 

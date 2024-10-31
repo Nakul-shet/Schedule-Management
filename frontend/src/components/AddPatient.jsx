@@ -9,8 +9,8 @@ import { CONFIG } from "../config";
 
 const AddNewPatient = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-
   const { globalVariable } = useContext(GlobalContext); // Changed to globalVariable from GlobalContext
+
   const [patientName, setPatientName] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
@@ -20,9 +20,10 @@ const AddNewPatient = () => {
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [note, setNote] = useState("");
+  const [treatmentAmount, setTreatmentAmount] = useState(""); // New state for treatment amount
   const [notificationMethod, setNotificationMethod] = useState({
-    email: false,
-    sms: false,
+    email: true,
+    sms: true,
   });
 
   const navigateTo = useNavigate();
@@ -43,6 +44,7 @@ const AddNewPatient = () => {
             email,
             dob,
             notes: note,
+            treatmentAmount, // Added treatmentAmount to the request
             clinicName: globalVariable, // Changed clinicName to globalVariable
             notificationMethod,
           },
@@ -64,6 +66,7 @@ const AddNewPatient = () => {
           setEmail("");
           setDob("");
           setNote("");
+          setTreatmentAmount(""); // Reset treatment amount
           setNotificationMethod({ email: false, sms: false });
         });
     } catch (res) {
@@ -136,17 +139,25 @@ const AddNewPatient = () => {
             />
           </div>
           <div>
-            <textarea
-              placeholder="Note"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-            ></textarea>
+            <input
+              type="number"
+              placeholder="Treatment Amount"
+              value={treatmentAmount} // Treatment Amount field
+              onChange={(e) => setTreatmentAmount(e.target.value)}
+            />
             <input
               type="text"
               placeholder="Clinic Name"
               value={globalVariable} // Changed value to globalVariable
               readOnly // Made the field non-editable
             />
+          </div>
+          <div>
+            <textarea
+              placeholder="Note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            ></textarea>
           </div>
           <div>
             <label>
@@ -160,7 +171,7 @@ const AddNewPatient = () => {
                   }))
                 }
               />
-              Email Notification
+              Whatsapp Notification
             </label>
             <label>
               <input
@@ -177,7 +188,7 @@ const AddNewPatient = () => {
             </label>
           </div>
           <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button onClick={handleAddNewPatient()}>ADD NEW PATIENT</button>
+            <button type="submit">ADD NEW PATIENT</button>
           </div>
         </form>
       </section>

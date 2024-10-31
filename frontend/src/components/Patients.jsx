@@ -6,12 +6,117 @@ import { useNavigate } from "react-router-dom";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
-
+import { BsCurrencyRupee } from "react-icons/bs";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { CONFIG } from "../config";
 
 const Patients = () => {
-  const [patients, setPatients] = useState([]); // To store the fetched patients
-  const [filteredPatients, setFilteredPatients] = useState([]); // To store the filtered patients based on search
+  //const [patients, setPatients] = useState([]); // To store the fetched patients
+  const [patients, setPatients] = useState([
+    {
+      patientId: 1,
+      patientName: "John Doe",
+      gender: "Male",
+      city: "New York",
+      treatmentAmount: 25000,
+      mobile: "1234567890",
+      email: "john@example.com",
+      notificationMethod: { email: true, sms: false },
+    },
+    {
+      patientId: 2,
+      patientName: "Jane Smith",
+      gender: "Female",
+      city: "Los Angeles",
+      treatmentAmount: 999999,
+      mobile: "0987654321",
+      email: "jane@example.com",
+      notificationMethod: { email: false, sms: true },
+    },
+    {
+      patientId: 3,
+      patientName: "Alice Johnson",
+      gender: "Female",
+      city: "Chicago",
+      treatmentAmount: 999999,
+      mobile: "1122334455",
+      email: "alice@example.com",
+      notificationMethod: { email: true, sms: true },
+    },
+    {
+      patientId: 4,
+      patientName: "Bob Brown",
+      gender: "Male",
+      city: "Houston",
+      treatmentAmount: 999999,
+      mobile: "2233445566",
+      email: "bob@example.com",
+      notificationMethod: { email: false, sms: false },
+    },
+    {
+      patientId: 5,
+      patientName: "Charlie Davis",
+      gender: "Male",
+      city: "Phoenix",
+      treatmentAmount: 999999,
+      mobile: "3344556677",
+      email: "charlie@example.com",
+      notificationMethod: { email: true, sms: false },
+    },
+  ]);
+  // const [filteredPatients, setFilteredPatients] = useState([]); // To store the filtered patients based on search
+  const [filteredPatients, setFilteredPatients] = useState([
+    {
+      patientId: 1,
+      patientName: "John Doe",
+      gender: "Male",
+      city: "New York",
+      treatmentAmount: 999999,
+      mobile: "1234567890",
+      email: "john@example.com",
+      notificationMethod: { email: true, sms: false },
+    },
+    {
+      patientId: 2,
+      patientName: "Jane Smith",
+      gender: "Female",
+      city: "Los Angeles",
+      treatmentAmount: 999999,
+      mobile: "0987654321",
+      email: "jane@example.com",
+      notificationMethod: { email: false, sms: true },
+    },
+    {
+      patientId: 3,
+      patientName: "Alice Johnson",
+      gender: "Female",
+      city: "Chicago",
+      treatmentAmount: 999999,
+      mobile: "1122334455",
+      email: "alice@example.com",
+      notificationMethod: { email: true, sms: true },
+    },
+    {
+      patientId: 4,
+      patientName: "Bob Brown",
+      gender: "Male",
+      city: "Houston",
+      treatmentAmount: 999999,
+      mobile: "2233445566",
+      email: "bob@example.com",
+      notificationMethod: { email: false, sms: false },
+    },
+    {
+      patientId: 5,
+      patientName: "Charlie Davis",
+      gender: "Male",
+      city: "Phoenix",
+      treatmentAmount: 999999,
+      mobile: "3344556677",
+      email: "charlie@example.com",
+      notificationMethod: { email: true, sms: false },
+    },
+  ]);
   const [searchTerm, setSearchTerm] = useState(""); // To track the search input
   const [currentPage, setCurrentPage] = useState(1); // To track the current page for pagination
   const [patientsPerPage, setPatientsPerPage] = useState(5); // Number of patients per page
@@ -141,7 +246,7 @@ const Patients = () => {
               <th>City</th>
               <th>Mobile</th>
               <th>Email</th>
-              <th>Notifications</th>
+              <th>Total Amount</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -153,26 +258,21 @@ const Patients = () => {
                 <td>{patient.city}</td>
                 <td>{patient.mobile}</td>
                 <td>{patient.email}</td>
-                <td className="notification-cell">
-                  <div className="checkbox-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={patient.emailNotification}
-                        disabled
-                      />
-                      Email
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={patient.smsNotification}
-                        disabled
-                      />
-                      SMS
-                    </label>
-                  </div>
+                <td>
+                  <button
+                    className="Payment-btn"
+                    title={patient.patientId}
+                    onClick={() =>
+                      navigate(`/patient/payment/${patient.patientId}`)
+                    }
+                  >
+                    <RiMoneyRupeeCircleFill style={{ color: "goldenrod" }} />
+                  </button>
+                  <span style={{ marginLeft: "8px" }}>
+                    {patient.treatmentAmount}
+                  </span>
                 </td>
+
                 <td className="actions-cell">
                   <button
                     className="edit-btn"

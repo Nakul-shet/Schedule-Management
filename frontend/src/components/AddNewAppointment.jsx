@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
-import {GlobalContext} from "./GlobalVarOfLocation";
-import { Navigate, useNavigate } from "react-router-dom";
+import { GlobalContext } from "./GlobalVarOfLocation";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-
 import { CONFIG } from "../config";
+import moment from "moment";
 
 const AddNewAppointment = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
@@ -17,9 +17,31 @@ const AddNewAppointment = () => {
   const [appointmentDate, setAppointmentDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [duration, setDuration] = useState(""); // State to track the selected duration
   const [treatmentType, setTreatmentType] = useState("");
 
   const navigateTo = useNavigate();
+  const location = useLocation(); // Hook to get the current URL
+
+  // Extract query parameters (date and time) from the URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const dateParam = params.get("date");
+    const timeParam = params.get("time");
+
+    if (dateParam) {
+      setAppointmentDate(dateParam); // Set the appointment date from the URL
+    }
+    if (timeParam) {
+      const formattedTime = moment(timeParam, "HH:mm").format("HH:mm");
+      setStartTime(formattedTime); // Set the start time in 24-hour format
+    }
+  }, [location]);
+
+  // Format the date for the title
+  const formattedTitleDate = appointmentDate
+    ? moment(appointmentDate, "YYYY-MM-DD").format("MMM DD YYYY")
+    : "selected Date";
 
   // Search for patients by name or ID
   const handlePatientSearch = async (e) => {
@@ -40,6 +62,20 @@ const AddNewAppointment = () => {
     setPatients([]);
   };
 
+  // Function to calculate the end time based on the selected start time and duration
+  const calculateEndTime = (startTime, duration) => {
+    if (!startTime || !duration) return;
+    const end = moment(startTime, "HH:mm")
+      .add(duration, "minutes")
+      .format("HH:mm");
+    setEndTime(end);
+  };
+
+  // Update the end time whenever start time or duration changes
+  useEffect(() => {
+    calculateEndTime(startTime, duration);
+  }, [startTime, duration]);
+
   const handleAddNewAppointment = async (e) => {
     e.preventDefault();
     if (!selectedPatient) {
@@ -50,13 +86,13 @@ const AddNewAppointment = () => {
       await axios.post(
         `${CONFIG.runEndpoint.backendUrl}/appointment/createAppointment`,
         {
-          patientId: selectedPatient.patientId, // Use selectedPatient data
+          patientId: selectedPatient.patientId,
           patientName: selectedPatient.patientName,
           date: appointmentDate,
           startTime,
           endTime,
           treatmentType,
-          clinicName : globalVariable
+          clinicName: globalVariable,
         },
         {
           withCredentials: true,
@@ -77,7 +113,7 @@ const AddNewAppointment = () => {
     setAppointmentDate("");
     setStartTime("");
     setEndTime("");
-    setClinicName("");
+    setDuration("");
     setTreatmentType("");
   };
 
@@ -88,7 +124,11 @@ const AddNewAppointment = () => {
   return (
     <section className="page">
       <section className="container form-component add-admin-form">
-        <h1 className="form-title">Add New Appointment</h1>
+        {/* Title with dynamic date */}
+        <h1 className="form-title">
+          Add New Appointment on {formattedTitleDate}
+        </h1>
+
         <form onSubmit={handleAddNewAppointment}>
           {/* Patient search field */}
           <div>
@@ -138,7 +178,7 @@ const AddNewAppointment = () => {
           )}
 
           {/* Appointment details */}
-          <div>
+          <div style={{ display: "flex", gap: "10px" }}>
             <input
               type="date"
               placeholder="Date"
@@ -146,8 +186,6 @@ const AddNewAppointment = () => {
               onChange={(e) => setAppointmentDate(e.target.value)}
               required
             />
-          </div>
-          <div>
             <input
               type="time"
               placeholder="Start Time"
@@ -156,15 +194,29 @@ const AddNewAppointment = () => {
               required
             />
           </div>
-          <div>
+
+          {/* Time slot duration dropdown */}
+          <div style={{ display: "flex", gap: "10px" }}>
+            <select
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              required
+            >
+              <option value="">Select Duration</option>
+              <option value="5">5 minutes</option>
+              <option value="10">10 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="20">20 minutes</option>
+              <option value="30">30 minutes</option>
+            </select>
             <input
               type="time"
               placeholder="End Time"
               value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
+              readOnly
             />
           </div>
+
           <div>
             <select
               value={treatmentType}
