@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema({
@@ -37,4 +37,4 @@ const appointmentSchema = new Schema({
 
 const Appointment = mongoose.model("Appointment" , appointmentSchema);
 
-module.exports = {Appointment , appointmentSchema}
+export {Appointment , appointmentSchema}

@@ -1,6 +1,18 @@
-const {Payment} = require("../models/payment")
+import {Payment} from "../models/payment.js";
 
-exports.updatePaymentForPatient = async (req, res) => {
+// export const createPaymentForPatient = async (req , res) => {
+
+//   const {amount} = req.body;
+//   const {patientId} = req.params;
+  
+//   const newPayment = new Payment({
+//       patientId : patientId,
+//       treatmentAmount : Number(amount),
+//       paymentMade : 
+//   })
+// }
+
+export const updatePaymentForPatient = async (req, res) => {
     try {
       const { patientId, amount } = req.body;
   
@@ -13,10 +25,17 @@ exports.updatePaymentForPatient = async (req, res) => {
 
       //Previous Payment
       const previousPayment = (String(payment.updatedAt)).substring(0 , 10)
+
+      const newPayment = Number(amount);
+
+      console.log(newPayment);
   
       // Update the paymentMade field
-      payment.paymentMade += amount;
-      payment.paymentdate.push(previousPayment)
+      payment.paymentMade += newPayment;
+
+      const dateOnly3 = new Date().toLocaleDateString('en-CA');
+
+      payment.paymentdate.push({dateOnly3 , newPayment})
   
       // Save the updated document
       await payment.save();
@@ -36,3 +55,16 @@ exports.updatePaymentForPatient = async (req, res) => {
       res.status(500).json({ message: 'Error updating payment', error: error.message });
     }
   };
+
+  export const getPaymentDetails = async (req , res) => {
+
+    const {patientId} = req.params;
+
+    const payment = await Payment.findOne({ patientId });
+  
+    // if (!payment) {
+    //   return res.status(404).json({ message: 'Payment not found' });
+    // } 
+
+    res.send(payment)
+  }

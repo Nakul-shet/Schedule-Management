@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
 const paymentSchema = new mongoose.Schema({
     patientId: {
@@ -19,4 +19,4 @@ const paymentSchema = new mongoose.Schema({
   
   const Payment = mongoose.model("Payment" , paymentSchema)
   
-  module.exports = {Payment , paymentSchema}
+  export {Payment , paymentSchema}

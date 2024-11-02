@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
 const clinicSchema = new Schema({
   clinicName: {
@@ -25,4 +25,4 @@ const clinicSchema = new Schema({
 
 const Clinic = mongoose.model('Clinic', clinicSchema);
 
-module.exports = {Clinic , clinicSchema }
+export {Clinic , clinicSchema }

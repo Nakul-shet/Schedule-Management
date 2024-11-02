@@ -5,7 +5,12 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import { errorMiddleware } from "./middlewares/error.js";
-import userRouter from "./router/userRouter.js";
+import userRouter from "./routes/userRouter.js";
+
+import appointmentRouter from"./routes/appointmentRoutes.js";
+import patientRouter from"./routes/patientRoutes.js";
+import clinicRouter from"./routes/clinicRoutes.js";
+import paymentRouter from"./routes/paymentRoutes.js";
 
 
 const app = express();
@@ -31,6 +36,10 @@ app.use(
 );
 
 app.use("/api/v1/user", userRouter);
+app.use("/appointment", appointmentRouter);
+app.use("/patient", patientRouter);
+app.use("/clinic", clinicRouter);
+app.use("/payment", paymentRouter);
 
 dbConnection();
 

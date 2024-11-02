@@ -1,5 +1,5 @@
-const {Patient} = require('../models/patient');
-const {Payment} = require("../models/payment")
+import {Patient} from '../models/patient.js';
+import {Payment} from "../models/payment.js";
 
 function generatePatientId() {
   const prefix = "P00";
@@ -7,7 +7,7 @@ function generatePatientId() {
   return prefix + randomNumber;
 }
 
-exports.createPatientRecord = async (req, res) => {
+export const createPatientRecord = async (req, res) => {
   let patId;
   try {
     const {patientName , gender , country , city , contact , mobile , email , dob , notes , clinicName , alertPreference , treatmentAmount , paymentMade} = req.body;
@@ -39,7 +39,7 @@ exports.createPatientRecord = async (req, res) => {
       const newPayment = new Payment({
         patientId : patId,
         treatmentAmount,
-        paymentMade
+        paymentMade : 0
       })
 
       await newPayment.save();
@@ -53,7 +53,7 @@ exports.createPatientRecord = async (req, res) => {
   }
 };
 
-exports.getAllPatientFromClinic = async (req , res) => {
+export const getAllPatientFromClinic = async (req , res) => {
 
   const clinicName = req.params.clinicName;
 
@@ -72,7 +72,7 @@ exports.getAllPatientFromClinic = async (req , res) => {
   }
 }
 
-exports.getPatientRecord = async (req, res) => {
+export const getPatientRecord = async (req, res) => {
   const PatientId = req.params.patientId;  
   try {
     const patientRecord = await Patient.findOne({ patientId: PatientId });
@@ -85,7 +85,7 @@ exports.getPatientRecord = async (req, res) => {
   }
 };
 
-exports.searchPatientByName = async (req, res) => {
+export const searchPatientByName = async (req, res) => {
   const { name } = req.params;
   
   if (!name) {
@@ -107,7 +107,7 @@ exports.searchPatientByName = async (req, res) => {
   }
 };
 
-exports.updatePatientRecord = async (req, res) => {
+export const updatePatientRecord = async (req, res) => {
 const {patientId} = req.params;
   try {
     const patientRecord = await Patient.findOneAndUpdate(
@@ -124,7 +124,7 @@ const {patientId} = req.params;
   }
 };
 
-exports.deletePatientRecord = async (req , res) => {
+export const deletePatientRecord = async (req , res) => {
   const {patientId} = req.params;
   try{
     const isPatientExist = await Patient.find({patientId : patientId})

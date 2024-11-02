@@ -1,10 +1,10 @@
-const {Appointment} = require('../models/appointment');
+import { Appointment } from '../models/appointment.js';
 
 const doTimesOverlap = (start1, end1, start2, end2) => {
   return (start1 < end2 && end1 > start2);
 };
 
-exports.createAppointment = async (req , res) => {
+export const createAppointment = async (req , res) => {
 
   const { patientId , patientName , date , startTime , endTime , treatmentType , clinicName} = req.body;
 
@@ -60,7 +60,7 @@ exports.createAppointment = async (req , res) => {
   }
 }
 
-exports.getTodayAppointments = async (req, res) => {
+export const getTodayAppointments = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set to start of the day
@@ -82,7 +82,7 @@ exports.getTodayAppointments = async (req, res) => {
   }
 };
 
-exports.getAllAppointments = async (req, res) => {
+export const getAllAppointments = async (req, res) => {
   try {
     // Get today's date at midnight
     const today = new Date();
@@ -99,7 +99,7 @@ exports.getAllAppointments = async (req, res) => {
   }
 };
 
-exports.updateAppointment = async (req, res) => {
+export const updateAppointment = async (req, res) => {
   const {patientId} = req.params;
   try {
     const appointment = await Appointment.findOneAndUpdate(
@@ -116,7 +116,7 @@ exports.updateAppointment = async (req, res) => {
   }
 };
 
-exports.cancelAppointment = async (req, res) => {
+export const cancelAppointment = async (req, res) => {
   const {patientId} = req.params;
   try {
     const appointment = await Appointment.findOneAndDelete({ patientId: patientId });
@@ -128,3 +128,4 @@ exports.cancelAppointment = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+

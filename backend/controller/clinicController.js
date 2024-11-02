@@ -1,6 +1,6 @@
-const {Clinic} = require('../models/clinic');
+import {Clinic} from '../models/clinic.js';
 
-exports.getAllClinics = async (req, res) => {
+export const getAllClinics = async (req, res) => {
   try {
     const clinics = await Clinic.find();
     if (!clinics.length) {
@@ -12,7 +12,7 @@ exports.getAllClinics = async (req, res) => {
   }
 };
 
-exports.getClinicById = async (req, res) => {
+export const getClinicById = async (req, res) => {
   try {
     const clinic = await Clinic.findById(req.params.id);
     if (!clinic) {
@@ -24,7 +24,7 @@ exports.getClinicById = async (req, res) => {
   }
 };
 
-exports.createClinic = async (req, res) => {
+export const createClinic = async (req, res) => {
   const { clinicName, clinicAddress, description, contact } = req.body;
 
   if (!clinicName || !clinicAddress || !contact) {
@@ -40,7 +40,7 @@ exports.createClinic = async (req, res) => {
   }
 };
 
-exports.updateClinic = async (req, res) => {
+export const updateClinic = async (req, res) => {
   const {id} = req.params;
   try {
     const clinic = await Clinic.findOneAndUpdate(
@@ -57,7 +57,7 @@ exports.updateClinic = async (req, res) => {
   }
 };
 
-exports.deleteClinic = async (req, res) => {
+export const deleteClinic = async (req, res) => {
   try {
     const clinic = await Clinic.findById(req.params.id);
     if (!clinic) {
@@ -70,3 +70,4 @@ exports.deleteClinic = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+

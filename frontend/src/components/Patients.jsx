@@ -246,7 +246,7 @@ const Patients = () => {
               <th>City</th>
               <th>Mobile</th>
               <th>Email</th>
-              <th>Total Amount</th>
+              <th>Payment</th>
               <th>Actions</th>
             </tr>
           </thead>
