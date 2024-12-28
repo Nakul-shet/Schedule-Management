@@ -103,7 +103,7 @@ export const updateAppointment = async (req, res) => {
   const {patientId} = req.params;
   try {
     const appointment = await Appointment.findOneAndUpdate(
-      { patientId: patientId},
+      { _id: patientId},
       req.body,
       { new: true, runValidators: true }
     );
@@ -119,7 +119,7 @@ export const updateAppointment = async (req, res) => {
 export const cancelAppointment = async (req, res) => {
   const {patientId} = req.params;
   try {
-    const appointment = await Appointment.findOneAndDelete({ patientId: patientId });
+    const appointment = await Appointment.findOneAndDelete({ _id: patientId });
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }

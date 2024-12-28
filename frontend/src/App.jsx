@@ -32,7 +32,7 @@ const App = () => {
   //   const fetchUser = async () => {
   //     try {
   //       const response = await axios.get(
-  //         "https://schedule-management-authentication.onrender.com/api/v1/user/admin/me",
+  //         `${CONFIG.runEndpoint.backendUrl}/api/v1/user/admin/me`,
   //         {
   //           withCredentials: true,
   //         }

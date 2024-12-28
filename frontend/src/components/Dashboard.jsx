@@ -82,6 +82,25 @@ const Dashboard = () => {
     fetchAppointments();
   }, []);
 
+  //   useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${CONFIG.runEndpoint.backendUrl}/api/v1/user/admin/me`,
+  //         {
+  //           withCredentials: true,
+  //         }
+  //       );
+  //       setIsAuthenticated(true);
+  //       setAdmin(response.data.user);
+  //     } catch (error) {
+  //       setIsAuthenticated(false);
+  //       setAdmin({});
+  //     }
+  //   };
+  //   fetchUser();
+  // }, [isAuthenticated]);
+
   // Function to calculate and format time left for the next appointment
   useEffect(() => {
     if (nextAppointment) {

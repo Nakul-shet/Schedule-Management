@@ -91,7 +91,7 @@ const Events = () => {
         { withCredentials: true }
       );
       toast.success("Appointment updated successfully.");
-      fetchEvents(); // Refresh events after update
+      setEvents(); // Refresh events after update
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Error updating appointment."
