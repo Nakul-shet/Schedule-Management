@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Context } from "../main";
+import { GlobalContext } from "./GlobalVarOfLocation";
 import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
@@ -21,6 +22,7 @@ const Events = () => {
   const [view, setView] = useState(Views.MONTH);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { isAuthenticated } = useContext(Context);
+  const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const Events = () => {
     const fetchEvents = async () => {
       try {
         const res = await axios.get(
-          `${CONFIG.runEndpoint.backendUrl}/appointment`,
+          `${CONFIG.runEndpoint.backendUrl}/appointment/all/${globalVariable}`,
           { withCredentials: true }
         );
         setEvents(res.data);
@@ -82,7 +84,7 @@ const Events = () => {
         // Call cancelAppointment if cancel button is clicked
         cancelAppointment(event.id)
           .then(() => {
-            Swal.fire('Appointment canceled', '', 'info');
+             Swal.fire('Appointment canceled', '', 'info');
           })
           .catch((error) => {
             Swal.fire('Error', error?.message || 'Failed to cancel appointment', 'error');
@@ -119,7 +121,7 @@ const Events = () => {
       );
       setEvents(res.data); // Update state with the fetched data
     } catch (error) {
-      console.log(
+      console.error(
         error.response?.data?.message || "Error updating appointment.",
         '',
         'error'
@@ -140,9 +142,8 @@ const Events = () => {
         { withCredentials: true }
       );
       setEvents(res.data); // Update state with the fetched data
-      Swal.fire('Appointment canceled successfully!', '', 'success');
     } catch (error) {
-      Swal.fire(
+      console.error(
         error.response?.data?.message || "Error canceling appointment.",
         '',
         'error'
