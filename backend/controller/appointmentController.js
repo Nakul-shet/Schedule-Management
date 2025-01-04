@@ -19,7 +19,8 @@ export const createAppointment = async (req , res) => {
 
     const patientAppointmentOnSameDay = await Appointment.findOne({
       patientId: patientId,
-      date: date
+      date: date,
+      status : "scheduled"
     });
 
     const isOverlapping = overlappingAppointments.some(appointment => 
@@ -45,7 +46,7 @@ export const createAppointment = async (req , res) => {
       startTime : `${date}T${startTime}:00.000`,
       endTime: `${date}T${endTime}:00.000`,
       status: 'scheduled',
-      clinicName,
+      clinicName : clinicName,
       treatmentType
     });
 
@@ -82,6 +83,33 @@ export const getTodayAppointments = async (req, res) => {
   }
 };
 
+export const getTodayAppointmentByClinic = async (req , res) => {
+
+  const {clinic} = req.params;
+
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of the day
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Get the next day
+
+    // Query to find appointments with today's date
+    const appointments = await Appointment.find({
+        date: {
+            $gte: today,
+            $lt: tomorrow
+        },
+        clinicName : clinic
+    })
+
+    res.json(appointments);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+
+}
+
 export const getAllAppointments = async (req, res) => {
   try {
     // Get today's date at midnight
@@ -98,6 +126,27 @@ export const getAllAppointments = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const getAllAppointmentByClinic = async (req , res) => {
+
+  const {clinic} = req.params;
+
+  try {
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const appointments = await Appointment.find({
+      date: { $gte: today }, 
+      status: 'scheduled',
+      clinicName : clinic   
+    }).sort({ date: 1, startTime: 1 }); 
+
+    res.json(appointments);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
 export const updateAppointment = async (req, res) => {
   const {patientId} = req.params;

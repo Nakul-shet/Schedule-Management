@@ -50,7 +50,7 @@ const App = () => {
   useEffect(() => {
       const checkAuthentication = async () => {
           try {
-              const response = await axios.get(`${CONFIG.runEndpoint.authUrl}/api/v1/user/me`, {
+              const response = await axios.get(`${CONFIG.runEndpoint.backendUrl}/api/v1/user/admin/me`, {
                   withCredentials: true, // Send cookies for validation
               });
               setIsAuthenticated(true); // Set authenticated state

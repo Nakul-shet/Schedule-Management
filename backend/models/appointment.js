@@ -10,6 +10,10 @@ const appointmentSchema = new Schema({
       type : String,
       required : true
     },
+    clinicName : {
+      type : String,
+      required : true
+    },
     date: {
       type: Date,
       required: true,
