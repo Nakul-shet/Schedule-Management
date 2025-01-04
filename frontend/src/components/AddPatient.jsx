@@ -56,7 +56,7 @@ const AddNewPatient = () => {
         .then((res) => {
           toast.success(res.data.message);
           setIsAuthenticated(true);
-          navigateTo("/patient");
+          navigateTo("/patients");
           setPatientName("");
           setGender("");
           setCountry("");

@@ -47,6 +47,22 @@ const App = () => {
   //   fetchUser();
   // }, [isAuthenticated]);
 
+  useEffect(() => {
+      const checkAuthentication = async () => {
+          try {
+              const response = await axios.get(`${CONFIG.runEndpoint.authUrl}/api/v1/user/me`, {
+                  withCredentials: true, // Send cookies for validation
+              });
+              setIsAuthenticated(true); // Set authenticated state
+              setUser(response.data.user); // Load user details
+          } catch (error) {
+              setIsAuthenticated(false); // User is not authenticated
+          }
+      };
+  
+      checkAuthentication();
+  }, []);
+
   return (
     <GlobalProvider>
       <Router>

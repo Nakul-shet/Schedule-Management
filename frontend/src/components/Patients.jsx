@@ -132,7 +132,9 @@ const Patients = () => {
         { withCredentials: true }
       );
       setPatients(data || []); // Fallback to empty array if data is undefined
-      setFilteredPatients(data || []); // Initialize filteredPatients with the fetched data
+      setFilteredPatients(data || []);
+      console.log(data)
+      // Initialize filteredPatients with the fetched data
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error fetching patients.");
     }
@@ -259,18 +261,23 @@ const Patients = () => {
                 <td>{patient.mobile}</td>
                 <td>{patient.email}</td>
                 <td>
-                  <button
+                  {/* <button
                     className="Payment-btn"
                     title={patient.patientId}
                     onClick={() =>
                       navigate(`/patient/payment/${patient.patientId}`)
                     }
                   >
-                    <RiMoneyRupeeCircleFill style={{ color: "goldenrod" }} />
-                  </button>
-                  <span style={{ marginLeft: "8px" }}>
+                    <RiMoneyRupeeCircleFill onClick={() =>
+                      navigate(`/patient/payment/${patient.patientId}`)
+                    } style={{ color: "goldenrod" }} /> {patient.patientId}
+                  </button> */}
+                  {/* <span style={{ marginLeft: "8px" }}>
                     {patient.treatmentAmount}
-                  </span>
+                  </span> */}
+                  <RiMoneyRupeeCircleFill onClick={() =>
+                      navigate(`/patient/payment/${patient.patientId}`)
+                    } style={{ color: "goldenrod" }} /> {patient.patientId}
                 </td>
 
                 <td className="actions-cell">

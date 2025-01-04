@@ -51,31 +51,36 @@ const Clinics = () => {
 
   // Handle clinic card click to select a clinic
   const handleCardClick = (clinicName) => {
-    const confirmToast = () => (
-      <div>
-        <p>Do you want to change to {clinicName}?</p>
-        <button
-          className="yes"
-          onClick={() => {
-            setGlobalVariable(clinicName);
-            toast.success(`Clinic changed to ${clinicName}`, {
-              position: "top-right",
-            });
-            toast.dismiss();
-          }}
-        >
-          Yes
-        </button>
-        <button className="no" onClick={() => toast.dismiss()}>
-          No
-        </button>
-      </div>
-    );
+    console.log(clinicName)
 
-    toast.info(confirmToast, {
-      autoClose: false,
-      closeOnClick: false,
-    });
+    setGlobalVariable(clinicName);
+    navigate("/");
+
+    // const confirmToast = () => (
+    //   <div>
+    //     <p>Do you want to change to {clinicName}?</p>
+    //     <button
+    //       className="yes"
+    //       onClick={() => {
+    //         setGlobalVariable(clinicName);
+    //         toast.success(`Clinic changed to ${clinicName}`, {
+    //           position: "top-right",
+    //         });
+    //         toast.dismiss();
+    //       }}
+    //     >
+    //       Yes
+    //     </button>
+    //     <button className="no" onClick={() => toast.dismiss()}>
+    //       No
+    //     </button>
+    //   </div>
+    // );
+
+    // toast.info(confirmToast, {
+    //   autoClose: false,
+    //   closeOnClick: false,
+    // });
   };
 
   // Handle clinic deletion

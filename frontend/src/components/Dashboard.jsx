@@ -43,6 +43,8 @@ const Dashboard = () => {
           _id: appointment._id,
         }));
 
+        console.log(mappedAppointments)
+
         // Filter today's appointments
         const today = new Date();
         const filteredTodayAppointments = mappedAppointments.filter(
@@ -50,11 +52,15 @@ const Dashboard = () => {
             appointment.start.toDateString() === today.toDateString()
         );
 
+        console.log(filteredTodayAppointments)
+
         // Filter only scheduled appointments
         const filteredTodayScheduledAppointments =
           filteredTodayAppointments.filter(
             (appointment) => appointment.status === "scheduled"
           );
+
+          console.log(filteredTodayScheduledAppointments)
 
         // Set the state for appointments and today's scheduled appointments
         setAppointments(mappedAppointments);
@@ -62,9 +68,18 @@ const Dashboard = () => {
 
         // Find the next upcoming appointment
         const now = new Date();
+
+        console.log(now)
+        
+        // const upcomingAppointments = filteredTodayScheduledAppointments.filter(
+        //   (appointment) => appointment.start > now
+        // );
+
         const upcomingAppointments = filteredTodayScheduledAppointments.filter(
-          (appointment) => appointment.start > now
+          (appointment) => appointment.start >= now || appointment.status === "scheduled"
         );
+
+        console.log(upcomingAppointments)
 
         if (upcomingAppointments.length > 0) {
           const nextApp = upcomingAppointments.sort(

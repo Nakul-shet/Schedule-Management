@@ -128,9 +128,9 @@ export const addNewUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password, confirmPassword, role } = req.body;
+  const { email, password, confirmPassword } = req.body;
 
-  if (!email || !password || !confirmPassword || !role) {
+  if (!email || !password || !confirmPassword) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
   if (password !== confirmPassword) {
@@ -146,10 +146,6 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   const isPasswordMatch = await user.comparePassword(password);
   if (!isPasswordMatch) {
     return next(new ErrorHandler("Invalid Email Or Password!", 400));
-  }
-
-  if (role !== user.role) {
-    return next(new ErrorHandler(`${user.firstName} - Account is not of the type ${role}`, 400));
   }
   
   generateToken(user, "Login Successfully!", 201, res);

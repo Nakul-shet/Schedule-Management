@@ -7,13 +7,10 @@ export const generateToken = (user, message, statusCode, res) => {
     switch(cookieName){
       case "Admin":
         return "adminToken"
-        break;
       case "Doctor":
         return "doctorToken"
-        break;
       case "User":
         return "userToken"
-        break;
     }
   }
 

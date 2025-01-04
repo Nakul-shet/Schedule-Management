@@ -56,8 +56,7 @@ const Login = () => {
           {
             email,
             password,
-            confirmPassword: password, // Automatically set confirmPassword to password
-            role: "Admin",
+            confirmPassword: password // Automatically set confirmPassword to password
           },
           {
             withCredentials: true,
