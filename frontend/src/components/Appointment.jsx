@@ -11,6 +11,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../static/calendar.css";
 import { CONFIG } from "../config";
+import Swal from "sweetalert2";
 
 const localizer = momentLocalizer(moment);
 
@@ -55,17 +56,36 @@ const Events = () => {
   }));
 
   const handleSelectEvent = (event) => {
-    const confirmToast = () => (
-      <div>
-        <p>Choose an action for {event.title}:</p>
-        <button onClick={() => updateAppointment(event.id)}>Update</button>
-        <button onClick={() => cancelAppointment(event.id)}>Cancel</button>
-      </div>
-    );
-
-    toast.info(confirmToast, {
-      autoClose: false,
-      closeOnClick: false,
+    Swal.fire({
+      title: `Choose an action for ${event.title}:`,
+      showCancelButton: true,
+      confirmButtonText: 'Completed',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      focusCancel: true
+    }).then((result) => {
+      // Check if 'Completed' button is clicked (Confirm button)
+      if (result.isConfirmed) {
+        // Mark as completed
+        updateAppointment(event.id)
+          .then(() => {
+            Swal.fire('Appointment marked as completed!', '', 'success');
+          })
+          .catch((error) => {
+            Swal.fire('Error', error?.message || 'Failed to mark appointment as completed', 'error');
+          });
+      }
+      // Check if 'Cancel' button is clicked (Cancel button)
+      else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Call cancelAppointment if cancel button is clicked
+        cancelAppointment(event.id)
+          .then(() => {
+            Swal.fire('Appointment canceled', '', 'info');
+          })
+          .catch((error) => {
+            Swal.fire('Error', error?.message || 'Failed to cancel appointment', 'error');
+          });
+      }
     });
   };
 
@@ -90,34 +110,44 @@ const Events = () => {
         updatedData,
         { withCredentials: true }
       );
-      toast.success("Appointment updated successfully.");
-      setEvents(); // Refresh events after update
+      // Refetch events after the update to ensure the latest data
+      const res = await axios.get(
+        `${CONFIG.runEndpoint.backendUrl}/appointment`,
+        { withCredentials: true }
+      );
+      setEvents(res.data); // Update state with the fetched data
+      Swal.fire('Appointment status updated successfully!', '', 'success');
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Error updating appointment."
+      Swal.fire(
+        error.response?.data?.message || "Error updating appointment.",
+        '',
+        'error'
       );
     }
   };
 
   const cancelAppointment = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to cancel this appointment?"
-    );
-    if (confirmDelete) {
-      try {
-        await axios.delete(
-          `${CONFIG.runEndpoint.backendUrl}/appointment/deleteAppointment/${id}`,
-          { withCredentials: true }
-        );
-        setEvents(events.filter((event) => event.id !== id)); // Update state after deletion
-        toast.success("Appointment canceled successfully.");
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Error canceling appointment."
-        );
-      }
+    try {
+      // Call the API to delete the appointment
+      await axios.delete(
+        `${CONFIG.runEndpoint.backendUrl}/appointment/deleteAppointment/${id}`,
+        { withCredentials: true }
+      );
+      // Refetch events after the update to ensure the latest data
+      const res = await axios.get(
+        `${CONFIG.runEndpoint.backendUrl}/appointment`,
+        { withCredentials: true }
+      );
+      setEvents(res.data); // Update state with the fetched data
+      Swal.fire('Appointment canceled successfully!', '', 'success');
+    } catch (error) {
+      Swal.fire(
+        error.response?.data?.message || "Error canceling appointment.",
+        '',
+        'error'
+      );
     }
-  };
+  };  
 
   const CustomToolbar = ({ label, onNavigate }) => (
     <div className="rbc-toolbar">
