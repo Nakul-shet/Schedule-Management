@@ -1,8 +1,15 @@
 import { Appointment } from '../models/appointment.js';
+import { Patient } from '../models/patient.js';
+import { Whatsapp } from '../models/whatsapp.js';
+
+// Import WhatsApp integration
+import { bookAppointment } from "../whatsappClient.js";
 
 const doTimesOverlap = (start1, end1, start2, end2) => {
   return (start1 < end2 && end1 > start2);
 };
+
+const doctorName = "Dr. Shourya Hegde";
 
 export const createAppointment = async (req , res) => {
 
@@ -51,6 +58,22 @@ export const createAppointment = async (req , res) => {
     });
 
     await appointment.save();
+
+    const patientDetails = await Patient.findOne({patientId : patientId})
+
+    if(patientDetails){
+      // Simulate booking an appointment and sending a WhatsApp message
+      bookAppointment(doctorName, patientName, "91" + patientDetails.mobile, `${date} ${startTime}`);
+    }
+
+    const whatsappMessageSaver = new Whatsapp({
+      patientName : patientName,
+      clinicName : clinicName,
+      appointmentAt : `${date}T${startTime}:00.000`
+    })
+
+    await whatsappMessageSaver.save();
+
     res.status(201).json(appointment);
 
   }catch(error){
