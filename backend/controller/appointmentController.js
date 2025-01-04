@@ -133,6 +133,43 @@ export const getTodayAppointmentByClinic = async (req , res) => {
 
 }
 
+export const getTodaysAppointmentStatus = async (req , res) => {
+
+  const {clinic} = req.params;
+
+  try{
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of the day
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Get the next day
+
+    const totalScheduledAppointments = await Appointment.find({
+      date: {
+        $gte: today,
+        $lt: tomorrow
+      },
+      clinicName : clinic,
+      status : "scheduled"
+    })
+
+    const totalCompletedAppointments = await Appointment.find({
+      date: {
+        $gte: today,
+        $lt: tomorrow
+      },
+      clinicName : clinic,
+      status : "completed"
+    })
+
+    res.send(`${totalCompletedAppointments.length}/${Number(totalCompletedAppointments.length) + Number(totalScheduledAppointments.length)}`)
+
+  }catch(error){
+      res.status(400).json({ error: error.message });
+  }
+}
+
 export const getAllAppointments = async (req, res) => {
   try {
     // Get today's date at midnight
