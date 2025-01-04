@@ -57,10 +57,11 @@ const Events = () => {
 
   const handleSelectEvent = (event) => {
     Swal.fire({
-      title: `Choose an action for ${event.title}:`,
+      title: `Choose an action for Appointment`,
+      text: `${event.title}`,
       showCancelButton: true,
       confirmButtonText: 'Completed',
-      cancelButtonText: 'Cancel',
+      cancelButtonText: 'Remove',
       reverseButtons: true,
       focusCancel: true
     }).then((result) => {
@@ -69,10 +70,11 @@ const Events = () => {
         // Mark as completed
         updateAppointment(event.id)
           .then(() => {
-            Swal.fire('Appointment marked as completed!', '', 'success');
+            Swal.fire('Appointment marked as completed!', '', 'info');
           })
           .catch((error) => {
-            Swal.fire('Error', error?.message || 'Failed to mark appointment as completed', 'error');
+            Swal.fire('Failed to mark appointment as completed');
+            console.log('error');
           });
       }
       // Check if 'Cancel' button is clicked (Cancel button)
@@ -116,9 +118,8 @@ const Events = () => {
         { withCredentials: true }
       );
       setEvents(res.data); // Update state with the fetched data
-      Swal.fire('Appointment status updated successfully!', '', 'success');
     } catch (error) {
-      Swal.fire(
+      console.log(
         error.response?.data?.message || "Error updating appointment.",
         '',
         'error'

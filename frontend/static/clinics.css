@@ -10,8 +10,8 @@
 .card {
   background: linear-gradient(
     to bottom right,
-    rgba(31, 48, 78, 0.463),
-    rgba(46, 25, 54, 0.685)
+    rgba(107, 108, 110, 0.463),
+    rgba(65, 65, 65, 0.685)
   );
   backdrop-filter: blur(20px);
   border-radius: 10px;
@@ -24,8 +24,8 @@
 .now-card {
   background: linear-gradient(
     to bottom right,
-    rgba(0, 94, 255, 0.609),
-    rgba(186, 77, 226, 0.9)
+    rgba(0, 38, 255, 0.609),
+    rgba(0, 68, 255, 0.9)
   );
 }
 
@@ -33,8 +33,15 @@
   transform: scale(1.02);
   background: linear-gradient(
     to bottom right,
-    rgba(0, 14, 39, 0.609),
-    rgba(127, 0, 206, 0.9)
+    rgba(51, 51, 51, 0.609),
+    rgba(97, 97, 97, 0.9)
+  );
+}
+.now-card:hover {
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 38, 255, 0.609),
+    rgba(0, 68, 255, 0.9)
   );
 }
 

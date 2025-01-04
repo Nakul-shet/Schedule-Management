@@ -7,11 +7,13 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserDoctor, FaTooth, FaLocationDot } from "react-icons/fa6";
 import { MdAddModerator } from "react-icons/md";
 import { IoPersonAddSharp } from "react-icons/io5";
+import { IoSettings  } from "react-icons/io5";
 import { BsCalendarEventFill } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import { CONFIG } from "../config";
 
@@ -23,18 +25,32 @@ const Sidebar = () => {
   const navigateTo = useNavigate();
 
   const handleLogout = async () => {
-    await axios
-      .get(`${CONFIG.runEndpoint.authUrl}/api/v1/user/admin/logout`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        toast.success(res.data.message);
-        setIsAuthenticated(false);
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      });
+    // Show SweetAlert2 confirmation dialog
+    const { value } = await Swal.fire({
+      title: 'Do you want to Logout?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Logout',
+      cancelButtonText: 'No, Stay',
+      icon: 'question'
+    });
+
+    // If the user selects "Yes", proceed with the API call
+    if (value) {
+      try {
+        const res = await axios.get(`${CONFIG.runEndpoint.authUrl}/api/v1/user/admin/logout`, {
+          withCredentials: true,
+        });
+        toast.success(res.data.message); // Show success message
+        setIsAuthenticated(false); // Update authentication status
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Something went wrong'); // Show error message
+      }
+    } else {
+      // If the user selects "No", do nothing or handle it differently
+      console.log('User chose not to logout.');
+    }
   };
+
 
   const handleIconClick = (icon, navigatePath) => {
     setActiveIcon(icon);
@@ -73,10 +89,10 @@ const Sidebar = () => {
             className={activeIcon === "addDoctor" ? "active-icon" : ""}
             onClick={() => handleIconClick("addDoctor", "/doctor/addnew")}
           /> */}
-          <AiFillMessage
+          {/* <AiFillMessage
             className={activeIcon === "messages" ? "active-icon" : ""}
             onClick={() => handleIconClick("messages", "/messages")}
-          />
+          /> */}
           <IoLogoWhatsapp
             className={activeIcon === "whatsapp" ? "active-icon" : ""}
             onClick={() => handleIconClick("whatsapp", "/messages")}
@@ -84,6 +100,10 @@ const Sidebar = () => {
           <FaLocationDot
             className={activeIcon === "location" ? "active-icon" : ""}
             onClick={() => handleIconClick("location", "/clinics")}
+          />
+          <IoSettings
+            className={activeIcon === "settings" ? "active-icon" : ""}
+            onClick={() => handleIconClick("settings", "/messages")}
           />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>

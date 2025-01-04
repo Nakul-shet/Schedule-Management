@@ -23,7 +23,7 @@ const EditNewClinic = () => {
     try {
       if (clinicData) {
         // Update existing clinic
-        await axios.put(
+        await axios.patch(
           `${CONFIG.runEndpoint.backendUrl}/clinic/updateClinic/${clinicData._id}`,
           {
             clinicName,

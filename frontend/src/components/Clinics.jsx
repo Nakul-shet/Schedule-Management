@@ -5,6 +5,7 @@ import { Context } from "../main";
 import { useNavigate } from "react-router-dom";
 import "../../static/clinics.css";
 import { GlobalContext } from "./GlobalVarOfLocation";
+import Swal from "sweetalert2";
 
 import { CONFIG } from "../config";
 
@@ -14,6 +15,7 @@ const Clinics = () => {
   const { isAuthenticated } = useContext(Context);
   const navigate = useNavigate();
   const [dropdownVisible, setDropdownVisible] = useState({});
+  const [isDropdownActive, setIsDropdownActive] = useState(false);  // Track if dropdown is active
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
@@ -50,46 +52,43 @@ const Clinics = () => {
   };
 
   // Handle clinic card click to select a clinic
-  const handleCardClick = (clinicName) => {
-    console.log(clinicName)
+  const handleCardClick = async (clinicName) => {
+    // Don't proceed if dropdown is active
+    if (isDropdownActive) return;
 
-    setGlobalVariable(clinicName);
-    navigate("/");
+    // Show SweetAlert2 confirmation dialog
+    const { value } = await Swal.fire({
+      title: `Do you want to change the clinic to ${clinicName}?`,
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Change',
+      cancelButtonText: 'No, Stay',
+      icon: 'question'
+    });
 
-    // const confirmToast = () => (
-    //   <div>
-    //     <p>Do you want to change to {clinicName}?</p>
-    //     <button
-    //       className="yes"
-    //       onClick={() => {
-    //         setGlobalVariable(clinicName);
-    //         toast.success(`Clinic changed to ${clinicName}`, {
-    //           position: "top-right",
-    //         });
-    //         toast.dismiss();
-    //       }}
-    //     >
-    //       Yes
-    //     </button>
-    //     <button className="no" onClick={() => toast.dismiss()}>
-    //       No
-    //     </button>
-    //   </div>
-    // );
-
-    // toast.info(confirmToast, {
-    //   autoClose: false,
-    //   closeOnClick: false,
-    // });
+    // If the user selects "Yes", proceed with changing the clinic
+    if (value) {
+      setGlobalVariable(clinicName);  // Set the global variable with clinic name
+      navigate("/");  // Navigate to the home page (or any desired page)
+    } else {
+      // If the user selects "No", do nothing or log it
+      console.log('User chose not to change clinic.');
+    }
   };
 
   // Handle clinic deletion
   const deleteClinic = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this clinic?"
-    );
-
-    if (confirmDelete) {
+    // Use SweetAlert2 for confirmation
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+    });
+  
+    // If user confirms deletion
+    if (result.isConfirmed) {
       try {
         await axios.delete(`${CONFIG.runEndpoint.backendUrl}/clinic/deleteClinic/${id}`, {
           withCredentials: true,
@@ -99,15 +98,21 @@ const Clinics = () => {
       } catch (error) {
         toast.error(error?.response?.data?.message || "Error deleting clinic.");
       }
+    } else {
+      console.log("Deletion cancelled");
     }
   };
 
-  // Toggle dropdown visibility
+  // Toggle dropdown visibility and set dropdown state
   const toggleDropdown = (id) => {
-    setDropdownVisible((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
+    setDropdownVisible((prevState) => {
+      const newState = {
+        ...prevState,
+        [id]: !prevState[id],  // Toggle visibility for the specific clinic
+      };
+      setIsDropdownActive(Object.values(newState).includes(true));  // Set the dropdown active flag
+      return newState;
+    });
   };
 
   return (
@@ -126,7 +131,7 @@ const Clinics = () => {
                 clinic.clinicName === globalVariable ? "now-card" : ""
               }`}
               key={clinic._id}
-              onClick={() => handleCardClick(clinic.clinicName)}
+              onClick={() => handleCardClick(clinic.clinicName)} // Only triggers if dropdown is not active
             >
               <div className="card-header">
                 <div className="details">
