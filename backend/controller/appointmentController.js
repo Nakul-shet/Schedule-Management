@@ -68,6 +68,7 @@ export const createAppointment = async (req , res) => {
 
     const whatsappMessageSaver = new Whatsapp({
       patientName : patientName,
+      patientId : patientId,
       clinicName : clinicName,
       appointmentAt : `${date}T${startTime}:00.000`
     })

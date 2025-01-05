@@ -2,9 +2,16 @@ import qrcode from "qrcode-terminal";
 import pkg from "whatsapp-web.js";
 const { Client, LocalAuth } = pkg;
 
+import puppeteer from "puppeteer";
+
 // Initialize WhatsApp client
 const client = new Client({
-  authStrategy: new LocalAuth(), // This will store the session data after the QR scan
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    executablePath: puppeteer.executablePath(),
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+} // This will store the session data after the QR scan
 });
 
 // Event: Show QR code for first-time authentication

@@ -6,6 +6,10 @@ const whatsappSchema = new Schema({
       type : String,
       required : true
     },
+    patientId : {
+      type : String,
+      required : true
+    },
     clinicName : {
       type : String,
       required : true
