@@ -14,7 +14,7 @@ const Login = () => {
   const [selectedClinic, setSelectedClinic] = useState(""); // Default selected clinic
 
   const { globalVariable, setGlobalVariable } = useContext(GlobalContext);
-  const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const { isAuthenticated, setIsAuthenticated, setAdmin } = useContext(Context);
 
   const navigateTo = useNavigate();
 
@@ -66,6 +66,7 @@ const Login = () => {
         .then((res) => {
           toast.success(res.data.message);
           setIsAuthenticated(true);
+          setAdmin(res.data.user)
           navigateTo("/");
           setEmail("");
           setPassword("");
