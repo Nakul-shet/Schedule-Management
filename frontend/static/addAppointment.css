@@ -1,8 +1,10 @@
 /* Style for the patient list container */
 .patient-list {
-    max-height: 30vh; /* Maximum height 30% of the viewport height */
+    display: flex; /* Enable Flexbox */
+    flex-wrap: wrap; /* Allow items to wrap into multiple rows */
+    max-height: 50vh; /* Maximum height 50% of the viewport height */
     min-height: 50px; /* Minimum height to fit at least one item */
-    overflow-y: auto; /* Allow vertical scrolling if the list overflows */
+    overflow-y: scroll; /* Allow vertical scrolling if the list overflows */
     border: 1px solid #ccc; /* Border to differentiate the list */
     background-color: #f9f9f9; /* Light background for better contrast */
     padding: 10px; /* Padding around the list */
@@ -13,12 +15,15 @@
   
   /* Style for each patient item in the list */
   .patient-item {
+    width: min-content;
+    flex: 1 1 22%; /* Make each item take 22% of the container width, with some flexibility */
+    margin: 1px; /* Add some space between items */
     padding: 10px;
     cursor: pointer; /* Pointer cursor to indicate clickability */
     background: linear-gradient(
-        to bottom right,
-        rgba(55, 120, 252, 0.463),
-        rgba(35, 134, 201, 0.685)
+      to bottom right,
+      rgba(55, 120, 252, 0.463),
+      rgba(35, 134, 201, 0.685)
     );
     border-bottom: 1px solid #ffffff; /* Border between items */
     border-radius: 5px;
@@ -28,7 +33,10 @@
   
   /* Hover effect for patient items */
   .patient-item:hover {
-    background-color: #2600ff; /* Light grey background on hover */
+    background-color: #2600ff; /* Darker background color on hover */
     color: white;
+  }
+  .form-component form .patient-list{
+    gap: 10px;
   }
   

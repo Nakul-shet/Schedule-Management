@@ -70,6 +70,7 @@ const AddNewPatient = () => {
           setNotificationMethod({ email: false, sms: false });
         });
     } catch (res) {
+      console.log(res.data.error)
       toast.error(res.data.error);
     }
   };
@@ -111,12 +112,12 @@ const AddNewPatient = () => {
             />
           </div>
           <div>
-            <input
+            {/* <input
               type="text"
               placeholder="Contact"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
-            />
+            /> */}
             <input
               type="number"
               placeholder="Mobile Number"
