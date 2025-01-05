@@ -4,7 +4,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { GlobalContext } from "./GlobalVarOfLocation";
 import { toast } from "react-toastify";
 import axios from "axios";
-
 import { CONFIG } from "../config";
 
 const AddNewPatient = () => {
@@ -13,11 +12,11 @@ const AddNewPatient = () => {
 
   const [patientName, setPatientName] = useState("");
   const [gender, setGender] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("India"); // Set default country as India
+  const [city, setCity] = useState("Mangalore"); // Set default city as Mangalore
   const [contact, setContact] = useState("");
   const [mobile, setMobile] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("patient@gmail.com"); // Set default email
   const [dob, setDob] = useState("");
   const [note, setNote] = useState("");
   const [treatmentAmount, setTreatmentAmount] = useState(""); // New state for treatment amount
@@ -57,13 +56,14 @@ const AddNewPatient = () => {
           toast.success(res.data.message);
           setIsAuthenticated(true);
           navigateTo("/patients");
+          // Reset form fields
           setPatientName("");
           setGender("");
-          setCountry("");
-          setCity("");
+          setCountry("India"); // Reset to default
+          setCity("Mangalore"); // Reset to default
           setContact("");
           setMobile("");
-          setEmail("");
+          setEmail("patient@gmail.com"); // Reset to default
           setDob("");
           setNote("");
           setTreatmentAmount(""); // Reset treatment amount
@@ -100,13 +100,13 @@ const AddNewPatient = () => {
             <input
               type="text"
               placeholder="Country"
-              value={country}
+              value={country} // Default country value is India
               onChange={(e) => setCountry(e.target.value)}
             />
             <input
               type="text"
               placeholder="City"
-              value={city}
+              value={city} // Default city value is Mangalore
               onChange={(e) => setCity(e.target.value)}
             />
           </div>
@@ -128,7 +128,7 @@ const AddNewPatient = () => {
             <input
               type="email"
               placeholder="Email"
-              value={email}
+              value={email} // Default email is patient@gmail.com
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
@@ -148,7 +148,7 @@ const AddNewPatient = () => {
             <input
               type="text"
               placeholder="Clinic Name"
-              value={globalVariable} // Changed value to globalVariable
+              value={globalVariable} // Clinic name is fetched from globalVariable
               readOnly // Made the field non-editable
             />
           </div>
