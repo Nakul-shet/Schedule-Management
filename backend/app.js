@@ -12,6 +12,7 @@ import patientRouter from"./routes/patientRoutes.js";
 import clinicRouter from"./routes/clinicRoutes.js";
 import paymentRouter from"./routes/paymentRoutes.js";
 import whatsappRouter from "./routes/whatsappRoutes.js";
+import cron from "node-cron";
 
 import {clearAllOutdatedNotifications} from "./controller/whatsappController.js";
 
