@@ -56,7 +56,6 @@ const AddNewPatient = () => {
           toast.success(res.data.message);
           setIsAuthenticated(true);
           navigateTo("/patients");
-          // Reset form fields
           setPatientName("");
           setGender("");
           setCountry("India"); // Reset to default
@@ -70,7 +69,6 @@ const AddNewPatient = () => {
           setNotificationMethod({ email: false, sms: false });
         });
     } catch (res) {
-      console.log(res.data.error)
       toast.error(res.data.error);
     }
   };
@@ -112,31 +110,17 @@ const AddNewPatient = () => {
             />
           </div>
           <div>
-            {/* <input
-              type="text"
-              placeholder="Contact"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-            /> */}
             <input
               type="number"
               placeholder="Mobile Number"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
             />
-          </div>
-          <div>
             <input
               type="email"
               placeholder="Email"
               value={email} // Default email is patient@gmail.com
               onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type={"date"}
-              placeholder="Date of Birth"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
             />
           </div>
           <div>
@@ -147,18 +131,27 @@ const AddNewPatient = () => {
               onChange={(e) => setTreatmentAmount(e.target.value)}
             />
             <input
+              type={"date"}
+              placeholder="Date of Birth"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+            />
+          </div>
+          <div>
+            <input
               type="text"
               placeholder="Clinic Name"
               value={globalVariable} // Clinic name is fetched from globalVariable
               readOnly // Made the field non-editable
             />
-          </div>
-          <div>
             <textarea
               placeholder="Note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             ></textarea>
+          </div>
+          <div>
+            
           </div>
           <div>
             <label>

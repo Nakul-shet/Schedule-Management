@@ -66,6 +66,7 @@ const Sidebar = () => {
       >
         <div className="links">
           <TiHome
+            id="TiHome"
             className={activeIcon === "home" ? "active-icon" : ""}
             onClick={() => handleIconClick("home", "/")}
           />
@@ -98,6 +99,7 @@ const Sidebar = () => {
             onClick={() => handleIconClick("whatsapp", "/messages")}
           />
           <FaLocationDot
+            id="FaLocationDot"
             className={activeIcon === "location" ? "active-icon" : ""}
             onClick={() => handleIconClick("location", "/clinics")}
           />

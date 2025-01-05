@@ -14,12 +14,10 @@ const EditPatient = () => {
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
-  const [contact, setContact] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [note, setNote] = useState("");
-  const [treatmentAmount, setTreatmentAmount] = useState(""); // New Treatment Amount field
   const [notificationMethod, setNotificationMethod] = useState({
     email: false,
     sms: false,
@@ -42,14 +40,12 @@ const EditPatient = () => {
         setGender(patient.gender);
         setCountry(patient.country);
         setCity(patient.city);
-        setContact(patient.contact);
         setMobile(patient.mobile);
         setEmail(patient.email);
         setDob(patient.dob);
         setNote(patient.notes);
-        setTreatmentAmount(patient.treatmentAmount || ""); // Prepopulate treatment amount if available
         setNotificationMethod(
-          patient.notificationMethod || { email: false, sms: false }
+          patient.notificationMethod || { email: true, sms: true }
         );
       } catch (error) {
         toast.error("Failed to fetch patient details.");
@@ -61,12 +57,6 @@ const EditPatient = () => {
   const handleUpdatePatient = async (e) => {
     e.preventDefault();
 
-    // Validate Treatment Amount as a positive number
-    if (!treatmentAmount || isNaN(treatmentAmount) || treatmentAmount <= 0) {
-      toast.error("Please enter a valid treatment amount.");
-      return;
-    }
-
     try {
       await axios.patch(
         `${CONFIG.runEndpoint.backendUrl}/patient/updatePatient/${id}`,
@@ -75,12 +65,10 @@ const EditPatient = () => {
           gender,
           country,
           city,
-          contact,
           mobile,
           email,
           dob,
           notes: note,
-          treatmentAmount, // Pass treatmentAmount to the API
           clinicName: globalVariable,
           notificationMethod,
         },
@@ -134,38 +122,24 @@ const EditPatient = () => {
           </div>
           <div>
             <input
-              type="text"
-              placeholder="Contact"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-            />
-            <input
               type="number"
               placeholder="Mobile Number"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
             />
-          </div>
-          <div>
             <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+          </div>
+          <div>         
             <input
               type="date"
               placeholder="Date of Birth"
-              value={dob}
+              value={dob ? dob.split('T')[0] : ''}  // Ensure correct format "yyyy-MM-dd"
               onChange={(e) => setDob(e.target.value)}
-            />
-          </div>
-          <div>
-            <input
-              type="number"
-              placeholder="Treatment Amount"
-              value={treatmentAmount}
-              onChange={(e) => setTreatmentAmount(e.target.value)}
             />
             <input
               type="text"
@@ -174,7 +148,6 @@ const EditPatient = () => {
               readOnly
             />
           </div>
-
           <div>
             <label>
               <input

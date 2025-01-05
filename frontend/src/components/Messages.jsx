@@ -26,7 +26,6 @@ const Messages = () => {
         const response = await axios.get(`${CONFIG.runEndpoint.backendUrl}/whatsapp/getNotifications/${globalVariable}`, {
           withCredentials: true
         });
-        console.log(response);
         setMessages(response.data); // Access the data inside response.data
       } catch (error) {
         setError("Error fetching notifications."); // Handle error
@@ -105,9 +104,9 @@ const Messages = () => {
 
   const renderSmsSentIcon = (smsSent) => {
     return smsSent ? (
-      <FaCheck title="SMS Sent" style={{ color: "green" }} />
+      <FaCheck title="Sent" style={{ color: "green" }} />
     ) : (
-      <MdSmsFailed title="SMS Not Sent" style={{ color: "gray" }} />
+      <MdSmsFailed title="Not Sent" style={{ color: "gray" }} />
     );
   };
 
@@ -152,13 +151,13 @@ const Messages = () => {
               {currentMessages && currentMessages.length > 0 ? (
                 currentMessages.map((message) => {
                   const { days, hours } = getTimeDifference(message.appointmentAt);
-
+                  const appointmentIn = (days!=0) ? `${days} days ${hours} hours` : (hours!=0) ? `${hours} hours` : "Today";
                   return (
                     <tr key={message._id}>
                       <td title={formatTime(message.sentdate)}>{formatDate(message.sentdate)}</td>
                       <td>{message.patientName} ({message.patientId})</td>
                       <td>{formatDate(message.appointmentAt)} {formatTime(message.appointmentAt)}</td>
-                      <td>{days} days {hours} hours</td>
+                      <td>{appointmentIn}</td>
                       <td>{renderSmsSentIcon(message.status)}</td>
                     </tr>
                   );
