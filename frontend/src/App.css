@@ -677,15 +677,20 @@ input[type="time"]:before {
 
 .patients-table {
   width: 100%;
-  border-collapse: collapse;
+  border-spacing: 0; /* Ensures the borders between cells are not collapsed */
   margin-bottom: 20px;
+  border-radius: 8px; /* Rounded corners for the table */
+  overflow: hidden; /* Prevents the content from spilling out */
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.1); /* Inset shadow */
 }
 
 .patients-table th,
 .patients-table td {
   padding: 12px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+  box-shadow: inset 5px 5px 5px rgba(0, 0, 0, 0.1); /* Inner shadow */
 }
 
 .patients-table th {
@@ -696,6 +701,23 @@ input[type="time"]:before {
 .patients-table td input[type="checkbox"] {
   width: 18px;
   height: 18px;
+}
+
+.view-btn {
+  background-color: transparent; /* Transparent background */
+  padding: 4px 7px; /* Padding around the button */
+  border: none; /* No border */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* External shadow */
+  display: inline-flex; /* Keeps button content aligned properly */
+  align-items: center; /* Vertically align content */
+  gap: 8px; /* Space between icon and text */
+  cursor: pointer; /* Pointer cursor for clickability */
+  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.view-btn:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Hover shadow effect */
+  transform: translateY(-2px); /* Slight lift on hover */
 }
 
 .pagination {
@@ -903,6 +925,8 @@ button.no:hover {
   margin-top: 20px;
   font-size: 1rem;
   text-align: center;
+  border-radius: 8px;
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.1);
 }
 
 .history-table thead {
@@ -915,6 +939,7 @@ button.no:hover {
 .history-table td {
   padding: 12px;
   border: 1px solid #ddd;
+  box-shadow: inset 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
 
 .history-table th {
@@ -970,6 +995,7 @@ button.no:hover {
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.1); /* Uniform inset shadow */
 }
 
 .message-table thead {
@@ -977,15 +1003,17 @@ button.no:hover {
   top: 0;
   background-color: #25d366; /* WhatsApp green */
   color: #ffffff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
 
 .message-table th,
 .message-table td {
   padding: 12px 16px;
-  text-align: left;
+  text-align: center;
+  vertical-align: middle;
   border-bottom: 1px solid #ddd;
+  box-shadow: inset 5px 7px 10px rgba(0, 0, 0, 0.1);
 }
 
 .message-table th {
