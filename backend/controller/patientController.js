@@ -92,10 +92,13 @@ export const searchPatientByName = async (req, res) => {
     return res.status(400).json({ message: 'Name parameter is required' });
   }
 
+  const isPatientId = /^P\d+$/.test(name);
+
+  // Build the query dynamically based on the input type
+  const query = isPatientId ? { patientId: name } : { patientName: { $regex: new RegExp(name, 'i') } };
+
   try {
-    const patients = await Patient.findOne({
-      patientName: { $regex: new RegExp(name, 'i') }
-    });
+    const patients = await Patient.find(query);
 
     if (patients.length === 0) {
       return res.status(404).json({ message: 'No patients found with the given name' });
