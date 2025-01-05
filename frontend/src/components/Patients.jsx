@@ -73,22 +73,31 @@ const Patients = () => {
     navigate(`/patient/edit/${id}`);
   };
 
-  const deletePatient = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this patient?");
-    if (confirmDelete) {
-      try {
-        await axios.delete(
-          `${CONFIG.runEndpoint.backendUrl}/patient/deletePatient/${id}`,
-          { withCredentials: true }
-        );
-        toast.success("Patient deleted successfully.");
-        fetchPatients();
-      } catch (error) {
-        toast.error(error?.response?.data?.message || "Error deleting patient.");
-      }
-    } else {
-      toast.info("Patient deletion cancelled.");
-    }
+  const deletePatient = async (id, name) => {
+    const { value } = await Swal.fire({
+          text: `Are you sure you want to delete ${name} from patient list?`,
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Delete',
+          cancelButtonText: 'No, Stay',
+          icon: 'question'
+        });
+    
+        // If the user selects "Yes", proceed with delete patient
+        if (value) {
+          try {
+            await axios.delete(
+              `${CONFIG.runEndpoint.backendUrl}/patient/deletePatient/${id}`,
+              { withCredentials: true }
+            );
+            toast.success("Patient deleted successfully.");
+            fetchPatients();
+          } catch (error) {
+            toast.error(error?.response?.data?.message || "Error deleting patient.");
+          }
+        } else {
+          // If the user selects "No", do nothing
+          toast.success("Patient remained in the list.");
+        }
   };
 
   // Fetch payment details function
@@ -100,9 +109,8 @@ const Patients = () => {
       );
       const balence = data.treatmentAmount - data.paymentMade;
       Swal.fire({
-        title: `Treatment Amount for ${patientName}`,
-        text: `Treatment amount: ${data.treatmentAmount} | Balence : ${balence}`,
-        icon: 'info', // You can customize the icon (e.g., 'info', 'success', 'error')
+        title: `Payment of ${patientName}`,
+        text: `Treatment amount: ${data.treatmentAmount} | Balance : ${balence}`,
         confirmButtonText: 'Close'
       });
     } catch (error) {
@@ -175,7 +183,7 @@ const Patients = () => {
                     <button className="edit-btn" onClick={() => editPatient(patient.patientId)}>
                       <AiFillEdit />
                     </button>
-                    <button className="delete-btn" onClick={() => deletePatient(patient.patientId)}>
+                    <button className="delete-btn" onClick={() => deletePatient(patient.patientId, patient.patientName)}>
                       <AiFillDelete />
                     </button>
                   </td>

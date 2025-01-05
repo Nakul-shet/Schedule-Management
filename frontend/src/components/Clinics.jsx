@@ -68,6 +68,10 @@ const Clinics = () => {
     // If the user selects "Yes", proceed with changing the clinic
     if (value) {
       setGlobalVariable(clinicName);  // Set the global variable with clinic name
+      const tiHomeElement = document.getElementById("TiHome");
+      tiHomeElement.classList.toggle("active-icon");
+      const faLocationDot = document.getElementById("FaLocationDot");
+      faLocationDot.classList.toggle("active-icon");
       navigate("/");  // Navigate to the home page (or any desired page)
     } else {
       // If the user selects "No", do nothing or log it
