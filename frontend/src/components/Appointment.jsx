@@ -99,12 +99,22 @@ const Events = () => {
       setSelectedDate(start);
       setView(Views.DAY);
     } else if (view === Views.DAY) {
-      // If the current view is Day, navigate to the Add Appointment page on time click
-      const date = moment(start).format("YYYY-MM-DD"); // Format date as YYYY-MM-DD
-      const time = moment(start).format("HH:mm"); // Format time as HH:mm in 24-hour format
-      navigate(`/appointment/addnew?date=${date}&time=${time}`);
+      const currentDateTime = moment(); // Get the current date and time
+  
+      const date = moment(start).format("YYYY-MM-DD"); // Format start date as YYYY-MM-DD
+      const time = moment(start).format("HH:mm"); // Format start time as HH:mm in 24-hour format
+  
+      const startDateTime = moment(`${date} ${time}`, "YYYY-MM-DD HH:mm"); // Combine date and time for comparison
+      console.log(111)
+      // Check if the start time is ahead of the current time
+      if (startDateTime.isAfter(currentDateTime)) {
+        navigate(`/appointment/addnew?date=${date}&time=${time}`); // Navigate to the Add Appointment page
+      } else {
+        console.log(222)
+        toast.error("The selected time must be in the future."); 
+      }
     }
-  };
+  };  
 
   const updateAppointment = async (id) => {
     const updatedData = { status: "completed" };
