@@ -13,6 +13,8 @@ import clinicRouter from"./routes/clinicRoutes.js";
 import paymentRouter from"./routes/paymentRoutes.js";
 import whatsappRouter from "./routes/whatsappRoutes.js";
 
+import {clearAllOutdatedNotifications} from "./controller/whatsappController.js";
+
 const app = express();
 config({ path: "./config/config.env" });
 
@@ -41,6 +43,10 @@ app.use("/patient", patientRouter);
 app.use("/clinic", clinicRouter);
 app.use("/payment", paymentRouter);
 app.use("/whatsapp" , whatsappRouter);
+
+cron.schedule("0 0 * * *", async () => {
+  clearAllOutdatedNotifications();
+});
 
 dbConnection();
 

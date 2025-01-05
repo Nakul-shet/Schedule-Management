@@ -22,3 +22,13 @@ export const getAppointmentNotifications = async (req , res) => {
     }
 
 }
+
+export const clearAllOutdatedNotifications = async (req , res) => {
+    try {
+        const now = new Date();
+        const result = await Whatsapp.deleteMany({ appointmentAt: { $lt: now } });
+        console.log(`Outdated appointments cleared. Deleted ${result.deletedCount} records.`);
+      } catch (error) {
+        console.error("Error clearing outdated appointments:", error);
+      }
+}
