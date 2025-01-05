@@ -18,6 +18,7 @@ const Dashboard = () => {
     []
   ); // State to hold today's scheduled appointments
   const [nextAppointment, setNextAppointment] = useState(null); // State for next appointment
+  const [appointmentStats, setAppointmentStats] = useState("");
   const [timeLeft, setTimeLeft] = useState(""); // State to hold countdown timer
 
   const { globalVariable } = useContext(GlobalContext); // Access globalVariable
@@ -25,10 +26,25 @@ const Dashboard = () => {
 
   // Fetch appointments from API
   useEffect(() => {
+    const todayScheduledAppointments = async () =>{
+      try {
+        const {data} = await axios.get(
+          `${CONFIG.runEndpoint.backendUrl}/appointment/appointmentStats/${globalVariable}`,
+          {
+            withCredentials: true,
+          }
+        );
+        setAppointmentStats(data);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Error fetching appointments."
+        );
+      }
+    }
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          `${CONFIG.runEndpoint.backendUrl}/appointment`,
+          `${CONFIG.runEndpoint.backendUrl}/appointment/today/${globalVariable}`,
           {
             withCredentials: true,
           }
@@ -43,7 +59,6 @@ const Dashboard = () => {
           _id: appointment._id,
         }));
 
-        console.log(mappedAppointments)
 
         // Filter today's appointments
         const today = new Date();
@@ -52,15 +67,11 @@ const Dashboard = () => {
             appointment.start.toDateString() === today.toDateString()
         );
 
-        console.log(filteredTodayAppointments)
-
         // Filter only scheduled appointments
         const filteredTodayScheduledAppointments =
           filteredTodayAppointments.filter(
             (appointment) => appointment.status === "scheduled"
           );
-
-          console.log(filteredTodayScheduledAppointments)
 
         // Set the state for appointments and today's scheduled appointments
         setAppointments(mappedAppointments);
@@ -69,17 +80,9 @@ const Dashboard = () => {
         // Find the next upcoming appointment
         const now = new Date();
 
-        console.log(now)
-        
-        // const upcomingAppointments = filteredTodayScheduledAppointments.filter(
-        //   (appointment) => appointment.start > now
-        // );
-
         const upcomingAppointments = filteredTodayScheduledAppointments.filter(
           (appointment) => appointment.start >= now || appointment.status === "scheduled"
         );
-
-        console.log(upcomingAppointments)
 
         if (upcomingAppointments.length > 0) {
           const nextApp = upcomingAppointments.sort(
@@ -95,26 +98,9 @@ const Dashboard = () => {
     };
 
     fetchAppointments();
+    todayScheduledAppointments();
   }, []);
 
-  //   useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${CONFIG.runEndpoint.backendUrl}/api/v1/user/admin/me`,
-  //         {
-  //           withCredentials: true,
-  //         }
-  //       );
-  //       setIsAuthenticated(true);
-  //       setAdmin(response.data.user);
-  //     } catch (error) {
-  //       setIsAuthenticated(false);
-  //       setAdmin({});
-  //     }
-  //   };
-  //   fetchUser();
-  // }, [isAuthenticated]);
 
   // Function to calculate and format time left for the next appointment
   useEffect(() => {
@@ -167,22 +153,6 @@ const Dashboard = () => {
     return <Navigate to={"/login"} />;
   }
 
-  // Calculate total counts for each status
-  const totalScheduledCount = appointments.filter(
-    (appointment) => appointment.status === "scheduled"
-  ).length;
-
-  const totalCompletedCount = appointments.filter(
-    (appointment) => appointment.status === "completed"
-  ).length;
-
-  const totalCancelledCount = appointments.filter(
-    (appointment) => appointment.status === "cancelled"
-  ).length;
-
-  // Calculate total scheduled + completed count
-  const totalScheduledAndCompleted = totalScheduledCount + totalCompletedCount;
-
   return (
     <>
       <section className="dashboard page">
@@ -204,8 +174,8 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="secondBox">
-            <p>Total Scheduled Appointments</p>
-            <h3>{`${totalScheduledCount} / ${totalScheduledAndCompleted}`}</h3>
+            <p>Appointments Completed</p>
+            <h3>{appointmentStats}</h3>
             {/* Display total scheduled count */}
           </div>
           <div className="thirdBox">
