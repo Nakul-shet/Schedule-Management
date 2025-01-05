@@ -7,7 +7,9 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
 import { RiMoneyRupeeCircleFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa";
 import { CONFIG } from "../config";
+import Swal from "sweetalert2";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -18,7 +20,6 @@ const Patients = () => {
   const { isAuthenticated } = useContext(Context);
   const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate();
-  const [paymentData, setPaymentData] = useState({}); // To store payment details
 
   // Fetch patients function
   const fetchPatients = async () => {
@@ -91,14 +92,19 @@ const Patients = () => {
   };
 
   // Fetch payment details function
-  const getPaymentDetails = async (patientId) => {
+  const getPaymentDetails = async (patientId, patientName) => {
     try {
       const { data } = await axios.get(
         `${CONFIG.runEndpoint.backendUrl}/payment/getPaymentDetails/${patientId}`,
         { withCredentials: true }
       );
-      // Store treatmentAmount in state, indexed by patientId
-      setPaymentData(data);
+      const balence = data.treatmentAmount - data.paymentMade;
+      Swal.fire({
+        title: `Treatment Amount for ${patientName}`,
+        text: `Treatment amount: ${data.treatmentAmount} | Balence : ${balence}`,
+        icon: 'info', // You can customize the icon (e.g., 'info', 'success', 'error')
+        confirmButtonText: 'Close'
+      });
     } catch (error) {
       toast.error("Error getting payment details.");
     }
@@ -158,10 +164,12 @@ const Patients = () => {
                   <td>
                     <RiMoneyRupeeCircleFill
                       onClick={() => handlePaymentClick(patient.patientId)} // Keep onClick the same
-                      style={{ color: "goldenrod" }}
+                      style={{ color: "goldenrod", fontSize: "25px" }}
                       title={patient.patientId}
                     />
-                    {/* <span>{treatmentAmount}</span> */}
+                    <button className="view-btn" onClick={() => getPaymentDetails(patient.patientId, patient.patientName)}>
+                      <FaEye/> View
+                    </button>
                   </td>
                   <td className="actions-cell">
                     <button className="edit-btn" onClick={() => editPatient(patient.patientId)}>

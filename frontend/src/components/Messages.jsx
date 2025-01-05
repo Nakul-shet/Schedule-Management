@@ -3,265 +3,42 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Context } from "../main";
 import { Navigate } from "react-router-dom";
+import { GlobalContext } from "./GlobalVarOfLocation";
 import { FaTimes, FaCheck, FaHourglassHalf } from "react-icons/fa"; // Icons for status
 import { MdSmsFailed } from "react-icons/md";
 import { TiTick } from "react-icons/ti";
-
-const sampleMessages = [
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "1",
-    sentDate: "2024-10-01T14:30:00Z", // UTC format
-    template: "Appointment Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-02T09:00:00Z", // UTC format
-    smsSent: 1,
-  },
-  {
-    _id: "2",
-    sentDate: "2024-10-02T15:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-03T11:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "3",
-    sentDate: "2024-10-03T12:00:00Z",
-    template: "Billing Reminder",
-    confirmation: 2,
-    replyDate: "2024-10-04T08:30:00Z",
-    smsSent: 1,
-  },
-  {
-    _id: "4",
-    sentDate: "2024-10-04T09:00:00Z",
-    template: "Check-up Reminder",
-    confirmation: 0,
-    replyDate: "2024-10-05T13:00:00Z",
-    smsSent: 0,
-  },
-  {
-    _id: "5",
-    sentDate: "2024-10-05T14:00:00Z",
-    template: "Follow-up Reminder",
-    confirmation: 1,
-    replyDate: "2024-10-06T09:15:00Z",
-    smsSent: 1,
-  },
-];
+import { CONFIG } from "../config";
 
 const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [messagesPerPage, setMessagesPerPage] = useState(10); // Pagination limit
-
   const { isAuthenticated } = useContext(Context);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const { globalVariable } = useContext(GlobalContext);
 
-  // Using sample messages data for testing
+  // Fetch messages from the API
   useEffect(() => {
-    setMessages(sampleMessages); // Replace with API call in production
-  }, []);
-
+    const fetchMessages = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${CONFIG.runEndpoint.backendUrl}/whatsapp/getNotifications/${globalVariable}`, {
+          withCredentials: true
+        });
+        console.log(response);
+        setMessages(response.data); // Access the data inside response.data
+      } catch (error) {
+        setError("Error fetching notifications."); // Handle error
+        toast.error("Error fetching notifications.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchMessages(); 
+  }, [globalVariable]);
+  
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
   }
@@ -308,6 +85,24 @@ const Messages = () => {
     }
   };
 
+  function getTimeDifference(appointmentAt) {
+    const appointmentDate = new Date(appointmentAt);
+    const currentDate = new Date();
+  
+    // Check if the appointment is in the future
+    if (appointmentDate <= currentDate) {
+      return { days: 0, hours: 0 }; // Return zero if the appointment has passed or is the current time
+    }
+  
+    const timeDifference = appointmentDate - currentDate;
+  
+    // Calculate the difference in days and hours
+    const days = Math.floor(timeDifference / (1000 * 3600 * 24)); // Convert time difference to days
+    const hours = Math.floor((timeDifference % (1000 * 3600 * 24)) / (1000 * 3600)); // Remaining hours after days
+  
+    return { days, hours };
+  }
+
   const renderSmsSentIcon = (smsSent) => {
     return smsSent ? (
       <FaCheck title="SMS Sent" style={{ color: "green" }} />
@@ -338,39 +133,44 @@ const Messages = () => {
     <section className="page messages">
       <h1>Sent Messages</h1>
       <div className="banner">
-        <table className="message-table">
-          <thead>
-            <tr>
-              <th>Sent Date</th>
-              <th>Message Template</th>
-              <th>Confirmation</th>
-              <th>SMS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentMessages && currentMessages.length > 0 ? (
-              currentMessages.map((message) => (
-                <tr key={message._id}>
-                  <td title={formatTime(message.sentDate)}>
-                    {formatDate(message.sentDate)}
-                  </td>
-                  <td>{message.template}</td>
-                  <td>
-                    {renderConfirmationIcon(
-                      message.confirmation,
-                      message.replyDate
-                    )}
-                  </td>
-                  <td>{renderSmsSentIcon(message.smsSent)}</td>
-                </tr>
-              ))
-            ) : (
+        {loading ? (
+          <div>Loading...</div> // Display loading message
+        ) : error ? (
+          <div>{error}</div> // Display error message if fetching fails
+        ) : (
+          <table className="message-table">
+            <thead>
               <tr>
-                <td colSpan="5">No Messages!</td>
+                <th>Sent Date</th>
+                <th>Patient</th>
+                <th>Appointment On</th>
+                <th>Appointment In</th>
+                <th>Status</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentMessages && currentMessages.length > 0 ? (
+                currentMessages.map((message) => {
+                  const { days, hours } = getTimeDifference(message.appointmentAt);
+
+                  return (
+                    <tr key={message._id}>
+                      <td title={formatTime(message.sentdate)}>{formatDate(message.sentdate)}</td>
+                      <td>{message.patientName} ({message.patientId})</td>
+                      <td>{formatDate(message.appointmentAt)} {formatTime(message.appointmentAt)}</td>
+                      <td>{days} days {hours} hours</td>
+                      <td>{renderSmsSentIcon(message.status)}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="5">No Messages!</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
 
         {/* Pagination Controls */}
         <div className="pagination-controls-container">
