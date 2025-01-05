@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { CONFIG } from "../config";
 import moment from "moment";
+import "../../static/addAppointment.css";
 
 const AddNewAppointment = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
@@ -50,7 +51,8 @@ const AddNewAppointment = () => {
       const { data } = await axios.get(
         `${CONFIG.runEndpoint.backendUrl}/patient/getPatientByName/${patientSearch}`
       );
-      setPatients([data]);
+      console.log(data.length)
+      setPatients(data);
     } catch (error) {
       toast.error("Error fetching patients");
     }
@@ -143,14 +145,15 @@ const AddNewAppointment = () => {
 
           {/* Show search results */}
           {patients.length > 0 && (
-            <div>
+            <div className="patient-list">
               {patients.map((patient) => (
-                <li
+                <div
                   key={patient.patientId}
                   onClick={() => handleSelectPatient(patient)}
+                  className="patient-item"
                 >
                   {patient.patientName} (ID: {patient.patientId})
-                </li>
+                </div>
               ))}
             </div>
           )}
