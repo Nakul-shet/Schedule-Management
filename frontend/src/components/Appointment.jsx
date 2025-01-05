@@ -110,8 +110,7 @@ const Events = () => {
       if (startDateTime.isAfter(currentDateTime)) {
         navigate(`/appointment/addnew?date=${date}&time=${time}`); // Navigate to the Add Appointment page
       } else {
-        console.log(222)
-        toast.error("The selected time must be in the future."); 
+        Swal.fire('', 'The selected time must be in the future.', 'info'); 
       }
     }
   };  
