@@ -1,6 +1,6 @@
 export const CONFIG = {
   runEndpoint: {
-    backendUrl: 'http://localhost:4000',
-    authUrl: 'http://localhost:4000',
+    backendUrl: 'https://schedule-management-backend.onrender.com',
+    authUrl: 'https://schedule-management-backend.onrender.com',
   },
 };
