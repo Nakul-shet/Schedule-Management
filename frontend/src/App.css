@@ -421,6 +421,16 @@ body {
   color: #090084;
 }
 
+.settings-icon-status-red {
+  background: radial-gradient(circle, red 20%, transparent 20%);
+  color: white; /* Optional: removes the color from the text */
+}
+
+.settings-icon-status-green {
+  background: radial-gradient(circle, rgb(21, 255, 0) 20%, transparent 20%);
+  color: white; /* Optional: removes the color from the text */
+}
+
 .wrapper {
   display: none;
 }

@@ -17,9 +17,16 @@ const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [patientsPerPage, setPatientsPerPage] = useState(5);
-  const { isAuthenticated } = useContext(Context);
-  const { globalVariable } = useContext(GlobalContext);
+  const { isAuthenticated } = useContext(Context); // Authentication context
+  const { globalVariable } = useContext(GlobalContext); // Global variable context
   const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]); // This effect will run when the component mounts or when `isAuthenticated` changes
 
   // Fetch patients function
   const fetchPatients = async () => {
@@ -37,7 +44,7 @@ const Patients = () => {
 
   useEffect(() => {
     fetchPatients();
-  }, []);
+  }, []); // Fetch patients when the component mounts
 
   // Handle search functionality
   const handleSearch = (event) => {
@@ -75,29 +82,29 @@ const Patients = () => {
 
   const deletePatient = async (id, name) => {
     const { value } = await Swal.fire({
-          text: `Are you sure you want to delete ${name} from patient list?`,
-          showCancelButton: true,
-          confirmButtonText: 'Yes, Delete',
-          cancelButtonText: 'No, Stay',
-          icon: 'question'
-        });
+      text: `Are you sure you want to delete ${name} from patient list?`,
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'No, Stay',
+      icon: 'question'
+    });
     
-        // If the user selects "Yes", proceed with delete patient
-        if (value) {
-          try {
-            await axios.delete(
-              `${CONFIG.runEndpoint.backendUrl}/patient/deletePatient/${id}`,
-              { withCredentials: true }
-            );
-            toast.success("Patient deleted successfully.");
-            fetchPatients();
-          } catch (error) {
-            toast.error(error?.response?.data?.message || "Error deleting patient.");
-          }
-        } else {
-          // If the user selects "No", do nothing
-          toast.success("Patient remained in the list.");
-        }
+    // If the user selects "Yes", proceed with delete patient
+    if (value) {
+      try {
+        await axios.delete(
+          `${CONFIG.runEndpoint.backendUrl}/patient/deletePatient/${id}`,
+          { withCredentials: true }
+        );
+        toast.success("Patient deleted successfully.");
+        fetchPatients();
+      } catch (error) {
+        toast.error(error?.response?.data?.message || "Error deleting patient.");
+      }
+    } else {
+      // If the user selects "No", do nothing
+      toast.success("Patient remained in the list.");
+    }
   };
 
   // Fetch payment details function
@@ -122,11 +129,6 @@ const Patients = () => {
   const handlePaymentClick = (patientId) => {
     navigate(`/patient/payment/${patientId}`);
   };
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
 
   return (
     <section className="page patients">
@@ -161,7 +163,6 @@ const Patients = () => {
           </thead>
           <tbody>
             {currentPatients.map((patient, index) => {
-              // const treatmentAmount = paymentData.patient.patientId || "Loading...";
               return (
                 <tr key={patient.id || index}>
                   <td>{patient.patientName}</td>

@@ -151,7 +151,7 @@ const Messages = () => {
               {currentMessages && currentMessages.length > 0 ? (
                 currentMessages.map((message) => {
                   const { days, hours } = getTimeDifference(message.appointmentAt);
-                  const appointmentIn = (days!=0) ? `${days} days ${hours} hours` : (hours!=0) ? `${hours} hours` : "Today";
+                  const appointmentIn = (days!=0) ? `${days} days ${hours} hours` : (hours!=0) ? `${hours} hours` : "Done";
                   return (
                     <tr key={message._id}>
                       <td title={formatTime(message.sentdate)}>{formatDate(message.sentdate)}</td>

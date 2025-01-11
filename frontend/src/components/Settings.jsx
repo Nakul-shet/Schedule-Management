@@ -15,16 +15,20 @@ const Settings = () => {
       retryCount: 0,
       maxRetries: 3
     });
+    const navigate = useNavigate();
+    const { isAuthenticated, admin } = useContext(Context);
   
     useEffect(() => {
       const checkStatus = async () => {
         try {
           const response = await fetch(`${CONFIG.runEndpoint.backendUrl}/api/whatsapp/status`);
           const data = await response.json();
-          
+          const IoSettings = document.getElementById("IoSettings");
           if (!data.isAuthenticated) {
             const qrResponse = await fetch(`${CONFIG.runEndpoint.backendUrl}/api/whatsapp/qr`);
             const qrData = await qrResponse.json();
+            IoSettings.classList.remove("settings-icon-status-green");
+            IoSettings.classList.add("settings-icon-status-red");
             
             setStatus({
               isAuthenticated: data.isAuthenticated,
@@ -33,11 +37,14 @@ const Settings = () => {
               retryCount: data.retryCount,
               maxRetries: data.maxRetries
             });
-  
+            
             // Set up polling if not authenticated
             const timer = setTimeout(checkStatus, 5000);
             return () => clearTimeout(timer);
           } else {
+            
+            IoSettings.classList.remove("settings-icon-status-red");
+            IoSettings.classList.add("settings-icon-status-green");
             setStatus(prev => ({
               ...prev,
               isAuthenticated: true,
@@ -92,6 +99,11 @@ const Settings = () => {
         );
       }
     };
+
+    // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    navigate("/login");
+  }
   
     return (
         <section className="page">
