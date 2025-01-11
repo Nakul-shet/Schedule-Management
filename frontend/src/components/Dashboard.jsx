@@ -26,6 +26,10 @@ const Dashboard = () => {
 
   // Fetch appointments from API
   useEffect(() => {
+    if (!isAuthenticated) {
+      return <Navigate to={"/login"} />;
+    }
+    
     const todayScheduledAppointments = async () =>{
       try {
         const {data} = await axios.get(

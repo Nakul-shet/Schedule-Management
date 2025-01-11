@@ -85,6 +85,7 @@ const AddNewAppointment = () => {
       return;
     }
     try {
+      console.log(1221)
       await axios.post(
         `${CONFIG.runEndpoint.backendUrl}/appointment/createAppointment`,
         {
@@ -106,7 +107,7 @@ const AddNewAppointment = () => {
       navigateTo("/");
       resetForm();
     } catch (error) {
-      toast.error("Error adding appointment");
+      toast.error("Appointment already scheduled for this patient.");
     }
   };
 

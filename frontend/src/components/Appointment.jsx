@@ -67,9 +67,7 @@ const Events = () => {
       reverseButtons: true,
       focusCancel: true
     }).then((result) => {
-      // Check if 'Completed' button is clicked (Confirm button)
       if (result.isConfirmed) {
-        // Mark as completed
         updateAppointment(event.id)
           .then(() => {
             Swal.fire('Appointment marked as completed!', '', 'info');
@@ -78,13 +76,10 @@ const Events = () => {
             Swal.fire('Failed to mark appointment as completed');
             console.log('error');
           });
-      }
-      // Check if 'Cancel' button is clicked (Cancel button)
-      else if (result.dismiss === Swal.DismissReason.cancel) {
-        // Call cancelAppointment if cancel button is clicked
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
         cancelAppointment(event.id)
           .then(() => {
-             Swal.fire('Appointment canceled', '', 'info');
+            Swal.fire('Appointment canceled', '', 'info');
           })
           .catch((error) => {
             Swal.fire('Error', error?.message || 'Failed to cancel appointment', 'error');
@@ -95,26 +90,20 @@ const Events = () => {
 
   const handleSelectSlot = ({ start }) => {
     if (view === Views.MONTH) {
-      // If the current view is Month, change to Day view on date click
       setSelectedDate(start);
       setView(Views.DAY);
     } else if (view === Views.DAY) {
-      const currentDateTime = moment(); // Get the current date and time
-  
-      const date = moment(start).format("YYYY-MM-DD"); // Format start date as YYYY-MM-DD
-      const time = moment(start).format("HH:mm"); // Format start time as HH:mm in 24-hour format
-  
-      const startDateTime = moment(`${date} ${time}`, "YYYY-MM-DD HH:mm"); // Combine date and time for comparison
-      console.log(111)
-      // Check if the start time is ahead of the current time
+      const currentDateTime = moment(); 
+      const date = moment(start).format("YYYY-MM-DD");
+      const time = moment(start).format("HH:mm");
+      const startDateTime = moment(`${date} ${time}`, "YYYY-MM-DD HH:mm");
       if (startDateTime.isAfter(currentDateTime)) {
-        navigate(`/appointment/addnew?date=${date}&time=${time}`); // Navigate to the Add Appointment page
+        navigate(`/appointment/addnew?date=${date}&time=${time}`);
       } else {
-        console.log(222)
-        toast.error("The selected time must be in the future."); 
+        Swal.fire('', 'The selected time must be in the future.', 'info');
       }
     }
-  };  
+  };
 
   const updateAppointment = async (id) => {
     const updatedData = { status: "completed" };
@@ -124,42 +113,31 @@ const Events = () => {
         updatedData,
         { withCredentials: true }
       );
-      // Refetch events after the update to ensure the latest data
       const res = await axios.get(
         `${CONFIG.runEndpoint.backendUrl}/appointment`,
         { withCredentials: true }
       );
-      setEvents(res.data); // Update state with the fetched data
+      setEvents(res.data);
     } catch (error) {
-      console.error(
-        error.response?.data?.message || "Error updating appointment.",
-        '',
-        'error'
-      );
+      console.error(error.response?.data?.message || "Error updating appointment.");
     }
   };
 
   const cancelAppointment = async (id) => {
     try {
-      // Call the API to delete the appointment
       await axios.delete(
         `${CONFIG.runEndpoint.backendUrl}/appointment/deleteAppointment/${id}`,
         { withCredentials: true }
       );
-      // Refetch events after the update to ensure the latest data
       const res = await axios.get(
         `${CONFIG.runEndpoint.backendUrl}/appointment`,
         { withCredentials: true }
       );
-      setEvents(res.data); // Update state with the fetched data
+      setEvents(res.data);
     } catch (error) {
-      console.error(
-        error.response?.data?.message || "Error canceling appointment.",
-        '',
-        'error'
-      );
+      console.error(error.response?.data?.message || "Error canceling appointment.");
     }
-  };  
+  };
 
   const CustomToolbar = ({ label, onNavigate }) => (
     <div className="rbc-toolbar">
@@ -172,14 +150,9 @@ const Events = () => {
       <button className="rbc-btn" onClick={() => setView(Views.DAY)}>
         Day
       </button>
-
-      <span
-        className="rbc-toolbar-label"
-        onClick={() => setShowDatePicker(true)}
-      >
+      <span className="rbc-toolbar-label" onClick={() => setShowDatePicker(true)}>
         {label}
       </span>
-
       <button className="rbc-btn" onClick={() => onNavigate("PREV")}>
         Back
       </button>
@@ -209,10 +182,7 @@ const Events = () => {
     <section className="page events">
       <div className="header">
         <h1>Appointments</h1>
-        <button
-          className="add-patient-btn"
-          onClick={gotoAddPatientsAppointment}
-        >
+        <button className="add-patient-btn" onClick={gotoAddPatientsAppointment}>
           <IoPersonAddSharp /> Create Appointment
         </button>
       </div>
@@ -232,9 +202,10 @@ const Events = () => {
           date={selectedDate}
           view={view}
           onView={setView}
-          step={15} // Each slot represents 15 minutes
-          timeslots={1} // Show one timeslot per step, meaning every 15 minutes
+          step={15}
+          timeslots={1}
           components={{ toolbar: CustomToolbar }}
+          scrollToTime={moment().toDate()} // Scroll to current time when on day view
         />
       </div>
     </section>
