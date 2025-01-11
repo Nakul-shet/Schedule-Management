@@ -22,6 +22,7 @@ import PaymentUpdate from "./components/PaymentUpdate";
 import AddNewClinic from "./components/AddClinic";
 import Clinics from "./components/Clinics";
 import UpdateClinics from "./components/UpdateClinic";
+import Settings from "./components/Settings";
 import "./App.css";
 
 const App = () => {
@@ -87,6 +88,7 @@ const App = () => {
           <Route path="/clinics/addnew" element={<AddNewClinic />} />
           <Route path="/clinics" element={<Clinics />} />
           <Route path="/clinics/update/:id" element={<UpdateClinics />} />
+          <Route path="/settings" element={<Settings/>}/>
         </Routes>
         <ToastContainer position="top-center" />
       </Router>
