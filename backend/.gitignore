@@ -14,6 +14,7 @@ dist-ssr
 
 .wwebjs_auth
 .wwebjs_cache
+whatsapp-sessions
 
 # Editor directories and files
 .vscode/*
