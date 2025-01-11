@@ -7,10 +7,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
 dist
 dist-ssr
 *.local
+
+.wwebjs_auth
+.wwebjs_cache
+whatsapp-sessions
 
 # Editor directories and files
 .vscode/*
@@ -22,5 +25,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.wwebjs_auth
-.wwebjs_cache

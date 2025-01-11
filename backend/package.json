@@ -22,7 +22,11 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.4",
+    "puppeteer": "^23.11.1",
+    "puppeteer-core": "^23.11.1",
+    "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",
     "validator": "^13.11.0",
     "whatsapp-web.js": "^1.26.0"

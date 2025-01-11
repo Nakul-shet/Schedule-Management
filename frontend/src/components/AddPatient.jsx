@@ -14,7 +14,6 @@ const AddNewPatient = () => {
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("India"); // Set default country as India
   const [city, setCity] = useState("Mangalore"); // Set default city as Mangalore
-  const [contact, setContact] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("patient@gmail.com"); // Set default email
   const [dob, setDob] = useState("");
@@ -38,7 +37,6 @@ const AddNewPatient = () => {
             gender,
             country,
             city,
-            contact,
             mobile,
             email,
             dob,
@@ -60,9 +58,8 @@ const AddNewPatient = () => {
           setGender("");
           setCountry("India"); // Reset to default
           setCity("Mangalore"); // Reset to default
-          setContact("");
           setMobile("");
-          setEmail("patient@gmail.com"); // Reset to default
+          setEmail(""); // Reset to default
           setDob("");
           setNote("");
           setTreatmentAmount(""); // Reset treatment amount

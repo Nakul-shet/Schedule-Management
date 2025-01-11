@@ -105,7 +105,7 @@ const Sidebar = () => {
           />
           <IoSettings
             className={activeIcon === "settings" ? "active-icon" : ""}
-            // onClick={() => handleIconClick("settings", "/messages")}
+            onClick={() => handleIconClick("settings", "/settings")}
           />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
