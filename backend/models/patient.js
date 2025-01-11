@@ -18,7 +18,6 @@ const patientSchema = new mongoose.Schema({
   },
   country: String,
   city: String,
-  contact: String,
   mobile: {
     type: String,
     required: true

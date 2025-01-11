@@ -10,7 +10,7 @@ function generatePatientId() {
 export const createPatientRecord = async (req, res) => {
   let patId;
   try {
-    const {patientName , gender , country , city , contact , mobile , email , dob , notes , clinicName , alertPreference , treatmentAmount , paymentMade} = req.body;
+    const {patientName , gender , country , city , mobile , email , dob , notes , clinicName , alertPreference , treatmentAmount , paymentMade} = req.body;
 
     const isPatientExists = await Patient.findOne({patientName : patientName}).exec();
     patId = generatePatientId();
@@ -25,7 +25,6 @@ export const createPatientRecord = async (req, res) => {
           gender, 
           country,
           city, 
-          contact, 
           mobile,
           email,
           dob,
