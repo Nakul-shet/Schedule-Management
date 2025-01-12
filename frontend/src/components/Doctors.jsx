@@ -15,7 +15,7 @@ const Doctors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage, setDoctorsPerPage] = useState(5);
-  const { isAuthenticated } = useContext(Context);
+  const { isAuthenticated, userId } = useContext(Context);
   const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate();
 
@@ -138,18 +138,22 @@ const Doctors = () => {
                 <td>{doctor.lastName}</td>
                 <td>{doctor.email}</td>
                 <td className="actions-cell">
-                  <button
-                    className="edit-btn"
-                    onClick={() => editDoctor(doctor._id)}
-                  >
-                    <AiFillEdit />
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteDoctor(doctor._id)}
-                  >
-                    <AiFillDelete />
-                  </button>
+                  {userId === doctor._id && (
+                    <>
+                      <button
+                        className="edit-btn"
+                        onClick={() => editDoctor(doctor._id)}
+                      >
+                        <AiFillEdit />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => deleteDoctor(doctor._id)}
+                      >
+                        <AiFillDelete />
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
