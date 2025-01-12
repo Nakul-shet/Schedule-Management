@@ -76,13 +76,9 @@ const Login = () => {
     }
   };
 
-  
-  // Redirect to login if not authenticated
-    useEffect(() => {
-      if (isAuthenticated) {
-        return <Navigate to={"/"} />;
-      }
-    }, [isAuthenticated]);
+  if (isAuthenticated) {
+    navigateTo("/");
+  }
 
   return (
     <>

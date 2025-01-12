@@ -17,11 +17,6 @@ const Clinics = () => {
   const [dropdownVisible, setDropdownVisible] = useState({});
   const [isDropdownActive, setIsDropdownActive] = useState(false);  // Track if dropdown is active
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
-
   // Fetch clinics from API
   const fetchClinics = async () => {
     try {
@@ -38,8 +33,12 @@ const Clinics = () => {
   };
 
   useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     fetchClinics();
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   // Navigate to the Add New Clinic page
   const gotoAddClinicPage = () => {
