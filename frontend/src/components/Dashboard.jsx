@@ -26,9 +26,9 @@ const Dashboard = () => {
 
   // Fetch appointments from API
   useEffect(() => {
-    if (!isAuthenticated) {
-      return <Navigate to={"/login"} />;
-    }
+    // if (!isAuthenticated) {
+    //   return <Navigate to={"/login"} />;
+    // }
     
     const todayScheduledAppointments = async () =>{
       try {
