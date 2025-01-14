@@ -18,7 +18,6 @@ const Messages = () => {
   const [error, setError] = useState(null); // Error state
   const { globalVariable } = useContext(GlobalContext);
 
-  // Fetch messages from the API
   useEffect(() => {
     const fetchMessages = async () => {
       setLoading(true);
@@ -26,7 +25,11 @@ const Messages = () => {
         const response = await axios.get(`${CONFIG.runEndpoint.backendUrl}/whatsapp/getNotifications/${globalVariable}`, {
           withCredentials: true
         });
-        setMessages(response.data); // Access the data inside response.data
+        
+        // Sort the messages in descending order of appointment time (latest first)
+        const sortedMessages = response.data.sort((a, b) => new Date(b.appointmentAt) - new Date(a.appointmentAt));
+        
+        setMessages(sortedMessages); // Store sorted messages in state
       } catch (error) {
         setError("Error fetching notifications."); // Handle error
         toast.error("Error fetching notifications.");
@@ -37,6 +40,7 @@ const Messages = () => {
   
     fetchMessages(); 
   }, [globalVariable]);
+  
   
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;

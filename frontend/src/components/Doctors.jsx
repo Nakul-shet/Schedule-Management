@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { GlobalContext } from "./GlobalVarOfLocation";
-
+import Swal from "sweetalert2";
 import { CONFIG } from "../config";
 
 const Doctors = () => {
@@ -15,7 +15,7 @@ const Doctors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage, setDoctorsPerPage] = useState(5);
-  const { isAuthenticated } = useContext(Context);
+  const { isAuthenticated, userId } = useContext(Context);
   const { globalVariable } = useContext(GlobalContext);
   const navigate = useNavigate();
 
@@ -74,17 +74,27 @@ const Doctors = () => {
   };
 
   // Edit doctor handler
-  const editDoctor = (id) => {
+  const editDoctor = (id,isAuth) => {
+    if(!isAuth) {
+      toast.info("You are not authorised to Update this details");
+    }
     navigate(`/doctor/edit/${id}`);
   };
 
   // Delete doctor function
-  const deleteDoctor = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this doctor?"
-    );
+  const deleteDoctor = async (id,isAuth) => {
+    if(!isAuth) {
+      toast.info("You are no authorised to Delete this details");
+    }
 
-    if (confirmDelete) {
+    const { value } = await Swal.fire({
+          text: `Are you sure you want to delete this doctor?`,
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Delete',
+          cancelButtonText: 'No, Stay',
+          icon: 'question'
+        });
+    if (value) {
       try {
         await axios.delete(`${CONFIG.runEndpoint.authUrl}/api/v1/user/doctors/${id}`, {
           withCredentials: true,
@@ -138,18 +148,37 @@ const Doctors = () => {
                 <td>{doctor.lastName}</td>
                 <td>{doctor.email}</td>
                 <td className="actions-cell">
-                  <button
-                    className="edit-btn"
-                    onClick={() => editDoctor(doctor._id)}
-                  >
-                    <AiFillEdit />
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteDoctor(doctor._id)}
-                  >
-                    <AiFillDelete />
-                  </button>
+                  {(userId === doctor._id) ? (
+                    <>
+                      <button
+                        className="edit-btn"
+                        onClick={() => editDoctor(doctor._id,true)}
+                      >
+                        <AiFillEdit />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => deleteDoctor(doctor._id,true)}
+                      >
+                        <AiFillDelete />
+                      </button>
+                    </>
+                  ):(
+                    <>
+                      <button
+                        className="edit-btn"
+                        onClick={() => editDoctor(doctor._id,false)}
+                      >
+                        <AiFillEdit />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => deleteDoctor(doctor._id,false)}
+                      >
+                        <AiFillDelete />
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

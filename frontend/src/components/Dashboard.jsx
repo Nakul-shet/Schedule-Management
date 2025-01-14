@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
 import { GlobalContext } from "./GlobalVarOfLocation";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -23,12 +23,13 @@ const Dashboard = () => {
 
   const { globalVariable } = useContext(GlobalContext); // Access globalVariable
   const { isAuthenticated, admin } = useContext(Context); // Access authentication and admin details
+  const navigate = useNavigate();
 
   // Fetch appointments from API
   useEffect(() => {
-    // if (!isAuthenticated) {
-    //   return <Navigate to={"/login"} />;
-    // }
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
     
     const todayScheduledAppointments = async () =>{
       try {
@@ -40,9 +41,13 @@ const Dashboard = () => {
         );
         setAppointmentStats(data);
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Error fetching appointments."
-        );
+        if (isAuthenticated){
+          toast.error(
+            error.response?.data?.message || "Error fetching appointments."
+          );
+        } else {
+          toast.success("Please 🙏 Login to use the Application");
+        }
       }
     }
     const fetchAppointments = async () => {
@@ -95,41 +100,42 @@ const Dashboard = () => {
           setNextAppointment(nextApp);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Error fetching appointments."
-        );
+        if (isAuthenticated){
+          toast.error(
+            error.response?.data?.message || "Error fetching appointments."
+          );
+        } else {
+          toast.success("Please 🙏 Login to use the Application");
+        }       
+      }
+      if (nextAppointment) {
+        const intervalId = setInterval(() => {
+          const now = new Date();
+          const timeDifference = nextAppointment.start - now;
+  
+          if (timeDifference <= 0) {
+            clearInterval(intervalId);
+            setTimeLeft("Starting now");
+          } else {
+            const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minutes = Math.floor(
+              (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  
+            setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+          }
+        }, 1000);
+  
+        return () => clearInterval(intervalId); // Cleanup timer on unmount
       }
     };
 
     fetchAppointments();
     todayScheduledAppointments();
-  }, []);
 
+  }, [isAuthenticated, nextAppointment]);
 
-  // Function to calculate and format time left for the next appointment
-  useEffect(() => {
-    if (nextAppointment) {
-      const intervalId = setInterval(() => {
-        const now = new Date();
-        const timeDifference = nextAppointment.start - now;
-
-        if (timeDifference <= 0) {
-          clearInterval(intervalId);
-          setTimeLeft("Starting now");
-        } else {
-          const hours = Math.floor(timeDifference / (1000 * 60 * 60));
-          const minutes = Math.floor(
-            (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
-          );
-          const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-          setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
-        }
-      }, 1000);
-
-      return () => clearInterval(intervalId); // Cleanup timer on unmount
-    }
-  }, [nextAppointment]);
 
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
@@ -152,10 +158,6 @@ const Dashboard = () => {
       );
     }
   };
-
-  if (!isAuthenticated) {
-    return <Navigate to={"/login"} />;
-  }
 
   return (
     <>
@@ -210,7 +212,7 @@ const Dashboard = () => {
               events={todayScheduledAppointments} // Use only scheduled appointments for the calendar
               startAccessor="start"
               endAccessor="end"
-              style={{ height: 300 }}
+              style={{ height: 500 }}
               defaultView="day"
               views={{ day: true }}
               toolbar={false}

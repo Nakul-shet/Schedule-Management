@@ -15,7 +15,7 @@ const AddNewPatient = () => {
   const [country, setCountry] = useState("India"); // Set default country as India
   const [city, setCity] = useState("Mangalore"); // Set default city as Mangalore
   const [mobile, setMobile] = useState("");
-  const [email, setEmail] = useState("patient@gmail.com"); // Set default email
+  const [email, setEmail] = useState("@gmail.com"); // Set default email
   const [dob, setDob] = useState("");
   const [note, setNote] = useState("");
   const [treatmentAmount, setTreatmentAmount] = useState(""); // New state for treatment amount
@@ -26,49 +26,63 @@ const AddNewPatient = () => {
 
   const navigateTo = useNavigate();
 
+  const validateForm = () => {
+    if (!patientName || !gender || !mobile || !email) {
+      toast.error("All fields are required.");
+      return false;
+    }
+    const mobilePattern = /^[0-9]{10}$/;
+    if (!mobilePattern.test(mobile)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return false;
+    }
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return false;
+    }
+    return true;
+  };
+  
   const handleAddNewPatient = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Validate form before proceeding
+  
     try {
-      await axios
-        .post(
-          `${CONFIG.runEndpoint.backendUrl}/patient/addPatient`,
-          {
-            patientName,
-            gender,
-            country,
-            city,
-            mobile,
-            email,
-            dob,
-            notes: note,
-            treatmentAmount, // Added treatmentAmount to the request
-            clinicName: globalVariable, // Changed clinicName to globalVariable
-            notificationMethod,
-          },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/patients");
-          setPatientName("");
-          setGender("");
-          setCountry("India"); // Reset to default
-          setCity("Mangalore"); // Reset to default
-          setMobile("");
-          setEmail(""); // Reset to default
-          setDob("");
-          setNote("");
-          setTreatmentAmount(""); // Reset treatment amount
-          setNotificationMethod({ email: false, sms: false });
-        });
-    } catch (res) {
-      toast.error(res.data.error);
+      await axios.post(
+        `${CONFIG.runEndpoint.backendUrl}/patient/addPatient`,
+        {
+          patientName,
+          gender,
+          country,
+          city,
+          mobile,
+          email,
+          dob,
+          notes: note,
+          treatmentAmount,
+          clinicName: globalVariable,
+          notificationMethod,
+        },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      toast.success("Patient added successfully!");
+      navigateTo("/patients");
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          toast.error("Please fill the details with non-duplicate values.");
+        } else {
+          toast.error(error.response.data.message || "An unexpected error occurred.");
+        }
+      } else {
+        toast.error(error.message || "An unexpected error occurred.");
+      }
     }
-  };
+  };  
 
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
