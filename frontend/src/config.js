@@ -1,6 +1,6 @@
 export const CONFIG = {
   runEndpoint: {
-    backendUrl: 'https://shourya.org:443',
-    authUrl: 'https://shourya.org:443',
+    backendUrl: 'https://shourya.org',
+    authUrl: 'https://shourya.org',
   },
 };
