@@ -77,7 +77,7 @@ const Login = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to={"/"} />;
+    navigateTo("/");
   }
 
   return (
