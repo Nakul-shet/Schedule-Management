@@ -6,12 +6,7 @@
 // };
 export const CONFIG = {
   runEndpoint: {
-<<<<<<< HEAD
     backendUrl: 'http://localhost:4000',
     authUrl: 'http://localhost:4000',
-=======
-    backendUrl: 'https://shourya.org',
-    authUrl: 'https://shourya.org',
->>>>>>> c7b2642a01b1909f4b796fdb65047928f0a540df
   },
 };
