@@ -30,6 +30,9 @@ const Dashboard = () => {
     if (!isAuthenticated) {
       navigate("/login");
     }
+    // if (!isAuthenticated) {
+    //   return <Navigate to={"/login"} />;
+    // }
     
     const todayScheduledAppointments = async () =>{
       try {
