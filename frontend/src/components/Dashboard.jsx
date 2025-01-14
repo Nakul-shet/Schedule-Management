@@ -13,33 +13,26 @@ import { CONFIG } from "../config";
 const localizer = momentLocalizer(moment);
 
 const Dashboard = () => {
-  const [appointments, setAppointments] = useState([]); // State to hold fetched appointments
-  const [todayScheduledAppointments, setTodayScheduledAppointments] = useState(
-    []
-  ); // State to hold today's scheduled appointments
-  const [nextAppointment, setNextAppointment] = useState(null); // State for next appointment
+  const [appointments, setAppointments] = useState([]);
+  const [todayScheduledAppointments, setTodayScheduledAppointments] = useState([]);
+  const [nextAppointment, setNextAppointment] = useState(null);
   const [appointmentStats, setAppointmentStats] = useState("");
-  const [timeLeft, setTimeLeft] = useState(""); // State to hold countdown timer
+  const [timeLeft, setTimeLeft] = useState("");
+  const [calendarHeight, setCalendarHeight] = useState(400); // State for dynamic calendar height
 
-  const { globalVariable } = useContext(GlobalContext); // Access globalVariable
-  const { isAuthenticated, admin } = useContext(Context); // Access authentication and admin details
+  const { globalVariable } = useContext(GlobalContext);
+  const { isAuthenticated, admin } = useContext(Context);
   const navigate = useNavigate();
 
-  // Fetch appointments from API
   useEffect(() => {
     if (!isAuthenticated) {
+      toast.success("Please 🙏 Login to use the Application");
       navigate("/login");
     }
-<<<<<<< HEAD
-    // if (!isAuthenticated) {
-    //   return <Navigate to={"/login"} />;
-    // }
-=======
->>>>>>> da3c6ae72df1b3953b6acfa44799a623e8e705fb
-    
-    const todayScheduledAppointments = async () =>{
+
+    const todayScheduledAppointments = async () => {
       try {
-        const {data} = await axios.get(
+        const { data } = await axios.get(
           `${CONFIG.runEndpoint.backendUrl}/appointment/appointmentStats/${globalVariable}`,
           {
             withCredentials: true,
@@ -47,15 +40,12 @@ const Dashboard = () => {
         );
         setAppointmentStats(data);
       } catch (error) {
-        if (isAuthenticated){
-          toast.error(
-            error.response?.data?.message || "Error fetching appointments."
-          );
-        } else {
-          toast.success("Please 🙏 Login to use the Application");
-        }
+        toast.error(
+          error.response?.data?.message || "Error fetching appointments."
+        );
       }
-    }
+    };
+
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
@@ -65,7 +55,6 @@ const Dashboard = () => {
           }
         );
 
-        // Map appointments to the format required by the Calendar component
         const mappedAppointments = data.map((appointment) => ({
           title: appointment.patientName,
           start: new Date(appointment.startTime),
@@ -74,27 +63,20 @@ const Dashboard = () => {
           _id: appointment._id,
         }));
 
-
-        // Filter today's appointments
         const today = new Date();
         const filteredTodayAppointments = mappedAppointments.filter(
           (appointment) =>
             appointment.start.toDateString() === today.toDateString()
         );
 
-        // Filter only scheduled appointments
-        const filteredTodayScheduledAppointments =
-          filteredTodayAppointments.filter(
-            (appointment) => appointment.status === "scheduled"
-          );
+        const filteredTodayScheduledAppointments = filteredTodayAppointments.filter(
+          (appointment) => appointment.status === "scheduled"
+        );
 
-        // Set the state for appointments and today's scheduled appointments
         setAppointments(mappedAppointments);
         setTodayScheduledAppointments(filteredTodayScheduledAppointments);
 
-        // Find the next upcoming appointment
         const now = new Date();
-
         const upcomingAppointments = filteredTodayScheduledAppointments.filter(
           (appointment) => appointment.start >= now || appointment.status === "scheduled"
         );
@@ -102,23 +84,24 @@ const Dashboard = () => {
         if (upcomingAppointments.length > 0) {
           const nextApp = upcomingAppointments.sort(
             (a, b) => a.start - b.start
-          )[0]; // Get the closest next appointment
+          )[0];
           setNextAppointment(nextApp);
         }
       } catch (error) {
-        if (isAuthenticated){
+        if (isAuthenticated) {
           toast.error(
             error.response?.data?.message || "Error fetching appointments."
           );
         } else {
           toast.success("Please 🙏 Login to use the Application");
-        }       
+        }
       }
+
       if (nextAppointment) {
         const intervalId = setInterval(() => {
           const now = new Date();
           const timeDifference = nextAppointment.start - now;
-  
+
           if (timeDifference <= 0) {
             clearInterval(intervalId);
             setTimeLeft("Starting now");
@@ -128,20 +111,30 @@ const Dashboard = () => {
               (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
             );
             const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-  
+
             setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
           }
         }, 1000);
-  
-        return () => clearInterval(intervalId); // Cleanup timer on unmount
+
+        return () => clearInterval(intervalId);
       }
     };
 
-    fetchAppointments();
-    todayScheduledAppointments();
+    if (isAuthenticated) {
+      fetchAppointments();
+      todayScheduledAppointments();
+    }
 
-  }, [isAuthenticated, nextAppointment]);
+    // Calculate and set the calendar height on window resize and initial load
+    const handleResize = () => {
+      setCalendarHeight(window.innerHeight * 0.6); // Set height to 60% of screen height
+    };
 
+    handleResize(); // Set initial height
+
+    window.addEventListener("resize", handleResize); // Add event listener for resizing
+    return () => window.removeEventListener("resize", handleResize); // Cleanup on component unmount
+  }, [isAuthenticated, nextAppointment, globalVariable]);
 
   const handleUpdateStatus = async (appointmentId, status) => {
     try {
@@ -166,70 +159,67 @@ const Dashboard = () => {
   };
 
   return (
-    <>
-      <section className="dashboard page">
-        <div className="banner">
-          <div className="firstBox">
-            <img src="/doc.png" alt="docImg" />
-            <div className="content">
-              <div>
-                <p>Hello,</p>
-                <h5>
-                  {admin.firstName && `${admin.firstName} ${admin.lastName}`}{" "}
-                </h5>
-              </div>
-              <p>
-                Welcome to your dashboard at <b>{globalVariable}</b>, where you
-                can seamlessly manage your appointments, patient records, and
-                provide the best care with just a few clicks.
-              </p>
+    <section className="dashboard page">
+      <div className="banner">
+        <div className="firstBox">
+          <img src="/doc.png" alt="docImg" />
+          <div className="content">
+            <div>
+              <p>Hello,</p>
+              <h5>
+                {admin.firstName && `${admin.firstName} ${admin.lastName}`}{" "}
+              </h5>
             </div>
-          </div>
-          <div className="secondBox">
-            <p>Appointments Completed</p>
-            <h3>{appointmentStats}</h3>
-            {/* Display total scheduled count */}
-          </div>
-          <div className="thirdBox">
-            <p>Next Appointment</p>
-            {nextAppointment ? (
-              <>
-                <h5>{nextAppointment.title}</h5>
-                <p>
-                  Starts at:{" "}
-                  {nextAppointment.start.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-                <p>Time Left: {timeLeft}</p>
-              </>
-            ) : (
-              <p>No upcoming appointments</p>
-            )}
+            <p>
+              Welcome to your dashboard at <b>{globalVariable}</b>, where you
+              can seamlessly manage your appointments, patient records, and
+              provide the best care with just a few clicks.
+            </p>
           </div>
         </div>
+        <div className="secondBox">
+          <p>Appointments Completed</p>
+          <h3>{appointmentStats}</h3>
+        </div>
+        <div className="thirdBox">
+          <p>Next Appointment</p>
+          {nextAppointment ? (
+            <>
+              <h5>{nextAppointment.title}</h5>
+              <p>
+                Starts at:{" "}
+                {nextAppointment.start.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+              <p>Time Left: {timeLeft}</p>
+            </>
+          ) : (
+            <p>No upcoming appointments</p>
+          )}
+        </div>
+      </div>
 
-        <div className="banner">
-          <div className="last-child">
-            <h5>Today's Scheduled Appointments</h5>
-            <Calendar
-              localizer={localizer}
-              events={todayScheduledAppointments} // Use only scheduled appointments for the calendar
-              startAccessor="start"
-              endAccessor="end"
-              style={{ height: 500 }}
-              defaultView="day"
-              views={{ day: true }}
-              toolbar={false}
-              date={new Date()}
-              scrollToTime={new Date()} // Automatically scroll to current time
-              onNavigate={() => {}}
-            />
-          </div>
+      <div className="banner">
+        <div className="last-child">
+          <h5>Today's Scheduled Appointments</h5>
+          <Calendar
+            localizer={localizer}
+            events={todayScheduledAppointments}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: calendarHeight }} // Use the dynamically calculated height
+            defaultView="day"
+            views={{ day: true }}
+            toolbar={false}
+            date={new Date()}
+            scrollToTime={new Date()}
+            onNavigate={() => {}}
+          />
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

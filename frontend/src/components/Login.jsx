@@ -34,6 +34,7 @@ const Login = () => {
         }
       } catch (error) {
         console.error("Error fetching clinics:", error);
+        toast.info("🚧 Online service is currently down, please try again late. 😞");
       }
     };
 
